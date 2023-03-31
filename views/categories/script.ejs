@@ -1,0 +1,190 @@
+<!-- jquery -->
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+
+<script>
+
+  $(document).ready(function () {
+
+    $('#formCategoriesAdd').on('submit', function (e) {
+      e.preventDefault();
+      var flag = 1;
+      var name = $('#name').val();
+      var type = $('#type').val();
+
+
+      if (name == '') {
+        flag = 0;
+        $("#nameError").html("(*)");
+        $("#nameErrorText").html("Please fill up the infomation above");
+      }
+      else if (name.length > 50) {
+        flag = 0;
+        $("#nameError").html("(*)");
+        $("#nameErrorText").html("Name has maximum 30 characters");
+
+      }
+      else {
+        $("#nameError").html("");
+        $("#nameErrorText").html("");
+      }
+
+      if (flag == 1) {
+
+        $.ajax({
+          url: '/admin/categories/add',
+          type: 'POST',
+          data: {
+            name, type
+          },
+          success: function (response) {
+
+            $('#msg').html(response.msg);
+            $('#popupInfo').click();
+          }
+        });
+
+      }
+    })
+  });
+</script>
+
+
+<script>
+  $(document).ready(function () {
+
+    var arr = [];
+    $.ajax({
+      url: '/admin/categories/getAllCate',
+      type: 'GET',
+      success: function (res) {
+        for (var i = 0; i < res.data.length; i++) {
+          arr[i] = res.data[i].name;
+        }
+      }
+    });
+
+    $("#searchName").autocomplete({
+      source: arr
+    });
+
+
+    $('#searchForm').on('submit', function (e) {
+      e.preventDefault();
+
+      var name = $('#searchName').val();
+
+      var link = '/admin/categories/search/' + name;
+      window.location.href = link;
+    })
+  })
+</script>
+
+<script>
+  function GetIdToDelete(id) {
+    $('#idDelete').text(id);
+  }
+
+  function deleteCate() {
+    var id = $('#idDelete').text();
+    $.ajax({
+      url: '/admin/categories/delete',
+      type: 'POST',
+      data: {
+        id
+      },
+      success: function (res) {
+        location.reload();
+      }
+    })
+  }
+</script>
+
+
+<script>
+  $(document).ready(function () {
+    var arr = [];
+
+    $('.deleteGr').click(function () {
+      var i = 0;
+      $('#cateTable tr').filter(':has(:checkbox:checked)').each(function () {
+        var id = $(this).closest("tr").find("td:nth-child(4)").text();
+        id = id.replace(/ /g, '');
+        id = id.replace(/(\r\n|\n|\r)/gm, "");
+        console.log(id);
+        arr[i] = id;
+        i++;
+      });
+
+      if (arr.length == 0) {
+        $('#popupDeleteGrNoData').click();
+      }
+      else {
+        $('#popupDeleteGr').click();
+      }
+
+    })
+
+    $('#buttonDeleteGr').click(function () {
+
+      $.ajax({
+        url: '/admin/categories/deleteGr',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ arr: arr }),
+        success: function (res) {
+          location.reload();
+        }
+      })
+
+    })
+  })
+</script>
+
+
+<script>
+
+  $(document).ready(function () {
+
+    $('#formCategoriesUpdate').on('submit', function (e) {
+      e.preventDefault();
+      var flag = 1;
+      var name = $('#name').val();
+      var type = $('#type').val();
+      var id = $('#idCate').text();
+
+      if (name == '') {
+        flag = 0;
+        $("#nameError").html("(*)");
+        $("#nameErrorText").html("Please fill up the infomation above");
+      }
+      else if (name.length > 50) {
+        flag = 0;
+        $("#nameError").html("(*)");
+        $("#nameErrorText").html("Name has maximum 30 characters");
+
+      }
+      else {
+        $("#nameError").html("");
+        $("#nameErrorText").html("");
+      }
+
+      if (flag == 1) {
+
+        $.ajax({
+          url: '/admin/categories/update',
+          type: 'POST',
+          data: {
+            id, name, type
+          },
+          success: function (response) {
+
+            $('#msg').html(response.msg);
+            $('#popupInfo').click();
+          }
+        });
+
+      }
+    })
+  });
+</script>

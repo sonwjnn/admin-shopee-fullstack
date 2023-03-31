@@ -1,0 +1,619 @@
+<!-- jquery -->
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+
+<script>
+  $(document).ready(function () {
+    $('#formProductsAdd').on('submit', function (e) {
+      e.preventDefault();
+      var flag = 1;
+      var flagSyntax = 1;
+      var name = $('#name').val();
+      var origin = $('#origin').val();
+      var price = $('#price').val();
+      var cateName = '';
+      cateName = $('#cateType').val();
+      var dateOfM = $('#dateCreated').val();
+      var info = CKEDITOR.instances['productStory'].getData();
+
+
+      if (name == '') {
+        flag = 0;
+        $("#nameError").html("(*)");
+        $("#nameErrorText").html("Please fill up the infomation above");
+      }
+      else if (name.length > 50) {
+        flagSyntax = 0;
+        $("#nameError").html("(+)");
+        $("#nameErrorText").html("Name has maximum 30 characters");
+
+      }
+      else {
+        $("#nameError").html("");
+        $("#nameErrorText").html("");
+      }
+
+
+      if (origin == '') {
+        flag = 0;
+        $("#originError").html("(*)");
+        $("#originErrorText").html("Please fill up the infomation above");
+      }
+      else {
+        $("#originError").html("");
+        $("#originErrorText").html("");
+      }
+
+
+      var regexPrice = /^([0-9]*)$/;
+      var regexPriceZero = /^([0]*)$/;
+
+
+      if (price == '') {
+        flag = 0;
+        $("#priceError").html("(*)");
+        $("#priceErrorText").html("Please fill up the infomation above");
+      }
+      else if (regexPrice.test(price) != true) {
+        flagSyntax = 0;
+        $("#priceError").html("(+)");
+        $("#priceErrorText").html("The price is not valid");
+      }
+      else if (regexPriceZero.test(price)) {
+        flagSyntax = 0;
+        $("#priceError").html("(+)");
+        $("#priceErrorText").html("The price must not be zero");
+      }
+      else {
+        $("#priceError").html("");
+        $("#priceErrorText").html("");
+      }
+
+      var file = $('#image');
+      var file_length = file[0].files.length;
+      var name_file = '';
+      var type_file = '';
+      var size_file = 0;
+
+      if (file_length != 0) {
+        name_file = file[0].files[0].name;
+        type_file = file[0].files[0].type;
+        size_file = file[0].files[0].size;
+      }
+
+      if (file_length == 0) {
+        flag = 0;
+        $("#imageError").html("(*)");
+        $("#imageErrorText").html("Please fill up the infomation above");
+      }
+      else if (type_file != 'image/jpeg' && type_file != 'image/jpg' && type_file != 'image/png') {
+        flagSyntax = 0;
+        $("#imageError").html("(+)");
+        $("#imageErrorText").html("Wrong type file");
+      }
+      else if (size_file > 3072000) {
+        flagSyntax = 0;
+        $("#imageError").html("(+)");
+        $("#imageErrorText").html("The limit of image size has maximum 3Mb data");
+      }
+      else if (/\s/.test(name_file)) {
+        flagSyntax = 0;
+        $("#imageError").html("(+)");
+        $("#imageErrorText").html("File name must not certain whitespaces");
+      }
+      else {
+        $("#imageError").html("");
+        $("#imageErrorText").html("");
+      }
+
+      var textError = 'Note:';
+
+      if (flag == 0) {
+        textError = textError + '<br> &emsp;(*): Enter missing information field';
+        $('#noteProducts').html(textError);
+        $('#noteProducts').removeClass('hiden');
+        $('#noteProducts').addClass('unhiden');
+      }
+      if (flagSyntax == 0) {
+        textError = textError + '<br> &emsp;(+): Wrong syntax';
+        $('#noteProducts').html(textError);
+        $('#noteProducts').removeClass('hiden');
+        $('#noteProducts').addClass('unhiden');
+      }
+
+      if (flag == 1 && flagSyntax == 1) {
+        $('#noteProducts').removeClass('unhiden');
+        $('#noteProducts').addClass('hiden');
+      }
+
+      if (flag == 0 || flagSyntax == 0) {
+        $('#main').animate({ scrollTop: 0 }, 300);
+      }
+
+
+      if (flag != 0 && flagSyntax != 0) {
+
+        var flagImage = 1;
+        var imageName = '';
+        var imageNameReal = '';
+        const imagePromise = new Promise((rs, rj) => {
+          $.ajax({
+            url: '/admin/products/upLoadFile',
+            type: 'POST',
+            data: new FormData(this),
+            processData: false,
+            contentType: false,
+            success: function (r) {
+              if (typeof r.msg != 'string') {
+                flagImage = 0;
+              }
+              imageNameReal = r.imageNameReal;
+              imageName = r.imageNameSend;
+              rs();
+
+            }
+          });
+        });
+
+        imagePromise.then(function () {
+          if (flagImage == 1) {
+            $.ajax({
+              url: '/admin/products/add',
+              type: 'POST',
+              data: {
+                name, origin, price, imageName, cateName, info, dateOfM, imageNameReal
+              },
+              success: function (res) {
+                console.log(res.msg);
+                $('#msg').text(res.msg);
+                $('#popupInfo').click();
+              }
+            });
+          }
+          else {
+            alert('Size of the file exceeds the limit');
+          }
+        }).catch();
+
+      }
+
+    })
+  });
+</script>
+
+<script>
+  $(document).ready(function () {
+    $('#formProductsEdit').on('submit', function (e) {
+      e.preventDefault();
+      var flag = 1;
+      var flagSyntax = 1;
+      var name = $('#name').val();
+      var origin = $('#origin').val();
+      var price = $('#price').val();
+      var cateName = $('#cateType').val();
+      var dateOfM = $('#dateCreated').val();
+      var info = CKEDITOR.instances['productInfo'].getData();
+
+
+      if (name == '') {
+        flag = 0;
+        $("#nameError").html("(*)");
+        $("#nameErrorText").html("Please fill up the infomation above");
+      }
+      else if (name.length > 50) {
+        flagSyntax = 0;
+        $("#nameError").html("(+)");
+        $("#nameErrorText").html("Name has maximum 30 characters");
+
+      }
+      else {
+        $("#nameError").html("");
+        $("#nameErrorText").html("");
+      }
+
+
+      if (origin == '') {
+        flag = 0;
+        $("#originError").html("(*)");
+        $("#originErrorText").html("Please fill up the infomation above");
+      }
+      else {
+        $("#originError").html("");
+        $("#originErrorText").html("");
+      }
+
+
+      var regexPrice = /^([0-9]*)$/;
+      var regexPriceZero = /^([0]*)$/;
+
+
+      if (price == '') {
+        flag = 0;
+        $("#priceError").html("(*)");
+        $("#priceErrorText").html("Please fill up the infomation above");
+      }
+      else if (regexPrice.test(price) != true) {
+        flagSyntax = 0;
+        $("#priceError").html("(+)");
+        $("#priceErrorText").html("The price is not valid");
+      }
+      else if (regexPriceZero.test(price)) {
+        flagSyntax = 0;
+        $("#priceError").html("(+)");
+        $("#priceErrorText").html("The price must not be zero");
+      }
+      else {
+        $("#priceError").html("");
+        $("#priceErrorText").html("");
+      }
+
+      var flagImageHave = 0;
+      var flagSyntaxImage = 1;
+
+      var file = $('#image');
+
+
+      var file_length = file[0].files.length;
+      var name_file = '';
+      var type_file = '';
+      var size_file = 0;
+
+      if (file_length != 0) {
+        name_file = file[0].files[0].name;
+        type_file = file[0].files[0].type;
+        size_file = file[0].files[0].size;
+        flagImageHave = 1;
+      }
+
+      if (flagImageHave == 1) {
+        if (file_length == 0) {
+          flagSyntaxImage = 0;
+          $("#imageError").html("(*)");
+          $("#imageErrorText").html("Please fill up the infomation above");
+        }
+        else if (type_file != 'image/jpeg' && type_file != 'image/jpg' && type_file != 'image/png') {
+          flagSyntaxImage = 0;
+          $("#imageError").html("(+)");
+          $("#imageErrorText").html("Wrong type file");
+        }
+        else if (size_file > 3072000) {
+          flagSyntaxImage = 0;
+          $("#imageError").html("(+)");
+          $("#imageErrorText").html("The limit of image size has maximum 3Mb data");
+        }
+        else if (/\s/.test(name_file)) {
+          flagSyntaxImage = 0;
+          $("#imageError").html("(+)");
+          $("#imageErrorText").html("File name must not certain whitespaces");
+        }
+        else {
+          $("#imageError").html("");
+          $("#imageErrorText").html("");
+        }
+
+      }
+
+      if (flagImageHave == 0) {
+        var textError = 'Note:';
+
+        if (flag == 0) {
+          textError = textError + '<br> &emsp;(*): Enter missing information field';
+          $('#noteProducts').html(textError);
+          $('#noteProducts').removeClass('hiden');
+          $('#noteProducts').addClass('unhiden');
+        }
+        if (flagSyntax == 0 || flagSyntaxImage == 0) {
+          textError = textError + '<br> &emsp;(+): Wrong syntax';
+          $('#noteProducts').html(textError);
+          $('#noteProducts').removeClass('hiden');
+          $('#noteProducts').addClass('unhiden');
+        }
+
+        if (flag == 1 && flagSyntax == 1) {
+          $('#noteProducts').removeClass('unhiden');
+          $('#noteProducts').addClass('hiden');
+        }
+
+        if (flag == 0 || flagSyntax == 0) {
+          $('#main').animate({ scrollTop: 0 }, 300);
+        }
+      }
+
+      if (flagImageHave == 1) {
+        var textError = 'Note:';
+
+        if (flag == 0) {
+          textError = textError + '<br> &emsp;(*): Enter missing information field';
+          $('#noteProducts').html(textError);
+          $('#noteProducts').removeClass('hiden');
+          $('#noteProducts').addClass('unhiden');
+        }
+        if (flagSyntax == 0 || flagSyntaxImage == 0) {
+          textError = textError + '<br> &emsp;(+): Wrong syntax';
+          $('#noteProducts').html(textError);
+          $('#noteProducts').removeClass('hiden');
+          $('#noteProducts').addClass('unhiden');
+        }
+
+        if (flag == 1 && flagSyntax == 1 && flagSyntaxImage == 1) {
+          $('#noteProducts').removeClass('unhiden');
+          $('#noteProducts').addClass('hiden');
+        }
+
+        if (flag == 0 || flagSyntax == 0 || flagSyntaxImage == 0) {
+          $('#main').animate({ scrollTop: 0 }, 300);
+        }
+      }
+
+      var imageName = '';
+      var imageNameReal ='';
+      if (flagImageHave == 1) {
+        if (flag != 0 && flagSyntax != 0 && flagSyntaxImage != 0) {
+
+          const imagePromise = new Promise((rs, rj) => {
+            $.ajax({
+              url: '/admin/products/upLoadFile',
+              type: 'POST',
+              data: new FormData(this),
+              processData: false,
+              contentType: false,
+              success: function (r) {
+                if (typeof r.msg != 'string') {
+
+                }
+                imageNameReal = r.imageNameReal;
+                imageName = r.imageNameSend;
+                rs(r.imageNameSend);
+
+              }
+            });
+          });
+
+          imagePromise.then(function (value) {
+            $('#imageShow').val(value);
+            var id = $('#id').val();
+            $.ajax({
+              url: '/admin/products/update',
+              type: 'POST',
+              data: {
+                id, name, origin, price, imageName: value, cateName, info, dateOfM, imageNameReal
+              },
+              success: function (res) {
+                console.log(res.msg);
+                $('#msg').text(res.msg);
+                $('#popupInfo').click();
+              }
+            });
+          }).catch();
+        }
+      } else {
+        if (true) {
+          var id = $('#id').val();
+          $.ajax({
+            url: '/admin/products/update',
+            type: 'POST',
+            data: {
+              id, name, origin, price, imageName, cateName, info, dateOfM, imageNameReal
+            },
+            success: function (res) {
+              console.log(res.msg);
+              $('#msg').text(res.msg);
+              $('#popupInfo').click();
+            }
+          });
+        }
+      }
+
+
+    })
+  });
+</script>
+
+
+<script>
+  $("#firstImage").click(function () {
+    $('#imageSecond').val('Fisrt Image');
+    $('#imageSecond').addClass('showBorder');
+  });
+  $("#secondImage").click(function () {
+    $('#imageSecond').val('Second Image');
+    $('#imageSecond').addClass('showBorder');
+  });
+  $("#thirdImage").click(function () {
+    $('#imageSecond').val('Third Image');
+    $('#imageSecond').addClass('showBorder');
+  });
+  $("#fourthImage").click(function () {
+    $('#imageSecond').val('Fourth Image');
+    $('#imageSecond').addClass('showBorder');
+  });
+</script>
+
+
+
+<script>
+  $("#checkAll").click(function () {
+    var index = $('#checkAll').val();
+
+    if (index == '1') {
+      $('.imgbgchk').prop('checked', true);
+      $('#checkAll').val('2');
+
+    }
+    else {
+      $('.imgbgchk').prop('checked', false);
+      $('#checkAll').val('1');
+    }
+  })
+
+</script>
+
+<script>
+  $(document).ready(function () {
+
+    var arr = [];
+    $.ajax({
+      url: '/admin/products/getAllProduct',
+      type: 'GET',
+      success: function (res) {
+        for (var i = 0; i < res.data.length; i++) {
+          arr[i] = res.data[i].name;
+        }
+      }
+    });
+
+    $("#searchName").autocomplete({
+      source: arr
+    });
+
+
+    $('#searchForm').on('submit', function (e) {
+      e.preventDefault();
+
+      var name = $('#searchName').val();
+
+      var link = '/admin/products/search/' + name;
+      window.location.href = link;
+    })
+  })
+</script>
+
+<script>
+  function getName(id) {
+
+    $.ajax({
+      url: '/admin/products/showDetail',
+      type: 'POST',
+      data: {
+        id
+      },
+      success: function (res) {
+        var dateOfM;
+        if (res.data[0].dateOfM == "" || res.data[0].dateOfM == undefined) {
+          dateOfM = '';
+        }
+        else {
+          var arr = res.data[0].dateOfM.split('-');
+          dateOfM = arr[2] + '-' + arr[1] + '-' + arr[0];
+        }
+        
+        $('#idProduct').val(id);
+        $('#name').val(res.data[0].name);
+        $('#origin').val(res.data[0].origin);
+        $('#price').val(res.data[0].price);
+        $('#dateOfM').val(dateOfM);
+        $('#cateName').val(res.data[0].cateName);
+        var imageNameShow = '';
+        imageNameShow = "background-image: url('/img/products/" + res.data[0].imageName + "');";
+
+        $("#imageName").attr('style', imageNameShow);
+
+        CKEDITOR.instances['info'].setData(res.data[0].info);
+
+
+        $('#popupDetail').click();
+      }
+    });
+  }
+</script>
+
+<script>
+  $('#clickMe').click(function () {
+    var text = $('#storyid').text();
+    CKEDITOR.instances['productInfo'].setData(text);
+  })
+  $(document).ready(function () {
+    $('#clickMe').click();
+  })
+</script>
+
+
+<script>
+  function GetIdToDelete(id) {
+    $('#idDelete').text(id);
+  }
+
+  function deleteProduct() {
+    var id = $('#idDelete').text();
+    $.ajax({
+      url: '/admin/products/delete',
+      type: 'POST',
+      data: {
+        id
+      },
+      success: function (res) {
+        location.reload();
+      }
+    })
+  }
+</script>
+
+
+<script>
+  $(document).ready(function () {
+    var arr = [];
+
+    $('.deleteGr').click(function () {
+      var i = 0;
+      $('#productTable tr').filter(':has(:checkbox:checked)').each(function () {
+        var id = $(this).closest("tr").find("td:nth-child(4)").text();
+        id = id.replace(/ /g, '');
+        id = id.replace(/(\r\n|\n|\r)/gm, "");
+        console.log(id);
+        arr[i] = id;
+        i++;
+      });
+
+      if (arr.length == 0) {
+        $('#popupDeleteGrNoData').click();
+      }
+      else {
+        $('#popupDeleteGr').click();
+      }
+
+    })
+
+    $('#buttonDeleteGr').click(function () {
+
+      $.ajax({
+        url: '/admin/products/deleteGr',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ arr: arr }),
+        success: function (res) {
+          location.reload();
+        }
+      })
+
+    })
+  })
+</script>
+
+<script>
+  $("#newFile").click(function () {
+    $('#labelNewFile').click();
+  });
+</script>
+
+<script>
+  $('#edit').click(function () {
+    var id = $('#idProduct').val();
+    var link = '/admin/products/edit/' + id;
+    window.location.href = link;
+  })
+</script>
+
+
+<script>
+  $(document).ready(function () {
+      $("#image").change(function () {
+          
+          var path = $('#image').val();
+          var name = '';
+          for(var i = 12; i < path.length; i++){
+            name = name + path[i]; 
+          }
+          $('#imageShow').val(name);
+      });
+  });
+</script>

@@ -1,0 +1,237 @@
+<!-- jquery -->
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+
+<script>
+  $('#clickMe').click(function () {
+    var text = $('#storyid').text();
+    CKEDITOR.instances['story'].setData(text);
+  })
+  $(document).ready(function () {
+    $('#clickMe').click();
+  })
+</script>
+
+
+
+<script>
+  var HaNoi = "Hoan Kiem,Dong Da,Ba Dinh,Hai Ba Trung,Hoang Mai,Thanh Xuan,Long Bien,Nam Tu Liem,other";
+  var HCM = "District 1,District 2,District 3,Hoc Mon,Go Vap,other";
+  $(document).ready(function () {
+    $('#cityMem').change(function (event) {
+      let selected = event.target.value;
+      if (selected == 'Ha Noi') {
+        $("#districtMem option").each(function () {
+          $(this).remove();
+        });
+        $('#districtMem').html('<option value="" disabled selected hidden>-Choose-</option>');
+
+        $.each(HaNoi.split(","), function (i, e) {
+          $('#districtMem').append($('<option>', {
+            value: e,
+            text: e
+          }));
+        });
+      }
+      else {
+        $("#districtMem option").each(function () {
+          $(this).remove();
+        });
+        $('#districtMem').html('<option value="" disabled selected hidden>-Choose-</option>');
+        $.each(HCM.split(","), function (i, e) {
+          $('#districtMem').append($('<option>', {
+            value: e,
+            text: e
+          }));
+        });
+      }
+
+    });
+  });
+</script>
+
+<script>
+  var HaNoi = "Hoan Kiem,Dong Da,Ba Dinh,Hai Ba Trung,Hoang Mai,Thanh Xuan,Long Bien,Nam Tu Liem,other";
+  var HCM = "District 1,District 2,District 3,Hoc Mon,Go Vap,other";
+
+  $(document).ready(function () {
+    var thisCity = $('#thisCity').val();
+    if (thisCity == 'Ha Noi') {
+
+
+      var thisDis = $('#thisDis').val();
+      if (thisDis != '') {
+        $.each(HaNoi.split(","), function (i, e) {
+          $('#districtMem').append($('<option>', {
+            value: e,
+            text: e
+          }));
+        });
+      } else {
+        $('#districtMem').html('<option value="" disabled selected hidden>-Choose-</option>');
+      }
+
+    }
+    else if (thisCity == 'TP HCM') {
+
+      var thisDis = $('#thisDis').val();
+      if (thisDis != '') {
+        $.each(HCM.split(","), function (i, e) {
+          $('#districtMem').append($('<option>', {
+            value: e,
+            text: e
+          }));
+        });
+      } else {
+        $('#districtMem').html('<option value="" disabled selected hidden>-Choose-</option>');
+
+      }
+    } else{
+      $('#districtMem').html('<option value="" disabled selected hidden>-Choose City-</option>');
+    }
+  });
+</script>
+
+<script>
+  $(document).ready(function () {
+
+    $('#formProlifeUpdate').on('submit', function (e) {
+      e.preventDefault();
+      var flag = 1;
+      var flagSyntax = 1;
+      var name = $('#nameMem').val();
+      var username = $('#usernameMem').val();
+
+      var phone = $('#phoneMem').val();
+      var address = $('#addressMem').val();
+      var email = $('#emailMem').val();
+      var city = $('#cityMem').val();
+      var district = $('#districtMem').val();
+      var sex = $('#sexMem').val();
+      var birthday = $('#birthdayMem').val();
+      var role = $('#role').val();
+      var story = CKEDITOR.instances['story'].getData();
+
+
+      var patternUsername = /\W/;
+      if (username == '') {
+        flag = 0;
+        $("#usernameMemError").html("(*)");
+        $("#usernameMemErrorText").html("Please fill up the infomation above");
+      }
+      else if (username.length > 50) {
+        flagSyntax = 0;
+        $("#usernameMemError").html("(+)");
+        $("#usernameMemErrorText").html("username has maximum 50 characters");
+      }
+      else if (patternUsername.test(username)) {
+        flagSyntax = 0;
+        $("#usernameMemError").html("(+)");
+        $("#usernameMemErrorText").html("Username must not contain especial characters");
+      }
+      else {
+        $("#usernameMemError").html("");
+        $("#usernameMemErrorText").html("");
+      }
+
+
+
+      var regexPhone = /^([09|03|07|08|05]{2}([0-9]{8}))$/;
+
+      if (phone == '') {
+        flag = 0;
+        $("#phoneMemError").html("(*)");
+        $("#phoneMemErrorText").html("Please fill up the infomation above");
+      }
+      else if (regexPhone.test(phone) == false) {
+        flagSyntax = 0;
+        $("#phoneMemError").html("(+)");
+        $("#phoneMemErrorText").html("The phone is not valid");
+      }
+      else {
+        $("#phoneMemError").html("");
+        $("#phoneMemErrorText").html("");
+      }
+
+
+
+      if (name == '') {
+        flag = 0;
+        $("#nameMemError").html("(*)");
+        $("#nameMemErrorText").html("Please fill up the infomation above");
+      }
+      else {
+        $("#nameMemError").html("");
+        $("#nameMemErrorText").html("");
+      }
+
+      if (address == '') {
+        flag = 0;
+        $("#addressMemError").html("(*)");
+        $("#addressMemErrorText").html("Please fill up the infomation above");
+      }
+      else {
+        $("#addressMemError").html("");
+        $("#addressMemErrorText").html("");
+      }
+
+
+      var patternEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+      if (email == '') {
+        flag = 0;
+        $("#emailMemError").html("(*)");
+        $("#emailMemErrorText").html("Please fill up the infomation above");
+      }
+      else if (patternEmail.test(email) == false) {
+        flagSyntax = 0;
+        $("#emailMemError").html("(+)");
+        $("#emailMemErrorText").html("The email is not valid");
+      }
+      else {
+        $("#emailMemError").html("");
+        $("#emailMemErrorText").html("");
+      }
+
+      var textError = 'Note:';
+
+      if (flag == 0) {
+        textError = textError + '<br> &emsp;(*): Enter missing information field';
+        $('#noteMember').html(textError);
+        $('#noteMember').removeClass('hiden');
+        $('#noteMember').addClass('unhiden');
+      }
+      if (flagSyntax == 0) {
+        textError = textError + '<br> &emsp;(+): Wrong syntax';
+        $('#noteMember').html(textError);
+        $('#noteMember').removeClass('hiden');
+        $('#noteMember').addClass('unhiden');
+      }
+
+      if (flag == 0 || flagSyntax == 0) {
+        $('#main').animate({ scrollTop: 0 }, 300);
+      }
+
+
+
+      if (flag == 1 && flagSyntax == 1) {
+        $('#noteMember').removeClass('unhiden');
+        $('#noteMember').addClass('hiden');
+        var id = $('#idUser').val();
+        $.ajax({
+          url: '/admin/prolife/update',
+          type: 'POST',
+          data: {
+            id, name, username, phone,
+            email, address, city, district, sex, birthday, role, story
+          },
+          success: function (res) {
+
+            $('#msg').html(res.msg);
+            $('#popupInfo').click();
+          }
+        });
+        return false;
+      }
+    })
+  });
+</script>

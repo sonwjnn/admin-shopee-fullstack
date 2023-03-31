@@ -1,0 +1,145 @@
+<div class="container-fluid py-4">
+    <div class="row">
+
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <form id="formMembersEdit">
+                        <div class="alert-warning text-white text-min text-space-xl hiden" id="noteMember"></div>
+                        <div class="row">     
+                            <input type="text" class="form-control form-control-new hiden" id="idUser"
+                                     value="<%=data[0]._id%>" disabled="disabled">
+                            <div class="form-group col-md-6">
+                                
+                                <label class="form-label display-inline" for="usernameMem">User Name <span id="usernameMemError" class="spanError"></span></label>
+                                <input type="text" class="form-control form-control-new" id="usernameMem"
+                                     value="<%=data[0].username%>" disabled="disabled">
+                                <span id="usernameMemErrorText" class="spanError"></span>
+                            </div>
+                            
+                            <div class="form-group col-md-6">
+                                
+                                <label class="form-label display-inline" for="passwordMem">Password <span id="passwordMemError" class="spanError"></span></label>
+                                <input type="password" class="form-control form-control-new" id="passwordMem"
+                                    placeholder="Ex: 123456" autocomplete="new-password" value=<%=data[0].password%> disabled="disabled"/>
+                                <span id="passwordMemErrorText" class="spanError"></span>
+                            </div>
+                            <div class="form-group col-md-6">
+                               
+                                <label class="form-label display-inline" for="nameMem">Full Name <span id="nameMemError" class="spanError"></span></label>
+                                <input type="text" class="form-control form-control-new" id="nameMem"
+                                    placeholder="Ex: Nguyen Van A" value="<%=data[0].name%>">
+                                <span id="nameMemErrorText" class="spanError"></span>
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                
+                                <label class="form-label display-inline" for="phoneMem">Phone Number <span id="phoneMemError" class="spanError"></span></label>
+                                <input type="text" class="form-control form-control-new" id="phoneMem"
+                                    placeholder="Ex: 0987771234" value=<%=data[0].phone%>>
+                                <span id="phoneMemErrorText" class="spanError"></span>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="form-label display-inline" for="emailMem">Email <span id="emailMemError" class="spanError"></span></label>
+                                <input type="text" class="form-control form-control-new" id="emailMem"
+                                    placeholder="Ex: abc@gmail.com" value=<%=data[0].email%>>
+                                    <span id="emailMemErrorText" class="spanError">
+                            </div>
+
+                            <div class="form-group col-md-6">
+                               
+                                <label class="form-label display-inline" for="addressMem">Address  <span id="addressMemError" class="spanError"></span></label>
+                                <input type="text" class="form-control form-control-new" id="addressMem"
+                                    placeholder="Ex: 10 Pham Van Dong" value="<%=data[0].address%>">
+                                <span id="addressMemErrorText" class="spanError">
+                            </div>
+
+                         
+                            <div class="form-group col-md-6">
+                                <label class="form-label" for="cityMem">Country/City</label>
+                                <select id="cityMem" class="form-select">
+                                    <% if (data[0].city != '') { %>
+                                        <option id="thisCity" value= "<%=data[0].city%>" hidden> <%=data[0].city%> </option>
+                                    <% } else {%>
+                                        <option id="thisCity" value="" hidden>-Choose-</option>
+                                    <% } %>
+                                    <option value="Ha Noi">Ha Noi</option>
+                                    <option value="TP HCM">TP HCM</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="form-label" for="districtMem">District</label>
+                                <select id="districtMem" class="form-select">
+                                    <option id="thisDis" value="<%=data[0].district%>" hidden> <%=data[0].district%> </option>
+                                </select>
+                            </div>
+                           
+                            <div class="form-group col-md-6">
+                                <label class="form-label" for="sexMem">Sex</label>
+                                <select id="sexMem" class="form-select">
+                                    <option value=<%=data[0].sex%> hidden> <%=data[0].sex%></option>
+                                    <option value="Male">Male</option>
+                                    <option value="FeMale">FeMale</option>
+
+                                </select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="form-label" for="birthdayMem">Date of birth</label>
+                                <input type="date" class="form-control form-control-new" id="birthdayMem" value=<%=data[0].birthday%>>
+                                  <span id="usernameError" class="spanError"></span>
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label class="form-label display-inline" for="role">Role</label>
+                                <select id="role" class="form-select">  
+                                    <option value=<%=data[0].role%> hidden> <%=data[0].role%></option>
+                                    <option value="user">user</option>
+                                    <option value="admin">admin</option>
+                                    
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-12">
+                                <label class="form-label" for="story">Infomation Other</label>
+                                <textarea class="form-control" id="story" cols="30"
+                                    rows="10" name="contentStory"></textarea>
+                            </div>
+                        </div>
+                        
+                        <div id="storyid" class="hiden"><%=data[0].story%> </div>
+
+                        <button type="button" class="btn alert-info text-white" onclick="location.href='/admin/users/index'" > Back </button>
+                        <button type="submit" class="btn alert-info text-white"> Save </button>
+                        <button type="button" id="clickMe" class="hiden">click</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content border-none">
+            <div class="modal-header alert-info mt-0 mb-0 noti">
+                <h5 class="modal-title text-white" id="exampleModalLongTitle"><i class="fa fa-flag" aria-hidden="true"></i> Notification</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-black" id="msg">
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-dark mb-0 mt-0" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<button type="button" class="btn btn-outline-info pt-2 pb-2 hiden" id="popupInfo" data-toggle="modal" data-target="#exampleModalCenter">popup</button>
+<%-include('script')%>

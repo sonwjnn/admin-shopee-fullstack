@@ -1,0 +1,377 @@
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-header pb-0">
+                    <h6>Users table</h6>
+                </div>
+
+                <div class="card-body pt-0 pb-0">
+                    <button type="button" class="btn btn-outline-dark pt-2 pb-2"
+                        onclick="location.href='/admin/users/add'">
+                        <i class="fa fa-plus-square-o" aria-hidden="true"></i> Add New</button>
+                    <button type="button" class="btn btn-outline-danger pt-2 pb-2 deleteGr"><i class="fa fa-trash-o"
+                            aria-hidden="true"></i> Delete Selected</button>
+                    <form id="searchForm" class="display-inline">
+                        <button type="submit" class="btn btn-outline-dark pt-2 pb-2 display-inline floatRight ml-2"><i class="fas fa-search" aria-hidden="true"></i></button>
+                        <input type="text" class="form-control form-control-new col-md-3 floatRight" id="searchName"
+                            placeholder="Full name..." value="<%=name%>">
+                    
+                        <span id="usernameMemErrorText" class="spanError"></span>
+                    </form> 
+                 
+                    
+                    </div>
+                    <div class="card-body px-0 pt-0 pb-2">
+                        <div class="table-responsive p-0">
+                            <table class="table align-items-center mb-0" id="userTable">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center table-w-10 text-center text-secondary text-sm">Choose
+                                        </th>
+                                        <th class="text-center table-w-10 text-center text-secondary text-sm">Ordinal
+                                        </th>
+                                        <th class="text-center table-w-100 text-secondary text-sm">user Name</th>
+                                        <th class="text-center table-w-100 text-secondary text-sm">Name</th>
+                                        <th class="text-center table-w-100 text-secondary text-sm">Phone</th>
+                                        <th class="text-center table-w-100 text-secondary text-sm">Email</th>
+                                        <th class="text-center table-w-100 text-secondary text-sm">Role</th>
+                                        <th class="text-center table-w-10 text-secondary pl-0 ml-0 pr-0 mr-0">DeTail
+                                        </th>
+                                        <th class="text-center table-w-10 text-secondary text-sm pl-0 ml-0 pr-0 mr-0">
+                                            Edit
+                                        </th>
+                                        <th class="text-center table-w-10 text-secondary text-sm pl-0 ml-0 pr-0 mr-0">
+                                            Pass
+                                        </th>
+                                        <th class="text-center table-w-10 text-secondary text-sm pl-0 ml-0 pr-0 mr-0">
+                                            Delete
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+
+                                    <% for(var i=0; i < data.length; i++) { %>
+
+                                        <tr id="<%=data[i]._id%>">
+                                            <td class="align-middle text-center">
+                                                <input type="checkbox" class="radio-cate">
+                                            </td>
+                                            <td class="align-middle text-center">
+                                                <p class="text-center text-xs font-weight-bold mb-0">
+                                                    <%= i+1 %>
+                                                </p>
+                                            </td>
+                                            <td class="align-middle text-center">
+                                                <p class="text-center text-xs font-weight-bold mb-0">
+                                                    <%=data[i].username%>
+                                                </p>
+                                            </td>
+
+                                            <td class="align-middle text-center">
+                                                <span class="text-sm">
+                                                    <%= data[i].name %>
+                                                </span>
+                                            </td>
+
+                                            <td class="align-middle text-center">
+                                                <span class="text-xs font-weight-bold">
+                                                    <%= data[i].phone %>
+                                                </span>
+                                            </td>
+                                            <td class="align-middle text-center">
+                                                <span class="text-sm">
+                                                    <%= data[i].email %>
+                                                </span>
+                                            </td>
+
+                                            <% if(data[i].role == 'user') { %>
+                                                <td class="align-middle text-center text-sm">
+                                                    <span class="badge badge-sm bg-gradient-info">
+                                                        <%=data[i].role%>
+                                                    </span>
+                                                </td>
+                                            <% } else {%>
+                                                <td class="align-middle text-center text-sm">
+                                                    <span class="badge badge-sm bg-gradient-warning">
+                                                        <%=data[i].role%>
+                                                    </span>
+                                                </td>
+                                            <% } %>
+
+                                            <td class="align-middle text-center">
+                                                <button type="button"
+                                                    class="btn btn-outline-successBeauty mb-0 mt-0 pt-2 pb-2 pl-3 pr-3 detail"><i
+                                                        class="fa fa-eye"></i></button>
+
+                                            </td>
+                                            <td class="align-middle text-center">
+                                                <button type="button"
+                                                    class="btn btn-outline-successBeauty mb-0 mt-0 pt-2 pb-2 pl-3 pr-3 edit"><i
+                                                        class="fa fa-pencil-square-o"></i></button>
+                                            </td>
+                                            <td class="align-middle text-center">
+                                                <button type="button"
+                                                    class="btn btn-outline-successBeauty mb-0 mt-0 pt-2 pb-2 pl-3 pr-3 passChange">
+                                                    <i class="fa fa-wrench" aria-hidden="true"></i>
+                                                </button>
+                                            </td>
+                                           
+                                            <td class="align-middle text-center">
+                                                <button type="button"
+                                                    class="btn btn-outline-successBeauty mb-0 mt-0 pt-2 pb-2 pl-3 pr-3 delete"><i
+                                                        class="fa fa-trash-o"></i></button>
+                                            </td>
+                                        </tr>
+                                        <% } %>
+
+
+
+                                </tbody>
+                            </table>
+                            <div class="container mt-3">
+
+                                <ul class="pagination justify-content-center">
+                                    
+                                                <% if(flag==0) { %>
+                                                    <li class="page-item"><a class="page-link buttonNoAfter" href="/admin/users/index/<%= pageNumber-1 %>"><i
+                                                        class="fa fa-chevron-left" aria-hidden="true"></i></a></li>
+                                                    <% for(var i=1; i <= sumPage; i++) { %>
+                                                        <% if(pageNumber == i) { %>
+                                                            <li class="page-item"><a class="page-link active active2 buttonNoAfter" href="/admin/users/index/<%= i %>"><%= i %></a></li>
+                                                        <% } %> 
+
+                                                        <% if(pageNumber != i){ %>
+                                                            <li class="page-item"><a class="page-link buttonNoAfter" href="/admin/users/index/<%= i %>"><%= i %></a></li>
+                                                        <% } %>
+                                                    <% } %> 
+                                                    <li class="page-item"><a class="page-link buttonNoAfter" href="/admin/users/index/<%= pageNumber + 1 %>"><i
+                                                        class="fa fa-chevron-right" aria-hidden="true"></i></a></li>
+                                                <% } else {%>
+                                                    <li class="page-item"><a class="page-link buttonNoAfter" href="/admin/users/search/<%=name%>/<%= pageNumber-1 %>"><i
+                                                        class="fa fa-chevron-left" aria-hidden="true"></i></a></li>
+                                                    <% for(var i=1; i <= sumPage; i++) { %> 
+                                                        <% if(pageNumber == i) { %>
+                                                            <li class="page-item"><a class="page-link active active2 buttonNoAfter" href="/admin/users/search/<%=name%>/<%= i %>"><%= i %></a></li>
+                                                        <% } %> 
+
+                                                        <% if(pageNumber != i){ %>
+                                                            <li class="page-item"><a class="page-link buttonNoAfter" href="/admin/users/search/<%=name%>/<%= i %>"><%= i %></a></li>
+                                                        <% } %>
+                                                    <% } %> 
+                                                    <li class="page-item"><a class="page-link buttonNoAfter" href="/admin/users/search/<%=name%>/<%= pageNumber + 1 %>"><i
+                                                        class="fa fa-chevron-right" aria-hidden="true"></i></a></li>
+                                                <% } %> 
+
+                                  
+                                    
+                                </ul>
+                                <ul class="pagination justify-content-end" style="margin:20px 0">
+                                    <button type="button" class="btn alert-info text-white" onclick="location.href='/admin/users/index'" > Refesh </button>
+                                </ul>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+
+    <button type="button" id="popupDetail" class="btn btn-outline-danger pt-2 pb-2 hiden" data-toggle="modal"
+        data-target="#exampleModalCenter2"></button>
+    <button type="button" id="popupDelete" class="btn btn-outline-danger pt-2 pb-2 hiden" data-toggle="modal"
+        data-target="#exampleModalCenter3"></button>
+    <button type="button" id="popupDeleteGr" class="btn btn-outline-danger pt-2 pb-2 hiden" data-toggle="modal"
+        data-target="#exampleModalCenter"></button>
+    <button type="button" id="popupDeleteGrNoData" class="btn btn-outline-danger pt-2 pb-2 hiden" data-toggle="modal"
+        data-target="#exampleModalCenter4"></button>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModalCenter4" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content border-none">
+                <div class="modal-header alert-info mt-0 mb-0 noti">
+                    <h5 class="modal-title text-white" id="exampleModalLongTitle"><i class="fa fa-flag"
+                            aria-hidden="true"></i> Notification</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-black" id="msg">
+                    Please tick the data you want to delete
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-dark mb-0 mt-0" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content border-none">
+                <div class="modal-header alert-info mt-0 mb-0 noti">
+                    <h5 class="modal-title text-white" id="exampleModalLongTitle"><i class="fa fa-flag"
+                            aria-hidden="true"></i> Notification</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-black" id="msg">
+                    Are you sure you want to delete them?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-dark mb-0 mt-0" data-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-outline-danger mb-0 mt-0" id="buttonDeleteGr">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModalCenter3" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content border-none">
+                <div class="modal-header alert-info mt-0 mb-0 noti">
+                    <h5 class="modal-title text-white" id="exampleModalLongTitle"><i class="fa fa-flag"
+                            aria-hidden="true"></i> Notification</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-black">
+                    Are you sure you want to delete them?
+                </div>
+                <div id="delete" class="hiden"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-dark mb-0 mt-0" data-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-outline-danger mb-0 mt-0" id="buttonDelete">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModalCenter2" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Detail Infomation</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body mt-0 pt-0">
+
+                    <div class="container-fluid py-4 mt-0 pt-0">
+                        <div class="row">
+
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <form>
+                                            <div class="row">
+
+                                                <div class="form-group col-md-6">
+                                                    <label class="form-label" for="username">Username</label>
+                                                    <input type="text" class="form-control form-control-new"
+                                                        id="username" value="" disabled="disabled">
+                                                </div>
+
+                                                <div class="form-group col-md-6">
+                                                    <label class="form-label" for="pass">Password</label>
+                                                    <input type="password" class="form-control form-control-new"
+                                                        id="pass" value="" disabled="disabled">
+                                                </div>
+
+                                                <div class="form-group col-md-6">
+                                                    <label class="form-label" for="name">Full Name</label>
+                                                    <input type="text" class="form-control form-control-new" id="name"
+                                                        value="" disabled="disabled">
+                                                </div>
+
+                                                <div class="form-group col-md-6">
+                                                    <label class="form-label" for="phone">Phone Number</label>
+                                                    <input type="text" class="form-control form-control-new" id="phone"
+                                                        value="" disabled="disabled">
+                                                </div>
+
+                                                <div class="form-group col-md-6">
+                                                    <label class="form-label" for="address">Email</label>
+                                                    <input type="text" class="form-control form-control-new" id="email"
+                                                        value="" disabled="disabled">
+                                                </div>
+
+                                                <div class="form-group col-md-6">
+                                                    <label class="form-label" for="address">Address</label>
+                                                    <input type="text" class="form-control form-control-new"
+                                                        id="address" value="" disabled="disabled">
+                                                </div>
+
+                                                <div class="form-group col-md-6">
+                                                    <label class="form-label" for="province">Country/City</label>
+                                                    <input type="text" class="form-control form-control-new" id="city"
+                                                        value="" disabled="disabled">
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label class="form-label" for="district">District</label>
+                                                    <input type="text" class="form-control form-control-new"
+                                                        id="district" value="" disabled="disabled">
+                                                </div>
+
+                                                <div class="form-group col-md-6">
+                                                    <label class="form-label" for="gender">Sex</label>
+                                                    <input type="text" class="form-control form-control-new" id="sex"
+                                                        value="" disabled="disabled">
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label class="form-label" for="birthday">Date of birth</label>
+                                                    <input type="text" class="form-control form-control-new"
+                                                        id="birthday" value="" disabled="disabled">
+                                                </div>
+
+                                                <div class="form-group col-md-6">
+                                                    <label class="form-label" for="role">Role</label>
+                                                    <input type="text" class="form-control form-control-new"
+                                                        id="role" value="" disabled="disabled">
+                                                </div>
+
+
+                                                <div class="form-group col-md-12">
+                                                    <label class="form-label" for="story">Infomation Other</label>
+                                                    <textarea class="form-control" id="story" cols="30" rows="10"
+                                                        name="contentStory" disabled="disabled"></textarea>
+                                                </div>
+                                            </div>
+
+
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-dark" id="edit">Edit</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%-include('script')%>

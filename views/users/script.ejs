@@ -1,0 +1,708 @@
+<!-- jquery -->
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+
+
+<script>
+  $(document).ready(function () {
+    var arr = [];
+
+    $('.deleteGr').click(function () {
+      var i = 0;
+      $('#userTable tr').filter(':has(:checkbox:checked)').each(function () {
+        var username = $(this).closest("tr").find("td:nth-child(3)").text();
+        username = username.replace(/ /g, '');
+        username = username.replace(/(\r\n|\n|\r)/gm, "");
+
+        arr[i] = username;
+        i++;
+      });
+
+      if (arr.length == 0) {
+        $('#popupDeleteGrNoData').click();
+      }
+      else {
+        $('#popupDeleteGr').click();
+      }
+
+    })
+
+    $('#buttonDeleteGr').click(function () {
+
+      $.ajax({
+        url: '/admin/users/deleteGr',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ arr: arr }),
+        success: function (res) {
+          location.reload();
+        }
+      })
+
+    })
+  })
+</script>
+
+
+<script>
+  $(document).ready(function () {
+    var arr = [];
+
+    $('.passChange').click(function () {
+      var i = 0;
+      var username = $(this).closest("tr").find("td:nth-child(3)").text();
+      username = username.replace(/ /g, '');
+      username = username.replace(/(\r\n|\n|\r)/gm, "");
+      var link = '/admin/users/password/' + username;
+      window.location.href = link;
+
+    })
+  })
+</script>
+
+<script>
+  $('#clickMe').click(function () {
+    var text = $('#storyid').text();
+    CKEDITOR.instances['story'].setData(text);
+  })
+  $(document).ready(function () {
+    $('#clickMe').click();
+  })
+</script>
+
+
+<script>
+  $('#edit').click(function () {
+    var username = $('#username').val();
+    var link = '/admin/users/edit/' + username;
+    window.location.href = link;
+  })
+</script>
+
+<script>
+  $(document).ready(function () {
+    $(".delete").click(function () {
+      var username = $(this).closest("tr").find("td:nth-child(3)").text();
+      username = username.replace(/ /g, '');
+      username = username.replace(/(\r\n|\n|\r)/gm, "");
+      $('#delete').text(username);
+      $("#popupDelete").click();
+    })
+  })
+
+  $(document).ready(function () {
+    $("#buttonDelete").click(function () {
+      var username = $('#delete').text();
+
+      $.ajax({
+        url: '/admin/users/delete',
+        type: 'POST',
+        data: {
+          username
+        },
+        success: function (res) {
+          location.reload();
+        }
+      })
+
+    })
+  })
+
+
+</script>
+
+
+<script>
+  var HaNoi = "Hoan Kiem,Dong Da,Ba Dinh,Hai Ba Trung,Hoang Mai,Thanh Xuan,Long Bien,Nam Tu Liem,other";
+  var HCM = "District 1,District 2,District 3,Hoc Mon,Go Vap,other";
+  $(document).ready(function () {
+    $('#cityMem').change(function (event) {
+      let selected = event.target.value;
+      if (selected == 'Ha Noi') {
+        $("#districtMem option").each(function () {
+          $(this).remove();
+        });
+        $('#districtMem').html('<option value="" disabled selected hidden>-Choose-</option>');
+
+        $.each(HaNoi.split(","), function (i, e) {
+          $('#districtMem').append($('<option>', {
+            value: e,
+            text: e
+          }));
+        });
+      }
+      else {
+        $("#districtMem option").each(function () {
+          $(this).remove();
+        });
+        $('#districtMem').html('<option value="" disabled selected hidden>-Choose-</option>');
+        $.each(HCM.split(","), function (i, e) {
+          $('#districtMem').append($('<option>', {
+            value: e,
+            text: e
+          }));
+        });
+      }
+
+    });
+  });
+</script>
+
+<script>
+  var HaNoi = "Hoan Kiem,Dong Da,Ba Dinh,Hai Ba Trung,Hoang Mai,Thanh Xuan,Long Bien,Nam Tu Liem,other";
+  var HCM = "District 1,District 2,District 3,Hoc Mon,Go Vap,other";
+
+  $(document).ready(function () {
+    var thisCity = $('#thisCity').val();
+    if (thisCity == 'Ha Noi') {
+
+
+      var thisDis = $('#thisDis').val();
+      if (thisDis != '') {
+        $.each(HaNoi.split(","), function (i, e) {
+          $('#districtMem').append($('<option>', {
+            value: e,
+            text: e
+          }));
+        });
+      } else {
+        $('#districtMem').html('<option value="" disabled selected hidden>-Choose-</option>');
+      }
+
+    }
+    else if (thisCity == 'TP HCM') {
+
+      var thisDis = $('#thisDis').val();
+      if (thisDis != '') {
+        $.each(HCM.split(","), function (i, e) {
+          $('#districtMem').append($('<option>', {
+            value: e,
+            text: e
+          }));
+        });
+      } else {
+        $('#districtMem').html('<option value="" disabled selected hidden>-Choose-</option>');
+
+      }
+    } else{
+      $('#districtMem').html('<option value="" disabled selected hidden>-Choose City-</option>');
+    }
+  });
+</script>
+
+
+
+
+<script>
+  $(document).ready(function () {
+    $(".detail").click(function () {
+      var username = $(this).closest("tr").find("td:nth-child(3)").text();
+      username = username.replace(/ /g, '');
+      username = username.replace(/(\r\n|\n|\r)/gm, "");
+
+      $.ajax({
+        url: '/admin/users/showDetail',
+        type: 'POST',
+        data: {
+          username
+        },
+        success: function (res) {
+          var birthday;
+          if (res.data[0].birthday == '') {
+            birthday = '';
+          }
+          else {
+            var arr = res.data[0].birthday.split('-');
+            birthday = arr[2] + '-' + arr[1] + '-' + arr[0];
+          }
+          $('#username').val(res.data[0].username);
+          $('#pass').val(res.data[0].password);
+          $('#name').val(res.data[0].name);
+          $('#phone').val(res.data[0].phone);
+          $('#email').val(res.data[0].email);
+          $('#address').val(res.data[0].address);
+          $('#city').val(res.data[0].city);
+          $('#district').val(res.data[0].district);
+          $('#sex').val(res.data[0].sex);
+          $('#role').val(res.data[0].role);
+          $('#birthday').val(birthday);
+
+          CKEDITOR.instances['story'].setData(res.data[0].story);
+          $('#popupDetail').click();
+        }
+      });
+
+    })
+  });
+</script>
+
+
+<script>
+  $(document).ready(function () {
+    $(".edit").click(function () {
+      var username = $(this).closest("tr").find("td:nth-child(3)").text();
+      username = username.replace(/ /g, '');
+      username = username.replace(/(\r\n|\n|\r)/gm, "");
+      var link = '/admin/users/edit/' + username;
+      window.location.href = link;
+    })
+  });
+</script>
+
+
+
+<script>
+
+  $(document).ready(function () {
+
+    $('#formMembersAdd').on('submit', function (e) {
+      e.preventDefault();
+      var flag = 1;
+      var flagSyntax = 1;
+      var name = $('#nameMem').val();
+      var username = $('#usernameMem').val();
+      var password = $('#passwordMem').val();
+
+      var phone = $('#phoneMem').val();
+      var address = $('#addressMem').val();
+      var email = $('#emailMem').val();
+      var city = $('#cityMem').val();
+      var district = $('#districtMem').val();
+      var sex = $('#sexMem').val();
+      var birthday = $('#birthdayMem').val();
+      var role = $('#role').val();
+      var story = CKEDITOR.instances['storyMem'].getData();
+
+
+      var patternUsername = /\W/;
+      if (username == '') {
+        flag = 0;
+        $("#usernameMemError").html("(*)");
+        $("#usernameMemErrorText").html("Please fill up the infomation above");
+      }
+      else if (username.length > 50) {
+        flagSyntax = 0;
+        $("#usernameMemError").html("(+)");
+        $("#usernameMemErrorText").html("username has maximum 50 characters");
+      }
+      else if (patternUsername.test(username)) {
+        flagSyntax = 0;
+        $("#usernameMemError").html("(+)");
+        $("#usernameMemErrorText").html("Username must not contain especial characters");
+      }
+      else {
+        $("#usernameMemError").html("");
+        $("#usernameMemErrorText").html("");
+      }
+
+      var regexPhone = /^([09|03|07|08|05]{2}([0-9]{8}))$/;
+
+      if (phone == '') {
+        flag = 0;
+        $("#phoneMemError").html("(*)");
+        $("#phoneMemErrorText").html("Please fill up the infomation above");
+      }
+      else if (regexPhone.test(phone) == false) {
+        flagSyntax = 0;
+        $("#phoneMemError").html("(+)");
+        $("#phoneMemErrorText").html("The phone is not valid");
+      }
+      else {
+        $("#phoneMemError").html("");
+        $("#phoneMemErrorText").html("");
+      }
+
+
+
+      var pattern = /[0-9]+/;
+      var pattern1 = /[a-z]+/;
+      var pattern2 = /[A-Z]+/;
+      var pattern3 = /[!@#$%^&*]+/;
+      var pattern4 = /.{6,}/;
+
+
+      if (password == '') {
+        flag = 0;
+        $("#passwordMemError").html("(*)");
+        $("#passwordMemErrorText").html("Please fill up the infomation above");
+      }
+      else if (password.length < 6 || password.length > 30) {
+        flagSyntax = 0;
+        $("#passwordMemError").html("(+)");
+        $("#passwordMemErrorText").html("Password must contain at least 6 characters");
+      }
+      else if (pattern.test(password) == false || pattern1.test(password) == false
+        || pattern2.test(password) == false || pattern3.test(password) == false || pattern4.test(password) == false) {
+        flagSyntax = 0;
+        $("#passwordMemError").html("(+)");
+        $("#passwordMemErrorText").html("Password must contain at least 1 lowercase, 1 uppercase, 1 number and 1 special character");
+      }
+      else {
+        $("#passwordMemError").html("");
+        $("#passwordMemErrorText").html("");
+      }
+
+
+
+      if (name == '') {
+        flag = 0;
+        $("#nameMemError").html("(*)");
+        $("#nameMemErrorText").html("Please fill up the infomation above");
+      }
+      else {
+        $("#nameMemError").html("");
+        $("#nameMemErrorText").html("");
+      }
+
+      if (address == '') {
+        flag = 0;
+        $("#addressMemError").html("(*)");
+        $("#addressMemErrorText").html("Please fill up the infomation above");
+      }
+      else {
+        $("#addressMemError").html("");
+        $("#addressMemErrorText").html("");
+      }
+
+
+      var patternEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+      if (email == '') {
+        flag = 0;
+        $("#emailMemError").html("(*)");
+        $("#emailMemErrorText").html("Please fill up the infomation above");
+      }
+      else if (patternEmail.test(email) == false) {
+        flagSyntax = 0;
+        $("#emailMemError").html("(+)");
+        $("#emailMemErrorText").html("The email is not valid");
+      }
+      else {
+        $("#emailMemError").html("");
+        $("#emailMemErrorText").html("");
+      }
+
+      var textError = 'Note:';
+
+      if (flag == 0) {
+        textError = textError + '<br> &emsp;(*): Enter missing information field';
+        $('#noteMember').html(textError);
+        $('#noteMember').removeClass('hiden');
+        $('#noteMember').addClass('unhiden');
+      }
+      if (flagSyntax == 0) {
+        textError = textError + '<br> &emsp;(+): Wrong syntax';
+        $('#noteMember').html(textError);
+        $('#noteMember').removeClass('hiden');
+        $('#noteMember').addClass('unhiden');
+      }
+
+      if (flag == 0 || flagSyntax == 0) {
+        $('#main').animate({ scrollTop: 0 }, 300);
+      }
+
+
+      if (flag == 1 && flagSyntax == 1) {
+        $('#noteMember').removeClass('unhiden');
+        $('#noteMember').addClass('hiden');
+
+        $.ajax({
+          url: '/admin/users/add',
+          type: 'POST',
+          data: {
+            name, username, password, phone,
+            email, address, city, district, sex, birthday, role, story
+          },
+          success: function (response) {
+
+            $('#msg').html(response.msg);
+            $('#popupInfo').click();
+          }
+        });
+        return false;
+      }
+    })
+  });
+</script>
+
+<script>
+  $(document).ready(function () {
+
+    $('#formMembersEdit').on('submit', function (e) {
+      e.preventDefault();
+      var flag = 1;
+      var flagSyntax = 1;
+      var name = $('#nameMem').val();
+      var username = $('#usernameMem').val();
+
+      var phone = $('#phoneMem').val();
+      var address = $('#addressMem').val();
+      var email = $('#emailMem').val();
+      var city = $('#cityMem').val();
+      var district = $('#districtMem').val();
+      var sex = $('#sexMem').val();
+      var birthday = $('#birthdayMem').val();
+      var role = $('#role').val();
+      var story = CKEDITOR.instances['story'].getData();
+
+
+      var patternUsername = /\W/;
+      if (username == '') {
+        flag = 0;
+        $("#usernameMemError").html("(*)");
+        $("#usernameMemErrorText").html("Please fill up the infomation above");
+      }
+      else if (username.length > 50) {
+        flagSyntax = 0;
+        $("#usernameMemError").html("(+)");
+        $("#usernameMemErrorText").html("username has maximum 50 characters");
+      }
+      else if (patternUsername.test(username)) {
+        flagSyntax = 0;
+        $("#usernameMemError").html("(+)");
+        $("#usernameMemErrorText").html("Username must not contain especial characters");
+      }
+      else {
+        $("#usernameMemError").html("");
+        $("#usernameMemErrorText").html("");
+      }
+
+
+
+      var regexPhone = /^([09|03|07|08|05]{2}([0-9]{8}))$/;
+
+      if (phone == '') {
+        flag = 0;
+        $("#phoneMemError").html("(*)");
+        $("#phoneMemErrorText").html("Please fill up the infomation above");
+      }
+      else if (regexPhone.test(phone) == false) {
+        flagSyntax = 0;
+        $("#phoneMemError").html("(+)");
+        $("#phoneMemErrorText").html("The phone is not valid");
+      }
+      else {
+        $("#phoneMemError").html("");
+        $("#phoneMemErrorText").html("");
+      }
+
+
+
+      if (name == '') {
+        flag = 0;
+        $("#nameMemError").html("(*)");
+        $("#nameMemErrorText").html("Please fill up the infomation above");
+      }
+      else {
+        $("#nameMemError").html("");
+        $("#nameMemErrorText").html("");
+      }
+
+      if (address == '') {
+        flag = 0;
+        $("#addressMemError").html("(*)");
+        $("#addressMemErrorText").html("Please fill up the infomation above");
+      }
+      else {
+        $("#addressMemError").html("");
+        $("#addressMemErrorText").html("");
+      }
+
+
+      var patternEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+      if (email == '') {
+        flag = 0;
+        $("#emailMemError").html("(*)");
+        $("#emailMemErrorText").html("Please fill up the infomation above");
+      }
+      else if (patternEmail.test(email) == false) {
+        flagSyntax = 0;
+        $("#emailMemError").html("(+)");
+        $("#emailMemErrorText").html("The email is not valid");
+      }
+      else {
+        $("#emailMemError").html("");
+        $("#emailMemErrorText").html("");
+      }
+
+      var textError = 'Note:';
+
+      if (flag == 0) {
+        textError = textError + '<br> &emsp;(*): Enter missing information field';
+        $('#noteMember').html(textError);
+        $('#noteMember').removeClass('hiden');
+        $('#noteMember').addClass('unhiden');
+      }
+      if (flagSyntax == 0) {
+        textError = textError + '<br> &emsp;(+): Wrong syntax';
+        $('#noteMember').html(textError);
+        $('#noteMember').removeClass('hiden');
+        $('#noteMember').addClass('unhiden');
+      }
+
+      if (flag == 0 || flagSyntax == 0) {
+        $('#main').animate({ scrollTop: 0 }, 300);
+      }
+
+
+
+      if (flag == 1 && flagSyntax == 1) {
+        $('#noteMember').removeClass('unhiden');
+        $('#noteMember').addClass('hiden');
+        var id = $('#idUser').val();
+        $.ajax({
+          url: '/admin/users/update',
+          type: 'POST',
+          data: {
+            id, name, username, phone,
+            email, address, city, district, sex, birthday, role, story
+          },
+          success: function (res) {
+
+            $('#msg').html(res.msg);
+            $('#popupInfo').click();
+          }
+        });
+        return false;
+      }
+    })
+  });
+</script>
+
+
+<script>
+  $(document).ready(function () {
+    $('#formChangePass').on('submit', function (e) {
+      e.preventDefault();
+      var flag = 1;
+      var username = $('#thisUsername').val();
+      var oldPass = $('#oldPass').val();
+      var newPass = $('#newPass').val();
+      var confirmPass = $('#confirmPass').val();
+
+      var pattern = /[0-9]+/;
+      var pattern1 = /[a-z]+/;
+      var pattern2 = /[A-Z]+/;
+      var pattern3 = /[!@#$%^&*]+/;
+      var pattern4 = /.{6,}/;
+
+
+      if (oldPass.length == 0) {
+        flag = 0;
+        $("#oldPassError").html("(*)");
+        $("#oldPassErrorText").html("Please fill up the infomation above");
+      }
+      else if (oldPass.length < 6 || oldPass.length > 30) {
+        flag = 0;
+        $("#oldPassError").html("(*)");
+        $("#oldPassErrorText").html("Password has minimum 6 and maximum 30 characters");
+      }
+      else if (pattern.test(oldPass) == false || pattern1.test(oldPass) == false
+        || pattern2.test(oldPass) == false || pattern3.test(oldPass) == false || pattern4.test(oldPass) == false) {
+        flag = 0;
+        $("#oldPassError").html("(*)");
+        $("#oldPassErrorText").html("Password is not correct");
+      }
+      else {
+        $("#oldPassError").html("");
+        $("#oldPassErrorText").html("");
+      }
+
+      if (newPass.length == 0) {
+        flag = 0;
+        $("#newPassError").html("(*)");
+        $("#newPassErrorText").html("Please fill up the infomation above");
+      }
+      else if (newPass.length < 6 || newPass.length > 30) {
+        flag = 0;
+        $("#newPassError").html("(*)");
+        $("#newPassErrorText").html("Password has minimum 6 and maximum 30 characters");
+      }
+      else if (pattern.test(oldPass) == false || pattern1.test(oldPass) == false
+        || pattern2.test(oldPass) == false || pattern3.test(oldPass) == false || pattern4.test(oldPass) == false) {
+        flag = 0;
+        $("#newPassError").html("(*)");
+        $("#newPassErrorText").html("Password must contain at least 1 lowercase, 1 uppercase, 1 number and 1 special character");
+      }
+      else {
+        $("#newPassError").html("");
+        $("#newPassErrorText").html("");
+      }
+
+      if (confirmPass.length == 0) {
+        flag = 0;
+        $("#confirmPassError").html("(*)");
+        $("#confirmPassErrorText").html("Please fill up the infomation above");
+      }
+      else if (confirmPass.length < 6 || confirmPass.length > 30) {
+        flag = 0;
+        $("#confirmPassError").html("(*)");
+        $("#confirmPassErrorText").html("Password has minimum 6 and maximum 30 characters");
+      }
+      else if (pattern.test(oldPass) == false || pattern1.test(oldPass) == false
+        || pattern2.test(oldPass) == false || pattern3.test(oldPass) == false || pattern4.test(oldPass) == false) {
+        flag = 0;
+        $("#confirmPassError").html("(*)");
+        $("#confirmPassErrorText").html("Password must contain at least 1 lowercase, 1 uppercase, 1 number and 1 special character");
+      }
+
+
+      else {
+        $("#confirmPassError").html("");
+        $("#confirmPassErrorText").html("");
+      }
+
+      if (flag == 1) {
+        $.ajax({
+          url: '/admin/users/updatePassword',
+          type: 'POST',
+          data: {
+            username, oldPass, newPass
+          },
+          success: function (res) {
+            if (res.kq == 1) {
+              $('#msg').text(res.msg);
+              $('#popupInfoPassChange').click();
+
+            }
+            else {
+              $('#msg').text(res.msg);
+              $('#popupInfoPassChange').click();
+            }
+          }
+        })
+      }
+
+    })
+  });
+</script>
+
+
+<script>
+  $(document).ready(function () {
+    var arr = [];
+    $.ajax({
+      url: '/admin/users/getAllUser',
+      type: 'GET',
+      success: function (res) {
+        for (var i = 0; i < res.data.length; i++) {
+          arr[i] = res.data[i].name;
+        }
+        console.log(arr);
+      }
+    });
+
+    $("#searchName").autocomplete({
+      source: arr
+    });
+
+
+    $('#searchForm').on('submit', function (e) {
+      e.preventDefault();
+
+      var name = $('#searchName').val();
+
+      var link = '/admin/users/search/' + name;
+      window.location.href = link;
+    })
+  })
+</script>
