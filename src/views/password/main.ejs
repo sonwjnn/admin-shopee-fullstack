@@ -12,41 +12,37 @@
               </div>
               <div class="card-body">
                 <form id="formChangePass">
-                  <label for="oldPass" class="display-inline">Old Password  <span id="oldPassError" class="spanError"></span></label>
+                  <label for="oldPass" class="display-inline">Old Password <span id="oldPassError" class="spanError"></span></label>
                   <div class="mb-3">
-                    <input type="password" class="form-control form-control-new" placeholder="" aria-label="Email"
-                      aria-describedby="email-addon" id="oldPass">
-                      <span id="oldPassErrorText" class="spanError"></span>
-                    <input type="text" class="hiden" value="<%=data[0].username%>" id="thisUsername">    
+                    <input type="password" class="form-control form-control-new" placeholder="" aria-label="Email" aria-describedby="email-addon" id="oldPass">
+                    <span id="oldPassErrorText" class="spanError"></span>
+                    <input type="text" class="hiden" value="<%=data[0].username%>" id="thisUsername">
                   </div>
-                  <label for="newPass" class="display-inline">New Password  <span id="newPassError" class="spanError"></span></label>
+                  <label for="newPass" class="display-inline">New Password <span id="newPassError" class="spanError"></span></label>
                   <div class="mb-3">
-                    <input type="password" class="form-control form-control-new" placeholder="" aria-label="Password"
-                      aria-describedby="password-addon" id="newPass">
-                      <span id="newPassErrorText" class="spanError"></span>    
+                    <input type="password" class="form-control form-control-new" placeholder="" aria-label="Password" aria-describedby="password-addon" id="newPass">
+                    <span id="newPassErrorText" class="spanError"></span>
                   </div>
-                  <label for="confirmPass" class="display-inline">Confirm New Password  <span id="confirmPassError" class="spanError"></span></label>
+                  <label for="confirmPass" class="display-inline">Confirm New Password <span id="confirmPassError" class="spanError"></span></label>
                   <div class="mb-3">
-                    <input type="password" class="form-control form-control-new" placeholder="" aria-label="Password"
-                      aria-describedby="password-addon" id="confirmPass">
-                      <span id="confirmPassErrorText" class="spanError"></span>    
+                    <input type="password" class="form-control form-control-new" placeholder="" aria-label="Password" aria-describedby="password-addon" id="confirmPass">
+                    <span id="confirmPassErrorText" class="spanError"></span>
                   </div>
-               
-                  
+
+
                   <div class="text-center">
                     <button type="submit" class="btn bg-gradient-info w-100 mt-4 mb-0" id="savePass">
                       Save Changes</button>
                   </div>
                 </form>
               </div>
-            
+
             </div>
           </div>
           <div class="col-md-1"></div>
           <div class="col-md-5">
             <div class="oblique top-0 h-100 d-md-block d-none me-n8 img-w-max">
-              <div class="bg-cover ms-auto h-100 ms-n6"
-                style="background-image:url('/img/curved-images/curved14.jpg')"></div>
+              <div class="bg-cover ms-auto h-100 ms-n6" style="background-image:url('/img/curved-images/curved14.jpg')"></div>
             </div>
           </div>
         </div>
@@ -57,27 +53,24 @@
 
 </div>
 
-<button type="button" id="popupInfoPassChange" class="btn btn-outline-danger pt-2 pb-2 hiden" data-toggle="modal"
-data-target="#exampleModalCenter5"></button>
+<button type="button" id="popupInfoPassChange" class="btn btn-outline-danger pt-2 pb-2 hiden" data-toggle="modal" data-target="#exampleModalCenter5"></button>
 
-<div class="modal fade" id="exampleModalCenter5" tabindex="-1" role="dialog"
-      aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content border-none">
-              <div class="modal-header alert-info mt-0 mb-0 noti">
-                  <h5 class="modal-title text-white" id="exampleModalLongTitle"><i class="fa fa-flag"
-                          aria-hidden="true"></i> Notification</h5>
-                  <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                  </button>
-              </div>
-              <div class="modal-body text-black" id="msg">
-                  
-              </div>
-              <div class="modal-footer">
-                  <button type="button" class="btn btn-outline-dark mb-0 mt-0" id="closeAll" data-dismiss="modal">Agree</button>
-              </div>
-          </div>
+<div class="modal fade" id="exampleModalCenter5" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content border-none">
+      <div class="modal-header alert-info mt-0 mb-0 noti">
+        <h5 class="modal-title text-white" id="exampleModalLongTitle"><i class="fa fa-flag" aria-hidden="true"></i> Notification</h5>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
+      <div class="modal-body text-black" id="msg">
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark mb-0 mt-0" id="closeAll" data-dismiss="modal">Agree</button>
+      </div>
+    </div>
   </div>
+</div>
 <%-include('script')%>

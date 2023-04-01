@@ -3,8 +3,8 @@
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 
 <script>
-  $(document).ready(function () {
-    $('#formProductsAdd').on('submit', function (e) {
+  $(document).ready(function() {
+    $('#formProductsAdd').on('submit', function(e) {
       e.preventDefault();
       var flag = 1;
       var flagSyntax = 1;
@@ -21,14 +21,12 @@
         flag = 0;
         $("#nameError").html("(*)");
         $("#nameErrorText").html("Please fill up the infomation above");
-      }
-      else if (name.length > 50) {
+      } else if (name.length > 50) {
         flagSyntax = 0;
         $("#nameError").html("(+)");
         $("#nameErrorText").html("Name has maximum 30 characters");
 
-      }
-      else {
+      } else {
         $("#nameError").html("");
         $("#nameErrorText").html("");
       }
@@ -38,8 +36,7 @@
         flag = 0;
         $("#originError").html("(*)");
         $("#originErrorText").html("Please fill up the infomation above");
-      }
-      else {
+      } else {
         $("#originError").html("");
         $("#originErrorText").html("");
       }
@@ -53,18 +50,15 @@
         flag = 0;
         $("#priceError").html("(*)");
         $("#priceErrorText").html("Please fill up the infomation above");
-      }
-      else if (regexPrice.test(price) != true) {
+      } else if (regexPrice.test(price) != true) {
         flagSyntax = 0;
         $("#priceError").html("(+)");
         $("#priceErrorText").html("The price is not valid");
-      }
-      else if (regexPriceZero.test(price)) {
+      } else if (regexPriceZero.test(price)) {
         flagSyntax = 0;
         $("#priceError").html("(+)");
         $("#priceErrorText").html("The price must not be zero");
-      }
-      else {
+      } else {
         $("#priceError").html("");
         $("#priceErrorText").html("");
       }
@@ -85,23 +79,19 @@
         flag = 0;
         $("#imageError").html("(*)");
         $("#imageErrorText").html("Please fill up the infomation above");
-      }
-      else if (type_file != 'image/jpeg' && type_file != 'image/jpg' && type_file != 'image/png') {
+      } else if (type_file != 'image/jpeg' && type_file != 'image/jpg' && type_file != 'image/png') {
         flagSyntax = 0;
         $("#imageError").html("(+)");
         $("#imageErrorText").html("Wrong type file");
-      }
-      else if (size_file > 3072000) {
+      } else if (size_file > 3072000) {
         flagSyntax = 0;
         $("#imageError").html("(+)");
         $("#imageErrorText").html("The limit of image size has maximum 3Mb data");
-      }
-      else if (/\s/.test(name_file)) {
+      } else if (/\s/.test(name_file)) {
         flagSyntax = 0;
         $("#imageError").html("(+)");
         $("#imageErrorText").html("File name must not certain whitespaces");
-      }
-      else {
+      } else {
         $("#imageError").html("");
         $("#imageErrorText").html("");
       }
@@ -127,7 +117,9 @@
       }
 
       if (flag == 0 || flagSyntax == 0) {
-        $('#main').animate({ scrollTop: 0 }, 300);
+        $('#main').animate({
+          scrollTop: 0
+        }, 300);
       }
 
 
@@ -143,7 +135,7 @@
             data: new FormData(this),
             processData: false,
             contentType: false,
-            success: function (r) {
+            success: function(r) {
               if (typeof r.msg != 'string') {
                 flagImage = 0;
               }
@@ -155,22 +147,28 @@
           });
         });
 
-        imagePromise.then(function () {
+        imagePromise.then(function() {
           if (flagImage == 1) {
             $.ajax({
               url: '/admin/products/add',
               type: 'POST',
               data: {
-                name, origin, price, imageName, cateName, info, dateOfM, imageNameReal
+                name,
+                origin,
+                price,
+                imageName,
+                cateName,
+                info,
+                dateOfM,
+                imageNameReal
               },
-              success: function (res) {
+              success: function(res) {
                 console.log(res.msg);
                 $('#msg').text(res.msg);
                 $('#popupInfo').click();
               }
             });
-          }
-          else {
+          } else {
             alert('Size of the file exceeds the limit');
           }
         }).catch();
@@ -182,8 +180,8 @@
 </script>
 
 <script>
-  $(document).ready(function () {
-    $('#formProductsEdit').on('submit', function (e) {
+  $(document).ready(function() {
+    $('#formProductsEdit').on('submit', function(e) {
       e.preventDefault();
       var flag = 1;
       var flagSyntax = 1;
@@ -199,14 +197,12 @@
         flag = 0;
         $("#nameError").html("(*)");
         $("#nameErrorText").html("Please fill up the infomation above");
-      }
-      else if (name.length > 50) {
+      } else if (name.length > 50) {
         flagSyntax = 0;
         $("#nameError").html("(+)");
         $("#nameErrorText").html("Name has maximum 30 characters");
 
-      }
-      else {
+      } else {
         $("#nameError").html("");
         $("#nameErrorText").html("");
       }
@@ -216,8 +212,7 @@
         flag = 0;
         $("#originError").html("(*)");
         $("#originErrorText").html("Please fill up the infomation above");
-      }
-      else {
+      } else {
         $("#originError").html("");
         $("#originErrorText").html("");
       }
@@ -231,18 +226,15 @@
         flag = 0;
         $("#priceError").html("(*)");
         $("#priceErrorText").html("Please fill up the infomation above");
-      }
-      else if (regexPrice.test(price) != true) {
+      } else if (regexPrice.test(price) != true) {
         flagSyntax = 0;
         $("#priceError").html("(+)");
         $("#priceErrorText").html("The price is not valid");
-      }
-      else if (regexPriceZero.test(price)) {
+      } else if (regexPriceZero.test(price)) {
         flagSyntax = 0;
         $("#priceError").html("(+)");
         $("#priceErrorText").html("The price must not be zero");
-      }
-      else {
+      } else {
         $("#priceError").html("");
         $("#priceErrorText").html("");
       }
@@ -270,23 +262,19 @@
           flagSyntaxImage = 0;
           $("#imageError").html("(*)");
           $("#imageErrorText").html("Please fill up the infomation above");
-        }
-        else if (type_file != 'image/jpeg' && type_file != 'image/jpg' && type_file != 'image/png') {
+        } else if (type_file != 'image/jpeg' && type_file != 'image/jpg' && type_file != 'image/png') {
           flagSyntaxImage = 0;
           $("#imageError").html("(+)");
           $("#imageErrorText").html("Wrong type file");
-        }
-        else if (size_file > 3072000) {
+        } else if (size_file > 3072000) {
           flagSyntaxImage = 0;
           $("#imageError").html("(+)");
           $("#imageErrorText").html("The limit of image size has maximum 3Mb data");
-        }
-        else if (/\s/.test(name_file)) {
+        } else if (/\s/.test(name_file)) {
           flagSyntaxImage = 0;
           $("#imageError").html("(+)");
           $("#imageErrorText").html("File name must not certain whitespaces");
-        }
-        else {
+        } else {
           $("#imageError").html("");
           $("#imageErrorText").html("");
         }
@@ -315,7 +303,9 @@
         }
 
         if (flag == 0 || flagSyntax == 0) {
-          $('#main').animate({ scrollTop: 0 }, 300);
+          $('#main').animate({
+            scrollTop: 0
+          }, 300);
         }
       }
 
@@ -341,12 +331,14 @@
         }
 
         if (flag == 0 || flagSyntax == 0 || flagSyntaxImage == 0) {
-          $('#main').animate({ scrollTop: 0 }, 300);
+          $('#main').animate({
+            scrollTop: 0
+          }, 300);
         }
       }
 
       var imageName = '';
-      var imageNameReal ='';
+      var imageNameReal = '';
       if (flagImageHave == 1) {
         if (flag != 0 && flagSyntax != 0 && flagSyntaxImage != 0) {
 
@@ -357,7 +349,7 @@
               data: new FormData(this),
               processData: false,
               contentType: false,
-              success: function (r) {
+              success: function(r) {
                 if (typeof r.msg != 'string') {
 
                 }
@@ -369,16 +361,24 @@
             });
           });
 
-          imagePromise.then(function (value) {
+          imagePromise.then(function(value) {
             $('#imageShow').val(value);
             var id = $('#id').val();
             $.ajax({
               url: '/admin/products/update',
               type: 'POST',
               data: {
-                id, name, origin, price, imageName: value, cateName, info, dateOfM, imageNameReal
+                id,
+                name,
+                origin,
+                price,
+                imageName: value,
+                cateName,
+                info,
+                dateOfM,
+                imageNameReal
               },
-              success: function (res) {
+              success: function(res) {
                 console.log(res.msg);
                 $('#msg').text(res.msg);
                 $('#popupInfo').click();
@@ -393,9 +393,17 @@
             url: '/admin/products/update',
             type: 'POST',
             data: {
-              id, name, origin, price, imageName, cateName, info, dateOfM, imageNameReal
+              id,
+              name,
+              origin,
+              price,
+              imageName,
+              cateName,
+              info,
+              dateOfM,
+              imageNameReal
             },
-            success: function (res) {
+            success: function(res) {
               console.log(res.msg);
               $('#msg').text(res.msg);
               $('#popupInfo').click();
@@ -411,19 +419,19 @@
 
 
 <script>
-  $("#firstImage").click(function () {
+  $("#firstImage").click(function() {
     $('#imageSecond').val('Fisrt Image');
     $('#imageSecond').addClass('showBorder');
   });
-  $("#secondImage").click(function () {
+  $("#secondImage").click(function() {
     $('#imageSecond').val('Second Image');
     $('#imageSecond').addClass('showBorder');
   });
-  $("#thirdImage").click(function () {
+  $("#thirdImage").click(function() {
     $('#imageSecond').val('Third Image');
     $('#imageSecond').addClass('showBorder');
   });
-  $("#fourthImage").click(function () {
+  $("#fourthImage").click(function() {
     $('#imageSecond').val('Fourth Image');
     $('#imageSecond').addClass('showBorder');
   });
@@ -432,30 +440,28 @@
 
 
 <script>
-  $("#checkAll").click(function () {
+  $("#checkAll").click(function() {
     var index = $('#checkAll').val();
 
     if (index == '1') {
       $('.imgbgchk').prop('checked', true);
       $('#checkAll').val('2');
 
-    }
-    else {
+    } else {
       $('.imgbgchk').prop('checked', false);
       $('#checkAll').val('1');
     }
   })
-
 </script>
 
 <script>
-  $(document).ready(function () {
+  $(document).ready(function() {
 
     var arr = [];
     $.ajax({
       url: '/admin/products/getAllProduct',
       type: 'GET',
-      success: function (res) {
+      success: function(res) {
         for (var i = 0; i < res.data.length; i++) {
           arr[i] = res.data[i].name;
         }
@@ -467,7 +473,7 @@
     });
 
 
-    $('#searchForm').on('submit', function (e) {
+    $('#searchForm').on('submit', function(e) {
       e.preventDefault();
 
       var name = $('#searchName').val();
@@ -487,16 +493,15 @@
       data: {
         id
       },
-      success: function (res) {
+      success: function(res) {
         var dateOfM;
         if (res.data[0].dateOfM == "" || res.data[0].dateOfM == undefined) {
           dateOfM = '';
-        }
-        else {
+        } else {
           var arr = res.data[0].dateOfM.split('-');
           dateOfM = arr[2] + '-' + arr[1] + '-' + arr[0];
         }
-        
+
         $('#idProduct').val(id);
         $('#name').val(res.data[0].name);
         $('#origin').val(res.data[0].origin);
@@ -518,11 +523,11 @@
 </script>
 
 <script>
-  $('#clickMe').click(function () {
+  $('#clickMe').click(function() {
     var text = $('#storyid').text();
     CKEDITOR.instances['productInfo'].setData(text);
   })
-  $(document).ready(function () {
+  $(document).ready(function() {
     $('#clickMe').click();
   })
 </script>
@@ -541,7 +546,7 @@
       data: {
         id
       },
-      success: function (res) {
+      success: function(res) {
         location.reload();
       }
     })
@@ -550,12 +555,12 @@
 
 
 <script>
-  $(document).ready(function () {
+  $(document).ready(function() {
     var arr = [];
 
-    $('.deleteGr').click(function () {
+    $('.deleteGr').click(function() {
       var i = 0;
-      $('#productTable tr').filter(':has(:checkbox:checked)').each(function () {
+      $('#productTable tr').filter(':has(:checkbox:checked)').each(function() {
         var id = $(this).closest("tr").find("td:nth-child(4)").text();
         id = id.replace(/ /g, '');
         id = id.replace(/(\r\n|\n|\r)/gm, "");
@@ -566,21 +571,22 @@
 
       if (arr.length == 0) {
         $('#popupDeleteGrNoData').click();
-      }
-      else {
+      } else {
         $('#popupDeleteGr').click();
       }
 
     })
 
-    $('#buttonDeleteGr').click(function () {
+    $('#buttonDeleteGr').click(function() {
 
       $.ajax({
         url: '/admin/products/deleteGr',
         type: 'POST',
         contentType: 'application/json',
-        data: JSON.stringify({ arr: arr }),
-        success: function (res) {
+        data: JSON.stringify({
+          arr: arr
+        }),
+        success: function(res) {
           location.reload();
         }
       })
@@ -590,13 +596,13 @@
 </script>
 
 <script>
-  $("#newFile").click(function () {
+  $("#newFile").click(function() {
     $('#labelNewFile').click();
   });
 </script>
 
 <script>
-  $('#edit').click(function () {
+  $('#edit').click(function() {
     var id = $('#idProduct').val();
     var link = '/admin/products/edit/' + id;
     window.location.href = link;
@@ -605,15 +611,15 @@
 
 
 <script>
-  $(document).ready(function () {
-      $("#image").change(function () {
-          
-          var path = $('#image').val();
-          var name = '';
-          for(var i = 12; i < path.length; i++){
-            name = name + path[i]; 
-          }
-          $('#imageShow').val(name);
-      });
+  $(document).ready(function() {
+    $("#image").change(function() {
+
+      var path = $('#image').val();
+      var name = '';
+      for (var i = 12; i < path.length; i++) {
+        name = name + path[i];
+      }
+      $('#imageShow').val(name);
+    });
   });
 </script>

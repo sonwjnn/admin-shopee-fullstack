@@ -4,12 +4,12 @@
 
 
 <script>
-  $(document).ready(function () {
+  $(document).ready(function() {
     var arr = [];
 
-    $('.deleteGr').click(function () {
+    $('.deleteGr').click(function() {
       var i = 0;
-      $('#userTable tr').filter(':has(:checkbox:checked)').each(function () {
+      $('#userTable tr').filter(':has(:checkbox:checked)').each(function() {
         var username = $(this).closest("tr").find("td:nth-child(3)").text();
         username = username.replace(/ /g, '');
         username = username.replace(/(\r\n|\n|\r)/gm, "");
@@ -20,21 +20,22 @@
 
       if (arr.length == 0) {
         $('#popupDeleteGrNoData').click();
-      }
-      else {
+      } else {
         $('#popupDeleteGr').click();
       }
 
     })
 
-    $('#buttonDeleteGr').click(function () {
+    $('#buttonDeleteGr').click(function() {
 
       $.ajax({
         url: '/admin/users/deleteGr',
         type: 'POST',
         contentType: 'application/json',
-        data: JSON.stringify({ arr: arr }),
-        success: function (res) {
+        data: JSON.stringify({
+          arr: arr
+        }),
+        success: function(res) {
           location.reload();
         }
       })
@@ -45,10 +46,10 @@
 
 
 <script>
-  $(document).ready(function () {
+  $(document).ready(function() {
     var arr = [];
 
-    $('.passChange').click(function () {
+    $('.passChange').click(function() {
       var i = 0;
       var username = $(this).closest("tr").find("td:nth-child(3)").text();
       username = username.replace(/ /g, '');
@@ -61,18 +62,18 @@
 </script>
 
 <script>
-  $('#clickMe').click(function () {
+  $('#clickMe').click(function() {
     var text = $('#storyid').text();
     CKEDITOR.instances['story'].setData(text);
   })
-  $(document).ready(function () {
+  $(document).ready(function() {
     $('#clickMe').click();
   })
 </script>
 
 
 <script>
-  $('#edit').click(function () {
+  $('#edit').click(function() {
     var username = $('#username').val();
     var link = '/admin/users/edit/' + username;
     window.location.href = link;
@@ -80,8 +81,8 @@
 </script>
 
 <script>
-  $(document).ready(function () {
-    $(".delete").click(function () {
+  $(document).ready(function() {
+    $(".delete").click(function() {
       var username = $(this).closest("tr").find("td:nth-child(3)").text();
       username = username.replace(/ /g, '');
       username = username.replace(/(\r\n|\n|\r)/gm, "");
@@ -90,8 +91,8 @@
     })
   })
 
-  $(document).ready(function () {
-    $("#buttonDelete").click(function () {
+  $(document).ready(function() {
+    $("#buttonDelete").click(function() {
       var username = $('#delete').text();
 
       $.ajax({
@@ -100,43 +101,40 @@
         data: {
           username
         },
-        success: function (res) {
+        success: function(res) {
           location.reload();
         }
       })
 
     })
   })
-
-
 </script>
 
 
 <script>
   var HaNoi = "Hoan Kiem,Dong Da,Ba Dinh,Hai Ba Trung,Hoang Mai,Thanh Xuan,Long Bien,Nam Tu Liem,other";
   var HCM = "District 1,District 2,District 3,Hoc Mon,Go Vap,other";
-  $(document).ready(function () {
-    $('#cityMem').change(function (event) {
+  $(document).ready(function() {
+    $('#cityMem').change(function(event) {
       let selected = event.target.value;
       if (selected == 'Ha Noi') {
-        $("#districtMem option").each(function () {
+        $("#districtMem option").each(function() {
           $(this).remove();
         });
         $('#districtMem').html('<option value="" disabled selected hidden>-Choose-</option>');
 
-        $.each(HaNoi.split(","), function (i, e) {
+        $.each(HaNoi.split(","), function(i, e) {
           $('#districtMem').append($('<option>', {
             value: e,
             text: e
           }));
         });
-      }
-      else {
-        $("#districtMem option").each(function () {
+      } else {
+        $("#districtMem option").each(function() {
           $(this).remove();
         });
         $('#districtMem').html('<option value="" disabled selected hidden>-Choose-</option>');
-        $.each(HCM.split(","), function (i, e) {
+        $.each(HCM.split(","), function(i, e) {
           $('#districtMem').append($('<option>', {
             value: e,
             text: e
@@ -152,14 +150,14 @@
   var HaNoi = "Hoan Kiem,Dong Da,Ba Dinh,Hai Ba Trung,Hoang Mai,Thanh Xuan,Long Bien,Nam Tu Liem,other";
   var HCM = "District 1,District 2,District 3,Hoc Mon,Go Vap,other";
 
-  $(document).ready(function () {
+  $(document).ready(function() {
     var thisCity = $('#thisCity').val();
     if (thisCity == 'Ha Noi') {
 
 
       var thisDis = $('#thisDis').val();
       if (thisDis != '') {
-        $.each(HaNoi.split(","), function (i, e) {
+        $.each(HaNoi.split(","), function(i, e) {
           $('#districtMem').append($('<option>', {
             value: e,
             text: e
@@ -169,12 +167,11 @@
         $('#districtMem').html('<option value="" disabled selected hidden>-Choose-</option>');
       }
 
-    }
-    else if (thisCity == 'TP HCM') {
+    } else if (thisCity == 'TP HCM') {
 
       var thisDis = $('#thisDis').val();
       if (thisDis != '') {
-        $.each(HCM.split(","), function (i, e) {
+        $.each(HCM.split(","), function(i, e) {
           $('#districtMem').append($('<option>', {
             value: e,
             text: e
@@ -184,7 +181,7 @@
         $('#districtMem').html('<option value="" disabled selected hidden>-Choose-</option>');
 
       }
-    } else{
+    } else {
       $('#districtMem').html('<option value="" disabled selected hidden>-Choose City-</option>');
     }
   });
@@ -194,8 +191,8 @@
 
 
 <script>
-  $(document).ready(function () {
-    $(".detail").click(function () {
+  $(document).ready(function() {
+    $(".detail").click(function() {
       var username = $(this).closest("tr").find("td:nth-child(3)").text();
       username = username.replace(/ /g, '');
       username = username.replace(/(\r\n|\n|\r)/gm, "");
@@ -206,12 +203,11 @@
         data: {
           username
         },
-        success: function (res) {
+        success: function(res) {
           var birthday;
           if (res.data[0].birthday == '') {
             birthday = '';
-          }
-          else {
+          } else {
             var arr = res.data[0].birthday.split('-');
             birthday = arr[2] + '-' + arr[1] + '-' + arr[0];
           }
@@ -238,8 +234,8 @@
 
 
 <script>
-  $(document).ready(function () {
-    $(".edit").click(function () {
+  $(document).ready(function() {
+    $(".edit").click(function() {
       var username = $(this).closest("tr").find("td:nth-child(3)").text();
       username = username.replace(/ /g, '');
       username = username.replace(/(\r\n|\n|\r)/gm, "");
@@ -252,10 +248,9 @@
 
 
 <script>
+  $(document).ready(function() {
 
-  $(document).ready(function () {
-
-    $('#formMembersAdd').on('submit', function (e) {
+    $('#formMembersAdd').on('submit', function(e) {
       e.preventDefault();
       var flag = 1;
       var flagSyntax = 1;
@@ -279,18 +274,15 @@
         flag = 0;
         $("#usernameMemError").html("(*)");
         $("#usernameMemErrorText").html("Please fill up the infomation above");
-      }
-      else if (username.length > 50) {
+      } else if (username.length > 50) {
         flagSyntax = 0;
         $("#usernameMemError").html("(+)");
         $("#usernameMemErrorText").html("username has maximum 50 characters");
-      }
-      else if (patternUsername.test(username)) {
+      } else if (patternUsername.test(username)) {
         flagSyntax = 0;
         $("#usernameMemError").html("(+)");
         $("#usernameMemErrorText").html("Username must not contain especial characters");
-      }
-      else {
+      } else {
         $("#usernameMemError").html("");
         $("#usernameMemErrorText").html("");
       }
@@ -301,13 +293,11 @@
         flag = 0;
         $("#phoneMemError").html("(*)");
         $("#phoneMemErrorText").html("Please fill up the infomation above");
-      }
-      else if (regexPhone.test(phone) == false) {
+      } else if (regexPhone.test(phone) == false) {
         flagSyntax = 0;
         $("#phoneMemError").html("(+)");
         $("#phoneMemErrorText").html("The phone is not valid");
-      }
-      else {
+      } else {
         $("#phoneMemError").html("");
         $("#phoneMemErrorText").html("");
       }
@@ -325,19 +315,16 @@
         flag = 0;
         $("#passwordMemError").html("(*)");
         $("#passwordMemErrorText").html("Please fill up the infomation above");
-      }
-      else if (password.length < 6 || password.length > 30) {
+      } else if (password.length < 6 || password.length > 30) {
         flagSyntax = 0;
         $("#passwordMemError").html("(+)");
         $("#passwordMemErrorText").html("Password must contain at least 6 characters");
-      }
-      else if (pattern.test(password) == false || pattern1.test(password) == false
-        || pattern2.test(password) == false || pattern3.test(password) == false || pattern4.test(password) == false) {
+      } else if (pattern.test(password) == false || pattern1.test(password) == false ||
+        pattern2.test(password) == false || pattern3.test(password) == false || pattern4.test(password) == false) {
         flagSyntax = 0;
         $("#passwordMemError").html("(+)");
         $("#passwordMemErrorText").html("Password must contain at least 1 lowercase, 1 uppercase, 1 number and 1 special character");
-      }
-      else {
+      } else {
         $("#passwordMemError").html("");
         $("#passwordMemErrorText").html("");
       }
@@ -348,8 +335,7 @@
         flag = 0;
         $("#nameMemError").html("(*)");
         $("#nameMemErrorText").html("Please fill up the infomation above");
-      }
-      else {
+      } else {
         $("#nameMemError").html("");
         $("#nameMemErrorText").html("");
       }
@@ -358,8 +344,7 @@
         flag = 0;
         $("#addressMemError").html("(*)");
         $("#addressMemErrorText").html("Please fill up the infomation above");
-      }
-      else {
+      } else {
         $("#addressMemError").html("");
         $("#addressMemErrorText").html("");
       }
@@ -370,13 +355,11 @@
         flag = 0;
         $("#emailMemError").html("(*)");
         $("#emailMemErrorText").html("Please fill up the infomation above");
-      }
-      else if (patternEmail.test(email) == false) {
+      } else if (patternEmail.test(email) == false) {
         flagSyntax = 0;
         $("#emailMemError").html("(+)");
         $("#emailMemErrorText").html("The email is not valid");
-      }
-      else {
+      } else {
         $("#emailMemError").html("");
         $("#emailMemErrorText").html("");
       }
@@ -397,7 +380,9 @@
       }
 
       if (flag == 0 || flagSyntax == 0) {
-        $('#main').animate({ scrollTop: 0 }, 300);
+        $('#main').animate({
+          scrollTop: 0
+        }, 300);
       }
 
 
@@ -409,10 +394,20 @@
           url: '/admin/users/add',
           type: 'POST',
           data: {
-            name, username, password, phone,
-            email, address, city, district, sex, birthday, role, story
+            name,
+            username,
+            password,
+            phone,
+            email,
+            address,
+            city,
+            district,
+            sex,
+            birthday,
+            role,
+            story
           },
-          success: function (response) {
+          success: function(response) {
 
             $('#msg').html(response.msg);
             $('#popupInfo').click();
@@ -425,9 +420,9 @@
 </script>
 
 <script>
-  $(document).ready(function () {
+  $(document).ready(function() {
 
-    $('#formMembersEdit').on('submit', function (e) {
+    $('#formMembersEdit').on('submit', function(e) {
       e.preventDefault();
       var flag = 1;
       var flagSyntax = 1;
@@ -450,18 +445,15 @@
         flag = 0;
         $("#usernameMemError").html("(*)");
         $("#usernameMemErrorText").html("Please fill up the infomation above");
-      }
-      else if (username.length > 50) {
+      } else if (username.length > 50) {
         flagSyntax = 0;
         $("#usernameMemError").html("(+)");
         $("#usernameMemErrorText").html("username has maximum 50 characters");
-      }
-      else if (patternUsername.test(username)) {
+      } else if (patternUsername.test(username)) {
         flagSyntax = 0;
         $("#usernameMemError").html("(+)");
         $("#usernameMemErrorText").html("Username must not contain especial characters");
-      }
-      else {
+      } else {
         $("#usernameMemError").html("");
         $("#usernameMemErrorText").html("");
       }
@@ -474,13 +466,11 @@
         flag = 0;
         $("#phoneMemError").html("(*)");
         $("#phoneMemErrorText").html("Please fill up the infomation above");
-      }
-      else if (regexPhone.test(phone) == false) {
+      } else if (regexPhone.test(phone) == false) {
         flagSyntax = 0;
         $("#phoneMemError").html("(+)");
         $("#phoneMemErrorText").html("The phone is not valid");
-      }
-      else {
+      } else {
         $("#phoneMemError").html("");
         $("#phoneMemErrorText").html("");
       }
@@ -491,8 +481,7 @@
         flag = 0;
         $("#nameMemError").html("(*)");
         $("#nameMemErrorText").html("Please fill up the infomation above");
-      }
-      else {
+      } else {
         $("#nameMemError").html("");
         $("#nameMemErrorText").html("");
       }
@@ -501,8 +490,7 @@
         flag = 0;
         $("#addressMemError").html("(*)");
         $("#addressMemErrorText").html("Please fill up the infomation above");
-      }
-      else {
+      } else {
         $("#addressMemError").html("");
         $("#addressMemErrorText").html("");
       }
@@ -513,13 +501,11 @@
         flag = 0;
         $("#emailMemError").html("(*)");
         $("#emailMemErrorText").html("Please fill up the infomation above");
-      }
-      else if (patternEmail.test(email) == false) {
+      } else if (patternEmail.test(email) == false) {
         flagSyntax = 0;
         $("#emailMemError").html("(+)");
         $("#emailMemErrorText").html("The email is not valid");
-      }
-      else {
+      } else {
         $("#emailMemError").html("");
         $("#emailMemErrorText").html("");
       }
@@ -540,7 +526,9 @@
       }
 
       if (flag == 0 || flagSyntax == 0) {
-        $('#main').animate({ scrollTop: 0 }, 300);
+        $('#main').animate({
+          scrollTop: 0
+        }, 300);
       }
 
 
@@ -553,10 +541,20 @@
           url: '/admin/users/update',
           type: 'POST',
           data: {
-            id, name, username, phone,
-            email, address, city, district, sex, birthday, role, story
+            id,
+            name,
+            username,
+            phone,
+            email,
+            address,
+            city,
+            district,
+            sex,
+            birthday,
+            role,
+            story
           },
-          success: function (res) {
+          success: function(res) {
 
             $('#msg').html(res.msg);
             $('#popupInfo').click();
@@ -570,8 +568,8 @@
 
 
 <script>
-  $(document).ready(function () {
-    $('#formChangePass').on('submit', function (e) {
+  $(document).ready(function() {
+    $('#formChangePass').on('submit', function(e) {
       e.preventDefault();
       var flag = 1;
       var username = $('#thisUsername').val();
@@ -590,19 +588,16 @@
         flag = 0;
         $("#oldPassError").html("(*)");
         $("#oldPassErrorText").html("Please fill up the infomation above");
-      }
-      else if (oldPass.length < 6 || oldPass.length > 30) {
+      } else if (oldPass.length < 6 || oldPass.length > 30) {
         flag = 0;
         $("#oldPassError").html("(*)");
         $("#oldPassErrorText").html("Password has minimum 6 and maximum 30 characters");
-      }
-      else if (pattern.test(oldPass) == false || pattern1.test(oldPass) == false
-        || pattern2.test(oldPass) == false || pattern3.test(oldPass) == false || pattern4.test(oldPass) == false) {
+      } else if (pattern.test(oldPass) == false || pattern1.test(oldPass) == false ||
+        pattern2.test(oldPass) == false || pattern3.test(oldPass) == false || pattern4.test(oldPass) == false) {
         flag = 0;
         $("#oldPassError").html("(*)");
         $("#oldPassErrorText").html("Password is not correct");
-      }
-      else {
+      } else {
         $("#oldPassError").html("");
         $("#oldPassErrorText").html("");
       }
@@ -611,19 +606,16 @@
         flag = 0;
         $("#newPassError").html("(*)");
         $("#newPassErrorText").html("Please fill up the infomation above");
-      }
-      else if (newPass.length < 6 || newPass.length > 30) {
+      } else if (newPass.length < 6 || newPass.length > 30) {
         flag = 0;
         $("#newPassError").html("(*)");
         $("#newPassErrorText").html("Password has minimum 6 and maximum 30 characters");
-      }
-      else if (pattern.test(oldPass) == false || pattern1.test(oldPass) == false
-        || pattern2.test(oldPass) == false || pattern3.test(oldPass) == false || pattern4.test(oldPass) == false) {
+      } else if (pattern.test(oldPass) == false || pattern1.test(oldPass) == false ||
+        pattern2.test(oldPass) == false || pattern3.test(oldPass) == false || pattern4.test(oldPass) == false) {
         flag = 0;
         $("#newPassError").html("(*)");
         $("#newPassErrorText").html("Password must contain at least 1 lowercase, 1 uppercase, 1 number and 1 special character");
-      }
-      else {
+      } else {
         $("#newPassError").html("");
         $("#newPassErrorText").html("");
       }
@@ -632,21 +624,16 @@
         flag = 0;
         $("#confirmPassError").html("(*)");
         $("#confirmPassErrorText").html("Please fill up the infomation above");
-      }
-      else if (confirmPass.length < 6 || confirmPass.length > 30) {
+      } else if (confirmPass.length < 6 || confirmPass.length > 30) {
         flag = 0;
         $("#confirmPassError").html("(*)");
         $("#confirmPassErrorText").html("Password has minimum 6 and maximum 30 characters");
-      }
-      else if (pattern.test(oldPass) == false || pattern1.test(oldPass) == false
-        || pattern2.test(oldPass) == false || pattern3.test(oldPass) == false || pattern4.test(oldPass) == false) {
+      } else if (pattern.test(oldPass) == false || pattern1.test(oldPass) == false ||
+        pattern2.test(oldPass) == false || pattern3.test(oldPass) == false || pattern4.test(oldPass) == false) {
         flag = 0;
         $("#confirmPassError").html("(*)");
         $("#confirmPassErrorText").html("Password must contain at least 1 lowercase, 1 uppercase, 1 number and 1 special character");
-      }
-
-
-      else {
+      } else {
         $("#confirmPassError").html("");
         $("#confirmPassErrorText").html("");
       }
@@ -656,15 +643,16 @@
           url: '/admin/users/updatePassword',
           type: 'POST',
           data: {
-            username, oldPass, newPass
+            username,
+            oldPass,
+            newPass
           },
-          success: function (res) {
+          success: function(res) {
             if (res.kq == 1) {
               $('#msg').text(res.msg);
               $('#popupInfoPassChange').click();
 
-            }
-            else {
+            } else {
               $('#msg').text(res.msg);
               $('#popupInfoPassChange').click();
             }
@@ -678,12 +666,12 @@
 
 
 <script>
-  $(document).ready(function () {
+  $(document).ready(function() {
     var arr = [];
     $.ajax({
       url: '/admin/users/getAllUser',
       type: 'GET',
-      success: function (res) {
+      success: function(res) {
         for (var i = 0; i < res.data.length; i++) {
           arr[i] = res.data[i].name;
         }
@@ -696,7 +684,7 @@
     });
 
 
-    $('#searchForm').on('submit', function (e) {
+    $('#searchForm').on('submit', function(e) {
       e.preventDefault();
 
       var name = $('#searchName').val();

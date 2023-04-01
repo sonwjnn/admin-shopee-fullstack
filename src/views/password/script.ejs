@@ -4,8 +4,8 @@
 
 
 <script>
-  $(document).ready(function () {
-    $('#formChangePass').on('submit', function (e) {
+  $(document).ready(function() {
+    $('#formChangePass').on('submit', function(e) {
       e.preventDefault();
       var flag = 1;
       var username = $('#thisUsername').val();
@@ -24,19 +24,16 @@
         flag = 0;
         $("#oldPassError").html("(*)");
         $("#oldPassErrorText").html("Please fill up the infomation above");
-      }
-      else if (oldPass.length < 6 || oldPass.length > 30) {
+      } else if (oldPass.length < 6 || oldPass.length > 30) {
         flag = 0;
         $("#oldPassError").html("(*)");
         $("#oldPassErrorText").html("Password has minimum 6 and maximum 30 characters");
-      }
-      else if (pattern.test(oldPass) == false || pattern1.test(oldPass) == false
-        || pattern2.test(oldPass) == false || pattern3.test(oldPass) == false || pattern4.test(oldPass) == false) {
+      } else if (pattern.test(oldPass) == false || pattern1.test(oldPass) == false ||
+        pattern2.test(oldPass) == false || pattern3.test(oldPass) == false || pattern4.test(oldPass) == false) {
         flag = 0;
         $("#oldPassError").html("(*)");
         $("#oldPassErrorText").html("Password is not correct");
-      }
-      else {
+      } else {
         $("#oldPassError").html("");
         $("#oldPassErrorText").html("");
       }
@@ -45,19 +42,16 @@
         flag = 0;
         $("#newPassError").html("(*)");
         $("#newPassErrorText").html("Please fill up the infomation above");
-      }
-      else if (newPass.length < 6 || newPass.length > 30) {
+      } else if (newPass.length < 6 || newPass.length > 30) {
         flag = 0;
         $("#newPassError").html("(*)");
         $("#newPassErrorText").html("Password has minimum 6 and maximum 30 characters");
-      }
-      else if (pattern.test(oldPass) == false || pattern1.test(oldPass) == false
-        || pattern2.test(oldPass) == false || pattern3.test(oldPass) == false || pattern4.test(oldPass) == false) {
+      } else if (pattern.test(oldPass) == false || pattern1.test(oldPass) == false ||
+        pattern2.test(oldPass) == false || pattern3.test(oldPass) == false || pattern4.test(oldPass) == false) {
         flag = 0;
         $("#newPassError").html("(*)");
         $("#newPassErrorText").html("Password must contain at least 1 lowercase, 1 uppercase, 1 number and 1 special character");
-      }
-      else {
+      } else {
         $("#newPassError").html("");
         $("#newPassErrorText").html("");
       }
@@ -66,21 +60,16 @@
         flag = 0;
         $("#confirmPassError").html("(*)");
         $("#confirmPassErrorText").html("Please fill up the infomation above");
-      }
-      else if (confirmPass.length < 6 || confirmPass.length > 30) {
+      } else if (confirmPass.length < 6 || confirmPass.length > 30) {
         flag = 0;
         $("#confirmPassError").html("(*)");
         $("#confirmPassErrorText").html("Password has minimum 6 and maximum 30 characters");
-      }
-      else if (pattern.test(oldPass) == false || pattern1.test(oldPass) == false
-        || pattern2.test(oldPass) == false || pattern3.test(oldPass) == false || pattern4.test(oldPass) == false) {
+      } else if (pattern.test(oldPass) == false || pattern1.test(oldPass) == false ||
+        pattern2.test(oldPass) == false || pattern3.test(oldPass) == false || pattern4.test(oldPass) == false) {
         flag = 0;
         $("#confirmPassError").html("(*)");
         $("#confirmPassErrorText").html("Password must contain at least 1 lowercase, 1 uppercase, 1 number and 1 special character");
-      }
-
-
-      else {
+      } else {
         $("#confirmPassError").html("");
         $("#confirmPassErrorText").html("");
       }
@@ -90,15 +79,16 @@
           url: '/admin/password/updatePassword',
           type: 'POST',
           data: {
-            username, oldPass, newPass
+            username,
+            oldPass,
+            newPass
           },
-          success: function (res) {
+          success: function(res) {
             if (res.kq == 1) {
               $('#msg').text(res.msg);
               $('#popupInfoPassChange').click();
 
-            }
-            else {
+            } else {
               $('#msg').text(res.msg);
               $('#popupInfoPassChange').click();
             }
@@ -112,14 +102,14 @@
 
 
 <script>
-  $('#closeAll').click(function(){
+  $('#closeAll').click(function() {
     $.ajax({
-            url: '/deleteCookie',
-            type: 'GET',
-            success: function(results){
-                console.log(results);
-                window.location.href = '/admin/login';
-            }
-        });
+      url: '/deleteCookie',
+      type: 'GET',
+      success: function(results) {
+        console.log(results);
+        window.location.href = '/admin/login';
+      }
+    });
   })
 </script>

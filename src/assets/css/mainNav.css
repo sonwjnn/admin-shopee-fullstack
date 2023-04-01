@@ -1,10 +1,10 @@
-.left .list-group a:hover{
-    background-color: #28a745;
-    border-color: green !important;
-    color: white;
-    border-width: 2px !important;
+.left .list-group a:hover {
+  background-color: #28a745;
+  border-color: green !important;
+  color: white;
+  border-width: 2px !important;
 }
 
-.space{
-    width: 5%;
+.space {
+  width: 5%;
 }
