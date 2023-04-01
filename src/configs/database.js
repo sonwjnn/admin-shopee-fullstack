@@ -1,11 +1,11 @@
 const mongoose = require('mongoose')
 const url =
-  'mongodb+srv://shopping:12345@cluster0.kcctule.mongodb.net/shopping?retryWrites=true&w=majority'
+  'mongodb+srv://sonwin111:hoangson123@admin-products-page.576mbud.mongodb.net/?retryWrites=true&w=majority'
 mongoose
   .connect(url)
   .then(() => {
     console.log('Successfully!')
   })
   .catch(() => {
-    console.log('Failed!')
+    console.error('Failed to connect Mongodb!')
   })
