@@ -137,11 +137,14 @@
             contentType: false,
             success: function(r) {
               if (typeof r.msg != 'string') {
+                imageNameReal = r.imageNameReal;
+                imageName = r.imageNameSend;
+                rs();
+              } else {
                 flagImage = 0;
+                alert(r.msg);
+                rj();
               }
-              imageNameReal = r.imageNameReal;
-              imageName = r.imageNameSend;
-              rs();
 
             }
           });

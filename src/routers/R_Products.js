@@ -173,7 +173,7 @@ function uniqueImageName(fileOriginalname) {
   var arr = fileOriginalname.split('.')
   const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9)
   var arrAfter = arr[0] + '-' + uniqueSuffix + '.' + arr[1]
-  arrAfter.replaceAll(' ', '-')
+  arrAfter.replace(/ /g, '-')
   return arrAfter
 }
 
