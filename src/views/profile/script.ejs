@@ -93,7 +93,7 @@
 <script>
   $(document).ready(function() {
 
-    $('#formProlifeUpdate').on('submit', function(e) {
+    $('#formProfileUpdate').on('submit', function(e) {
       e.preventDefault();
       var flag = 1;
       var flagSyntax = 1;
@@ -209,7 +209,7 @@
         $('#noteMember').addClass('hiden');
         var id = $('#idUser').val();
         $.ajax({
-          url: '/admin/prolife/update',
+          url: '/admin/profile/update',
           type: 'POST',
           data: {
             id,

@@ -136,8 +136,8 @@
             processData: false,
             contentType: false,
             success: function(r) {
+              console.log(typeof r.msg != 'string')
               if (typeof r.msg != 'string') {
-                console.log(r)
                 imageNameReal = r.imageNameReal;
                 imageName = r.imageNameSend;
                 rs();

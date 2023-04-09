@@ -18,7 +18,7 @@ router.use('/admin/dashboards', require('../routers/R_Dashboards'))
 router.use('/admin/categories', require('../routers/R_Categories'))
 router.use('/admin/products', require('../routers/R_Products'))
 router.use('/admin/users', require('../routers//R_Users'))
-router.use('/admin/prolife', require('../routers//R_Prolife'))
+router.use('/admin/profile', require('../routers//R_Profile'))
 router.use('/admin/password', require('../routers/R_Password.js'))
 
 // user

@@ -14,8 +14,8 @@ router.get('/index', (req, res) => {
       } else {
         if (data == '') {
         } else {
-          var index = 'prolife'
-          var main = 'prolife/main'
+          var index = 'profile'
+          var main = 'profile/main'
           res.render('index', { main, index, data })
         }
       }

@@ -6,6 +6,6 @@ const HttpStatusCode = {
   INTERNAL_SERVICE: 500
 }
 
-const WHITELIST_DOMAINS = ['http://localhost:4200']
+const WHITELIST_DOMAINS = ['http://localhost:3000', 'http://localhost:8017']
 
 module.exports = { HttpStatusCode, WHITELIST_DOMAINS }

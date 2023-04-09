@@ -215,7 +215,7 @@ router.post('/upLoadFile', function (req, res) {
     } else {
       res.send({
         kq: 1,
-        msg: 'updload sucessfully',
+        // msg: 'updload sucessfully',
         imageNameSend,
         imageNameReal
       })

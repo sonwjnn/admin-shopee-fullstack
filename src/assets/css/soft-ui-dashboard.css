@@ -3792,6 +3792,23 @@ fieldset:disabled .btn {
   --bs-btn-disabled-border-color: #e9ecef;
 }
 
+.btn-dark-gradient {
+  --bs-btn-color: #fff;
+  background-image: linear-gradient(310deg, #141727 0%, #3a416f 100%);
+  --bs-btn-border-color: #344767;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #2c3c58;
+  --bs-btn-hover-border-color: #2a3952;
+  --bs-btn-focus-shadow-rgb: 82, 99, 126;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #2a3952;
+  --bs-btn-active-border-color: #27354d;
+  --bs-btn-active-shadow: none;
+  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-bg: #344767;
+  --bs-btn-disabled-border-color: #344767;
+}
+
 .btn-dark {
   --bs-btn-color: #fff;
   --bs-btn-bg: #344767;
@@ -25339,6 +25356,10 @@ p,
 
 .text-lg {
   font-size: 1.125rem !important;
+}
+
+.text-md {
+  font-size: 1rem !important;
 }
 
 .text-sm {

@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const env = require('../configs/environment.js')
 
 const connectDb = async () => {
+  mongoose.set('strictQuery', false)
   mongoose
     .connect(env.MONGODB_URL)
     .then(() => {
