@@ -139,7 +139,7 @@ router.post('/add', function (req, res) {
 // declare storage
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'angularShopping/src/assets/img/products')
+    cb(null, 'src/assets/img/products')
   },
   filename: function (req, file, cb) {
     if (

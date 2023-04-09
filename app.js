@@ -2,6 +2,8 @@ const express = require('express')
 const path = require('path')
 const env = require('./src/configs/environment')
 const { connectDb } = require('./src/configs/mongodb.js')
+const { corsOptions } = require('./src/configs/cors')
+const cors = require('cors')
 
 connectDb()
   .then(() => boostServer())
@@ -13,6 +15,7 @@ connectDb()
 const boostServer = () => {
   const app = express()
 
+  // app.use(cors(corsOptions))
   app.use(express.static('./src/assets'))
   app.set('views', path.join(__dirname, './src/views'))
   app.set('view engine', 'ejs')
@@ -23,20 +26,6 @@ const boostServer = () => {
   var bodyParser = require('body-parser')
   app.use(bodyParser.urlencoded({ extended: false }))
   app.use(bodyParser.json())
-
-  app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200')
-    res.setHeader(
-      'Access-Control-Allow-Methods',
-      'GET, POST, OPTIONS, PUT, PATCH, DELETE'
-    )
-    res.setHeader(
-      'Access-Control-Allow-Headers',
-      'X-Requested-With,content-type'
-    )
-    res.setHeader('Access-Control-Allow-Credentials', true)
-    next()
-  })
 
   app.use('/', require('./src/configs/controls'))
 

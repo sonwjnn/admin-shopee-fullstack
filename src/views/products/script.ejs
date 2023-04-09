@@ -137,6 +137,7 @@
             contentType: false,
             success: function(r) {
               if (typeof r.msg != 'string') {
+                console.log(r)
                 imageNameReal = r.imageNameReal;
                 imageName = r.imageNameSend;
                 rs();
@@ -513,7 +514,6 @@
         $('#cateName').val(res.data[0].cateName);
         var imageNameShow = '';
         imageNameShow = "background-image: url('/img/products/" + res.data[0].imageName + "');";
-
         $("#imageName").attr('style', imageNameShow);
 
         CKEDITOR.instances['info'].setData(res.data[0].info);
