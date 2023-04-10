@@ -340,7 +340,7 @@ input[type='checkbox'] {
 }
 
 .active2 {
-  background-image: linear-gradient(310deg, #2152ff 0%, #02c6f3 100%);
+  background-image: linear-gradient(310deg, #141727 0%, #3a416f 100%);
   border: none !important;
   color: white !important;
   box-shadow: white !important;

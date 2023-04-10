@@ -7,9 +7,9 @@
         </div>
 
         <div class="card-body pt-0 pb-0">
-          <button type="button" class="btn btn-dark-gradient pt-2 pb-2 me-2" onclick="location.href='/admin/users/add'">
-            <i class="fa fa-plus-square-o" aria-hidden="true"></i> Add New</button>
-          <button type="button" class="btn btn-outline-danger pt-2 pb-2 deleteGr"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete Selected</button>
+          <button type="button" class="btn btn-outline-info pt-2 pb-2 me-2" onclick="location.href='/admin/users/add'">
+            <i class="fa fa-plus-square-o me-1" aria-hidden="true"></i> Add New</button>
+          <button type="button" class="btn btn-outline-danger pt-2 pb-2 deleteGr"><i class="fa fa-trash-o me-1" aria-hidden="true"></i> Delete Selected</button>
           <form id="searchForm" class="display-inline">
             <button type="submit" class="btn btn-outline-dark pt-2 pb-2 display-inline floatRight ml-2"><i class="fas fa-search" aria-hidden="true"></i></button>
             <input type="text" class="form-control form-control-new col-md-3 floatRight" id="searchName" placeholder="Full name..." value="<%=name%>">
@@ -33,7 +33,7 @@
                   <th class="text-center table-w-100 text-secondary text-sm">Phone</th>
                   <th class="text-center table-w-100 text-secondary text-sm">Email</th>
                   <th class="text-center table-w-100 text-secondary text-sm">Role</th>
-                  <th class="text-center table-w-10 text-secondary pl-0 ml-0 pr-0 mr-0">DeTail
+                  <th class="text-center table-w-10 text-secondary text-sm pl-0 ml-0 pr-0 mr-0">Detail
                   </th>
                   <th class="text-center table-w-10 text-secondary text-sm pl-0 ml-0 pr-0 mr-0">
                     Edit
@@ -85,7 +85,7 @@
 
                   <% if(data[i].role == 'user') { %>
                   <td class="align-middle text-center text-sm">
-                    <span class="badge badge-sm bg-gradient-info">
+                    <span class="badge badge-sm bg-gradient-dark">
                       <%=data[i].role%>
                     </span>
                   </td>
@@ -154,7 +154,7 @@
 
               </ul>
               <ul class="pagination justify-content-end" style="margin:20px 0">
-                <button type="button" class="btn btn-dark-gradient text-white" onclick="location.href='/admin/users/index'"> Refresh </button>
+                <button type="button" class="btn bg-gradient-info text-white" onclick="location.href='/admin/users/index'"> Refresh </button>
               </ul>
 
             </div>
