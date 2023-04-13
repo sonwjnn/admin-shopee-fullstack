@@ -22807,6 +22807,12 @@ hr.horizontal.gray-light {
   padding-top: 0.675rem;
   padding-bottom: 0.675rem;
   margin: 0 1rem;
+  transition: .3s ease;
+}
+
+.navbar-vertical.navbar-expand-xs .navbar-nav .nav-link:hover {
+  background-color: #e8e8e8 !important;
+  border-radius: .5rem 
 }
 
 .navbar-vertical.navbar-expand-xs .navbar-nav .nav-link .nav-link-text,
