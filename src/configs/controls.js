@@ -11,7 +11,6 @@ router.use('/api/categories', require('../apis/A_Categories.js'))
 router.use('/api/products', require('../apis/A_Products.js'))
 router.use('/api/permission/cart', require('../apis/A_Carts.js'))
 router.use('/api/permission/users', require('../apis/A_Users.js'))
-
 // admin
 router.use('/admin', require('../routers/R_Admins.js'))
 router.use('/admin/dashboards', require('../routers/R_Dashboards'))
