@@ -82,6 +82,7 @@ router.get('/*', (req, res, next) => {
           res.redirect('/admin/login')
         } else {
           fileObj = JSON.parse(fileString)
+
           flag = 1
           for (var i = 0; i < fileObj.length; i++) {
             if (decoded.data == fileObj[i].id) {
@@ -107,7 +108,6 @@ router.post('/processLogin', function (req, res) {
 
   username = req.body.username
   password = req.body.password
-
   if (flag == 1) {
     userModel.find({ username }).exec((err, data) => {
       if (err) {
@@ -136,7 +136,7 @@ router.post('/processLogin', function (req, res) {
 
                   res
                     .cookie('token', token, { maxAge: 10 * 365 * 24 * 60 * 60 })
-                    .send({ kq: 1, msg: 'Login successfully.' })
+                    .send({ kq: data[0], msg: 'Login successfully.' })
                 }
               }
             )

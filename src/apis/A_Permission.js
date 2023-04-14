@@ -86,9 +86,9 @@ router.post('/processLogin', function (req, res) {
 
   username = req.body.username
   password = req.body.password
-
+  console.log(username, password)
   if (flag == 1) {
-    userModel.find({ username }).exec((err, data) => {
+    userModel.find({ useame }).exec((err, data) => {
       if (err) {
         res.send({ kq: 0, msg: 'Connection to db failed.' })
       } else {

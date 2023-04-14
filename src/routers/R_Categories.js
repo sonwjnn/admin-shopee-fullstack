@@ -103,10 +103,10 @@ router.post('/add', function (req, res) {
   }
 })
 
-router.get('/getAllCate', function (req, res) {
-  cateModel.find().exec((err, data) => {
+router.get('/getAllCate', async (req, res) => {
+  await cateModel.find().exec((err, data) => {
     if (err) {
-      throw err
+      throw new Error(err)
     } else {
       res.send({ kq: 1, data, msg: 'Get all successfully.' })
     }
