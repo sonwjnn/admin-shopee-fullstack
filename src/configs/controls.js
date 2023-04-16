@@ -5,6 +5,9 @@ router.get('/', (req, res) => {
   res.redirect('/admin/dashboards/index')
 })
 
+// custom
+router.use('/categories', require('../apis/A_Categories.js'))
+
 // admin
 router.use('/admin', require('../routers/R_Admins.js'))
 router.use('/admin/dashboards', require('../routers/R_Dashboards'))

@@ -19845,7 +19845,7 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
           return (
             -1 !==
             CKEDITOR.tools.indexOf(
-              ['image/png', 'image/jpeg', 'image/gif'],
+              ['image/png', 'image/jpeg', 'image/gif', 'image/webp'],
               a.type
             )
           )
