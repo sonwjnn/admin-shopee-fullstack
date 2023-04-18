@@ -51,6 +51,16 @@ const getList = async (req, res) => {
   }
 }
 
+const getDetail = async (req, res) => {
+  try {
+    const { productId } = req.params
+    const response = await productModel.findById(productId)
+    return responseHandler.ok(res, response)
+  } catch (error) {
+    responseHandler.error(res)
+  }
+}
+
 // router.get('/list', async (req, res) => {})
 
 // router.get('/getProduct_by_slug/:slug', (req, res) => {
@@ -83,4 +93,4 @@ const getList = async (req, res) => {
 //   })
 // })
 
-module.exports = { getList }
+module.exports = { getList, getDetail }
