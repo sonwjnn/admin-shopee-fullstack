@@ -1,8 +1,8 @@
 const express = require('express')
-const productController = require('../controllers/product.controller.js')
+const categoryController = require('../controllers/category.controller.js')
 
 const router = express.Router({ mergeParams: true })
 
-router.get('/getAllCate', productController.getList)
+router.get('/getAllCate', categoryController.getList)
 
 module.exports = router
