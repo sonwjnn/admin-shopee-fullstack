@@ -1,14 +1,11 @@
-const express = require('express')
-const router = express.Router()
 const userModel = require('../models/M_Users')
 const fs = require('fs')
+const bcrypt = require('bcryptjs')
+const salt = bcrypt.genSaltSync(10)
 const filepath = 'src/assets/json/archiveToken.json'
 
 var jwt = require('jsonwebtoken')
 var secret = 'none'
-
-const bcrypt = require('bcryptjs')
-const salt = bcrypt.genSaltSync(10)
 
 // Read and write token into file json
 const readJsonFile = function (filepath, id, token) {
@@ -38,70 +35,7 @@ const readJsonFile = function (filepath, id, token) {
   fs.writeFileSync(filepath, json)
 }
 
-router.get(
-  '/login',
-  (req, res, next) => {
-    if (req.cookies.token == '' || req.cookies.token == undefined) {
-      next()
-    } else {
-      res.redirect('/admin/dashboards/index')
-    }
-  },
-  (req, res) => {
-    res.render('login')
-  }
-)
-
-router.get(
-  '/register',
-  (req, res, next) => {
-    if (req.cookies.token == '' || req.cookies.token == undefined) {
-      next()
-    } else {
-      res.redirect('/admin/dashboards/index')
-    }
-  },
-  (req, res) => {
-    res.render('register')
-  }
-)
-
-router.get('/*', (req, res, next) => {
-  jwt.verify(req.cookies.token, secret, function (err, decoded) {
-    if (err) {
-      // token expired!
-      res.redirect('/admin/login')
-    } else {
-      if (decoded.data != '') {
-        // next();
-        var fileString = fs.readFileSync(filepath).toString()
-
-        var fileObj = [{}]
-        if (fileString == '') {
-          res.redirect('/admin/login')
-        } else {
-          fileObj = JSON.parse(fileString)
-
-          flag = 1
-          for (var i = 0; i < fileObj.length; i++) {
-            if (decoded.data == fileObj[i].id) {
-              next()
-              flag = 0
-            }
-          }
-          if (flag == 1) {
-            res.redirect('/admin/login')
-          }
-        }
-      } else {
-        res.redirect('/admin/login')
-      }
-    }
-  })
-})
-
-// new mothod login with token verify
-router.post('/processLogin', function (req, res) {
+const signin = async (req, res) => {
   var username = (password = '')
   var flag = 1
 
@@ -135,7 +69,11 @@ router.post('/processLogin', function (req, res) {
 
                   res
                     .cookie('token', token, { maxAge: 10 * 365 * 24 * 60 * 60 })
-                    .send({ kq: data[0], msg: 'Login successfully.' })
+                    .send({
+                      kq: data[0],
+                      token: token,
+                      msg: 'Login successfully.'
+                    })
                 }
               }
             )
@@ -144,6 +82,6 @@ router.post('/processLogin', function (req, res) {
       }
     })
   }
-})
+}
 
-module.exports = router
+module.exports = { signin }

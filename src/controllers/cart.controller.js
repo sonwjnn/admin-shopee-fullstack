@@ -1,65 +1,46 @@
 const express = require('express')
 const router = express.Router()
-const fs = require('fs')
-const filepath = 'angularShopping/src/assets/json/archieveToken4200.json'
+const responseHandler = require('../handlers/response.handler.js')
 
 const cartModel = require('../models/M_Carts')
 const userModel = require('../models/M_Users')
 
-var jwt = require('jsonwebtoken')
+// var jwt = require('jsonwebtoken')
 /* const { throws } = require('assert'); */
-var secret = 'localhost4200'
+// var secret = 'localhost3000'
 
-/* router.get('/*',
-    (req, res, next) => {
-        jwt.verify(req.cookies.token4200, secret, function (err, decoded) {
-            if (err) {
-                // token expired!
-                res.send({kq:0, msg: "token expired"});
-            }
-            else {
-                if (decoded.data != '') {
-                    var fileString = fs.readFileSync(filepath).toString();
+const getCartsOfUser = async (req, res) => {
+  try {
+    const cart = await cartModel.find({ user: req.user.id }).sort('-createdAt')
 
-                    var fileObj = [{}];
-                    if(fileString == ''){
-                        res.send({kq:0, msg: "Token was not exists"});
-                    }
-                    else{
-                       
-                        fileObj = JSON.parse(fileString);
-                        flag = 1;
-                        for(var i = 0; i < fileObj.length ; i++){
-            
-                            if(decoded.data == fileObj[i].id){
-                                next();
-                                flag = 0;
-                            }
-                        }
-                        if(flag == 1){
-                            res.send({kq:0, msg: "Token was not exists"});
-                        }                 
-                    }  
-                }
-                else{
-                    res.send({kq:0, msg: "Failed!"});
-                }   
-            }
-        });
-    }
-); */
+    return responseHandler.ok(res, cart)
+  } catch (error) {
+    responseHandler.error(res)
+  }
+}
 
-router.get('/list', (req, res) => {
-  cartModel.find({ status: 'ready' }).exec((err, data) => {
-    if (err) {
-      res.send({ kq: 0, msg: 'Connect failed to DB' })
-    } else {
-      res.send({ kq: 1, msg: data })
-    }
-  })
-})
+const addCart = async (req, res) => {
+  try {
+    const isCart = await CartModel.findOne({
+      user: req.user.id,
+      productId: req.body.productId
+    })
 
-router.post('/add', function (req, res) {
+    if (isCart) return responseHandler.ok(res, isCart)
+
+    const cart = new CartModel({
+      ...req.body,
+      user: req.user.id
+    })
+    await cart.save()
+
+    responseHandler.created(res, cart)
+  } catch (error) {
+    responseHandler.error(error)
+  }
+}
+
+const addCart2 = async (req, res) => {
   var status =
     (idUser =
     idProduct =
@@ -148,7 +129,7 @@ router.post('/add', function (req, res) {
       }
     })
   }
-})
+}
 
 router.post('/updateStatus', function (req, res) {
   var status = (idUser = token = address = phone = '')
@@ -270,4 +251,4 @@ router.post('/getCartByTokenHistory', function (req, res) {
   })
 })
 
-module.exports = router
+module.exports = { getCartsOfUser, addCart }

@@ -4,6 +4,7 @@ const env = require('./src/configs/environment')
 const { connectDb } = require('./src/configs/mongodb.js')
 const { corsOptions } = require('./src/configs/cors')
 const cors = require('cors')
+const cookieParser = require('cookie-parser')
 
 connectDb()
   .then(() => boostServer())
@@ -21,7 +22,6 @@ const boostServer = () => {
 
   app.use(cors(corsOptions))
 
-  const cookieParser = require('cookie-parser')
   app.use(cookieParser())
 
   var bodyParser = require('body-parser')

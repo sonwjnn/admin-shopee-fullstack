@@ -1,9 +1,10 @@
 const express = require('express')
+const { body } = require('express-validator')
+const tokenMiddleware = require('../middlewares/token.middleware.js')
 const router = express.Router()
-const userModel = require('../models/M_Users')
-const fs = require('fs')
-const filepath = 'angularShopping/src/assets/json/archieveToken4200.json'
-
+const cartController = require('../controllers/cart.controller.js')
+const userController = require('../controllers/user.controller.js')
+const requestHadler = require('../handlers/resquest.handler.js')
 var jwt = require('jsonwebtoken')
 var secret = 'localhost4200'
 
@@ -130,5 +131,24 @@ router.post('/updatePassword', function (req, res) {
     })
   }
 })
+
+router.post(
+  '/signin',
+  body('username')
+    .exists()
+    .withMessage('username is required')
+    .isLength({ min: 9 })
+    .withMessage('username minium 8 characters'),
+  body('password')
+    .exists()
+    .withMessage('password is required')
+    .isLength({ min: 9 })
+    .withMessage('password minium 8 characters'),
+  requestHadler.validate,
+  userController.signin
+)
+
+router.get('/carts', tokenMiddleware.auth, cartController.getCartsOfUser)
+router.post('/carts', tokenMiddleware.auth, cartController.addCart)
 
 module.exports = router
