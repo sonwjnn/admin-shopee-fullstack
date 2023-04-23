@@ -4,7 +4,7 @@ const tokenMiddleware = require('../middlewares/token.middleware.js')
 const router = express.Router()
 const cartController = require('../controllers/cart.controller.js')
 const userController = require('../controllers/user.controller.js')
-const requestHadler = require('../handlers/resquest.handler.js')
+const requestHandler = require('../handlers/resquest.handler.js')
 var jwt = require('jsonwebtoken')
 var secret = 'localhost4200'
 
@@ -134,21 +134,22 @@ router.post('/updatePassword', function (req, res) {
 
 router.post(
   '/signin',
-  body('username')
-    .exists()
-    .withMessage('username is required')
-    .isLength({ min: 9 })
-    .withMessage('username minium 8 characters'),
-  body('password')
-    .exists()
-    .withMessage('password is required')
-    .isLength({ min: 9 })
-    .withMessage('password minium 8 characters'),
-  requestHadler.validate,
+  // body('username')
+  //   .exists()
+  //   .withMessage('username is required')
+  //   .isLength({ min: 9 })
+  //   .withMessage('username minium 8 characters'),
+  // body('password')
+  //   .exists()
+  //   .withMessage('password is required')
+  //   .isLength({ min: 9 })
+  //   .withMessage('password minium 8 characters'),
+  // requestHandler.validate,
   userController.signin
 )
 
 router.get('/carts', tokenMiddleware.auth, cartController.getCartsOfUser)
 router.post('/carts', tokenMiddleware.auth, cartController.addCart)
+router.delete('/carts/:cartId', tokenMiddleware.auth, cartController.removeCart)
 
 module.exports = router

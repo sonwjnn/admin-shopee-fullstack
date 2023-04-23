@@ -3,13 +3,12 @@ const responseHandler = require('../handlers/response.handler.js')
 const userModel = require('../models/M_Users.js')
 const tokenDecode = req => {
   try {
-    const token = req.cookies['actkn']
-    console.log(token)
+    const bearerHeader = req.headers['authorization']
 
-    if (token) {
+    if (bearerHeader) {
+      const token = bearerHeader.split(' ')[1]
       return jsonwebtoken.verify(token, process.env.SECRET_TOKEN)
     }
-
     return false
   } catch (error) {
     return false

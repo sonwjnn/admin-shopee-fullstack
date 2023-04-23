@@ -134,7 +134,7 @@ router.post('/processLogin', function (req, res) {
                   readJsonFile(filepath, data[0]._id, token)
 
                   res
-                    .cookie('token', token, { maxAge: 10 * 365 * 24 * 60 * 60 })
+                    .cookie('actkn', token, { maxAge: 10 * 365 * 24 * 60 * 60 })
                     .send({ kq: data[0], msg: 'Login successfully.' })
                 }
               }

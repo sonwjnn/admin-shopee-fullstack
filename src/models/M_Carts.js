@@ -1,17 +1,21 @@
 const mongoose = require('mongoose')
+const { Schema } = require('mongoose')
 
 const cartSchema = mongoose.Schema({
-  idUser: { type: String, require: true },
-  idProduct: { type: String, require: true },
-  nameProduct: { type: String, default: '' },
-  imageProduct: { type: String, default: '' },
-  priceProduct: { type: String, default: '' },
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  productId: { type: Schema.Types.ObjectId, require: true },
+  productTitle: { type: String, default: '' },
+  productImage: { type: String, default: '' },
+  productPrice: { type: String, default: '' },
   cateName: { type: String, default: '' },
   status: { type: String, default: '' },
   phone: { type: String, default: '' },
   address: { type: String, default: '' },
-  quantity: { type: String, default: '' },
-  date_created: { type: Date, default: Date() }
+  quantity: { type: String, default: '' }
 })
 
 // create model
