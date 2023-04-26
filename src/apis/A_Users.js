@@ -183,6 +183,35 @@ router.post(
   userController.signup
 )
 
+router.put(
+  '/update-password',
+
+  // tokenMiddleware.auth,
+
+  // body("password")
+  //   .exists()
+  //   .withMessage("password is required")
+  //   .isLength({ min: 9 })
+  //   .withMessage("password minium 8 characters"),
+  // body("newPassword")
+  //   .exists()
+  //   .withMessage("new password is required")
+  //   .isLength({ min: 9 })
+  //   .withMessage("new password minium 8 characters"),
+  // body("confirmNewPassword")
+  //   .exists()
+  //   .withMessage("confirm new password is required")
+  //   .isLength({ min: 9 })
+  //   .withMessage("confirm new password minium 8 characters")
+  //   .custom((value, { req }) => {
+  //     if (value !== req.body.newPassword)
+  //       throw new Error("confirm new password not match");
+  //     return true;
+  //   }),
+  // requestHandler.validate,
+  userController.updatePassword
+)
+
 router.get('/carts', tokenMiddleware.auth, cartController.getCartsOfUser)
 router.post('/carts', tokenMiddleware.auth, cartController.addCart)
 router.delete('/carts/:cartId', tokenMiddleware.auth, cartController.removeCart)

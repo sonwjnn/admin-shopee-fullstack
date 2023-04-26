@@ -65,4 +65,25 @@ const signup = async (req, res) => {
   }
 }
 
-module.exports = { signin, signup }
+const updatePassword = async (req, res) => {
+  try {
+    const { password, newPassword } = req.body
+    const user = await userModel.findOne(req.user).select('password is salt')
+
+    if (!user) return responseHandler.unauthorized(res)
+    if (!user.validPassword(password))
+      return responseHandler.badrequest(res, 'Wrong Password')
+
+    user.setPassword(newPassword)
+
+    //save to database
+    await user.save()
+
+    responseHandler.ok(res)
+  } catch (error) {
+    console.log(error)
+    responseHandler.error(error)
+  }
+}
+
+module.exports = { signin, signup, updatePassword }
