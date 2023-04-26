@@ -148,6 +148,41 @@ router.post(
   userController.signin
 )
 
+router.post(
+  '/signup',
+  // body('username')
+  //   .exists()
+  //   .withMessage('username is required')
+  //   .isLength({ min: 9 })
+  //   .withMessage('username minium 8 characters')
+  //   .custom(async value => {
+  //     const user = await userModel.findOne({ username: value })
+  //     if (user) return Promise.reject('username already used')
+  //   }),
+  // body('password')
+  //   .exists()
+  //   .withMessage('password is required')
+  //   .isLength({ min: 9 })
+  //   .withMessage('password minium 8 characters'),
+  // body('confirmPassword')
+  //   .exists()
+  //   .withMessage('confirm password is required')
+  //   .isLength({ min: 9 })
+  //   .withMessage('confirm password minium 8 characters')
+  //   .custom((value, { req }) => {
+  //     if (value !== req.body.password)
+  //       throw new Error('confirm password not match')
+  //     return true
+  //   }),
+  // body('displayName')
+  //   .exists()
+  //   .withMessage('display name is required')
+  //   .isLength({ min: 9 })
+  //   .withMessage('displayName minium 8 characters'),
+  // requestHandler.validate,
+  userController.signup
+)
+
 router.get('/carts', tokenMiddleware.auth, cartController.getCartsOfUser)
 router.post('/carts', tokenMiddleware.auth, cartController.addCart)
 router.delete('/carts/:cartId', tokenMiddleware.auth, cartController.removeCart)

@@ -33,4 +33,36 @@ const signin = async (req, res) => {
   }
 }
 
-module.exports = { signin }
+const signup = async (req, res) => {
+  try {
+    const { username, password, displayName } = req.body
+    const checkUser = await userModel.findOne({ username })
+    if (checkUser) {
+      return responseHandler.badrequest(res, 'username already used')
+    }
+
+    const user = new userModel()
+
+    user.name = displayName
+    user.username = username
+    user.setPassword(password)
+
+    await user.save()
+
+    const token = jsonwebtoken.sign(
+      { data: user.id },
+      process.env.SECRET_TOKEN,
+      { expiresIn: '24h' }
+    )
+
+    responseHandler.created(res, {
+      token,
+      ...user._doc,
+      id: user.id
+    })
+  } catch (error) {
+    responseHandler.error(error)
+  }
+}
+
+module.exports = { signin, signup }
