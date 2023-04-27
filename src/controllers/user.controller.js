@@ -45,6 +45,7 @@ const signup = async (req, res) => {
 
     user.name = displayName
     user.username = username
+    user.role = 'User'
     user.setPassword(password)
 
     await user.save()
@@ -68,12 +69,11 @@ const signup = async (req, res) => {
 const updatePassword = async (req, res) => {
   try {
     const { password, newPassword } = req.body
-    const user = await userModel.findOne(req.user).select('password is salt')
-
+    const username = req.user.username
+    const user = await userModel.findOne({ username }).select('password salt')
     if (!user) return responseHandler.unauthorized(res)
     if (!user.validPassword(password))
       return responseHandler.badrequest(res, 'Wrong Password')
-
     user.setPassword(newPassword)
 
     //save to database

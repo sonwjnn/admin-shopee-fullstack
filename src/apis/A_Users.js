@@ -186,7 +186,7 @@ router.post(
 router.put(
   '/update-password',
 
-  // tokenMiddleware.auth,
+  tokenMiddleware.auth,
 
   // body("password")
   //   .exists()
