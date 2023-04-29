@@ -212,6 +212,7 @@ router.put(
   userController.updatePassword
 )
 
+router.get('/info', tokenMiddleware.auth, userController.getInfo)
 router.get('/carts', tokenMiddleware.auth, cartController.getCartsOfUser)
 router.post('/carts', tokenMiddleware.auth, cartController.addCart)
 router.delete('/carts/:cartId', tokenMiddleware.auth, cartController.removeCart)
