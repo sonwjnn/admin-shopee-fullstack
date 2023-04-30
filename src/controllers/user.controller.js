@@ -47,7 +47,6 @@ const signup = async (req, res) => {
     user.username = username
     user.role = 'User'
     user.setPassword(password)
-
     await user.save()
 
     const token = jsonwebtoken.sign(
@@ -62,7 +61,7 @@ const signup = async (req, res) => {
       id: user.id
     })
   } catch (error) {
-    responseHandler.error(error)
+    responseHandler.error(res)
   }
 }
 
