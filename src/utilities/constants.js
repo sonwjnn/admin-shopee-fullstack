@@ -10,7 +10,7 @@ const WHITELIST_DOMAINS = [
   'http://127.0.0.1:3000',
   'http://localhost:8017',
   'http://localhost:3000',
-  'https://admin-shopee-clone.onrender.com/'
+  'https://admin-shopee-clone.onrender.com'
 ]
 
 module.exports = { HttpStatusCode, WHITELIST_DOMAINS }
