@@ -7,7 +7,8 @@
     "start": "nodemon app.js",
     "build": "babel ./src -d ./build/src",
     "prettier": "prettier --check \"src/**/(*jsx|*.js|*.css|*.scss)\"",
-    "prettier:fix": "prettier --write \"src/**/(*.jsx|*.js|*.css|*.scss)\""
+    "prettier:fix": "prettier --write \"src/**/(*.jsx|*.js|*.css|*.scss)\"",
+    "postinstall": "npm run build && yarn add --dev babel-cli"
   },
   "keywords": [],
   "author": "",
