@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon app.js",
-    "build": "yarn add --dev babel-cli && babel ./src -d ./build/src",
+    "build": "yarn add @babel/cli@7.21.5 && babel ./src -d ./build/src",
     "prettier": "prettier --check \"src/**/(*jsx|*.js|*.css|*.scss)\"",
     "prettier:fix": "prettier --write \"src/**/(*.jsx|*.js|*.css|*.scss)\""
   },
