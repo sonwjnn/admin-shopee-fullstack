@@ -9,6 +9,7 @@ router.get('/', (req, res) => {
 router.use('/categories', require('../apis/A_Categories.js'))
 router.use('/products', require('../apis/A_Products.js'))
 router.use('/user', require('../apis/A_Users.js'))
+router.use('/reviews', require('../apis/A_Reviews.js'))
 
 // admin
 router.use('/admin', require('../routers/R_Admins.js'))

@@ -1,7 +1,10 @@
 const responseHandler = require('../handlers/response.handler.js')
-
+const tokenMiddleware = require('../middlewares/token.middleware.js')
+const cartModel = require('../models/M_Carts.js')
 const productModel = require('../models/M_Products')
 const categoryModel = require('../models/M_Categories')
+const reviewModel = require('../models/M_Reviews.js')
+const userModel = require('../models/M_Users.js')
 
 const getList = async (req, res) => {
   try {
@@ -54,8 +57,26 @@ const getList = async (req, res) => {
 const getDetail = async (req, res) => {
   try {
     const { productId } = req.params
-    const response = await productModel.findById(productId)
-    return responseHandler.ok(res, response)
+    const product = await productModel.findById(productId)
+    const tokenDecoded = tokenMiddleware.tokenDecode(req)
+    if (tokenDecoded) {
+      const user = await userModel.findById(tokenDecoded.data)
+      if (user) {
+        const isCart = await cartModel.findOne({
+          user: user.id,
+          productId
+        })
+
+        // media.isFavorite = isFavorite !== null;
+        product.isCart = isCart !== null
+      }
+    }
+    product.reviews = await reviewModel
+      .find({ productId })
+      .populate('user')
+      .sort('-createAt')
+
+    return responseHandler.ok(res, product)
   } catch (error) {
     responseHandler.error(res)
   }

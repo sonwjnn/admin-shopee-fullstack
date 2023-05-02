@@ -38,7 +38,7 @@ const signup = async (req, res) => {
     const { username, password, displayName } = req.body
     const checkUser = await userModel.findOne({ username })
     if (checkUser) {
-      return responseHandler.badrequest(res, 'username already used')
+      return responseHandler.badrequest(res, 'User  name already used')
     }
 
     const user = new userModel()
