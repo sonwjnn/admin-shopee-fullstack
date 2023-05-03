@@ -57,7 +57,7 @@ const getList = async (req, res) => {
 const getDetail = async (req, res) => {
   try {
     const { productId } = req.params
-    const product = await productModel.findById(productId)
+    const product = await productModel.findById(productId).lean()
     const tokenDecoded = tokenMiddleware.tokenDecode(req)
     if (tokenDecoded) {
       const user = await userModel.findById(tokenDecoded.data)
@@ -71,47 +71,15 @@ const getDetail = async (req, res) => {
         product.isCart = isCart !== null
       }
     }
+
     product.reviews = await reviewModel
       .find({ productId })
       .populate('user')
-      .sort('-createAt')
-
+      .sort('-createdAt')
     return responseHandler.ok(res, product)
   } catch (error) {
     responseHandler.error(res)
   }
 }
-
-// router.get('/list', async (req, res) => {})
-
-// router.get('/getProduct_by_slug/:slug', (req, res) => {
-//   productModel.find({ cateName: req.params.slug }).exec((err, data) => {
-//     if (err) res.send({ kq: 0, msg: 'Connect failed to DB' })
-
-//     res.send({ kq: 1, msg: data })
-//   })
-// })
-
-// router.get('/info_product_by_slug/:slug', (req, res) => {
-//   productModel.find({ name: req.params.slug }).exec((err, data) => {
-//     if (err) res.send({ kq: 0, msg: 'Connect failed to DB' })
-
-//     res.send({ kq: 1, msg: data })
-//   })
-// })
-
-// router.get('/getProductRelation/:cate/:name', function (req, res) {
-//   var cate = req.params.cate
-//   var name = req.params.name
-
-//   const check_obj = { cateName: cate, $nor: [{ name: name }] }
-//   productModel.find(check_obj).exec((err, data) => {
-//     if (err) {
-//       res.send({ kq: 0, msg: 'Connect failed to DB' })
-//     } else {
-//       res.send({ kq: 1, msg: data })
-//     }
-//   })
-// })
 
 module.exports = { getList, getDetail }
