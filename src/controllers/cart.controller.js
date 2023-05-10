@@ -59,6 +59,27 @@ const removeCart = async (req, res) => {
   }
 }
 
+const removeCarts = async (req, res) => {
+  try {
+    const cartIds = req.body
+    const carts = await cartModel.find({
+      user: req.user.id,
+      _id: { $in: cartIds }
+    })
+
+    if (!carts) return responseHandler.notfound(res)
+    await cartModel.deleteMany({
+      user: req.user.id,
+      _id: { $in: cartIds }
+    })
+
+    return responseHandler.ok(res)
+  } catch (error) {
+    console.log(error)
+    responseHandler.error(res)
+  }
+}
+
 // router.post('/updateStatus', function (req, res) {
 //   var status = (idUser = token = address = phone = '')
 //   var flagError = 0
@@ -131,4 +152,4 @@ const removeCart = async (req, res) => {
 //   })
 // })
 
-module.exports = { getCartsOfUser, addCart, removeCart }
+module.exports = { getCartsOfUser, addCart, removeCart, removeCarts }
