@@ -5,6 +5,7 @@ const productModel = require('../models/M_Products')
 const categoryModel = require('../models/M_Categories')
 const reviewModel = require('../models/M_Reviews.js')
 const userModel = require('../models/M_Users.js')
+const favoriteModel = require('../models/M_Favorites.js')
 
 const getList = async (req, res) => {
   try {
@@ -66,9 +67,14 @@ const getDetail = async (req, res) => {
           user: user.id,
           productId
         })
-
-        // media.isFavorite = isFavorite !== null;
         product.isCart = isCart !== null
+
+        const isFavorite = await favoriteModel.findOne({
+          user: user.id,
+          productId
+        })
+
+        product.isFavorite = isFavorite !== null
       }
     }
 

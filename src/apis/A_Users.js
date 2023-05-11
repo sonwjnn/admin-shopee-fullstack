@@ -3,10 +3,9 @@ const { body } = require('express-validator')
 const tokenMiddleware = require('../middlewares/token.middleware.js')
 const router = express.Router()
 const cartController = require('../controllers/cart.controller.js')
+const favoriteController = require('../controllers/favorite.controller.js')
 const userController = require('../controllers/user.controller.js')
 const requestHandler = require('../handlers/resquest.handler.js')
-var jwt = require('jsonwebtoken')
-var secret = 'localhost4200'
 
 const bcrypt = require('bcryptjs')
 const salt = bcrypt.genSaltSync(10)
@@ -213,9 +212,27 @@ router.put(
 )
 
 router.get('/info', tokenMiddleware.auth, userController.getInfo)
+
 router.get('/carts', tokenMiddleware.auth, cartController.getCartsOfUser)
 router.post('/carts', tokenMiddleware.auth, cartController.addCart)
 router.delete('/carts/:cartId', tokenMiddleware.auth, cartController.removeCart)
 router.delete('/carts', tokenMiddleware.auth, cartController.removeCarts)
+
+router.get(
+  '/favorites',
+  tokenMiddleware.auth,
+  favoriteController.getFavoritesOfUser
+)
+router.post('/favorites', tokenMiddleware.auth, favoriteController.addFavorite)
+router.delete(
+  '/favorites/:favoriteId',
+  tokenMiddleware.auth,
+  favoriteController.removeFavorite
+)
+router.delete(
+  '/favorites',
+  tokenMiddleware.auth,
+  favoriteController.removeFavorites
+)
 
 module.exports = router
