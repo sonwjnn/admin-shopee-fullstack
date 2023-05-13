@@ -45,7 +45,7 @@ const signup = async (req, res) => {
 
     user.name = displayName
     user.username = username
-    user.role = 'User'
+    user.role = 'user'
     user.setPassword(password)
     await user.save()
 
@@ -61,6 +61,7 @@ const signup = async (req, res) => {
       id: user.id
     })
   } catch (error) {
+    console.log(error)
     responseHandler.error(res)
   }
 }

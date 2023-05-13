@@ -7,7 +7,7 @@ const userSchema = mongoose.Schema(
     name: { type: String, default: '' },
     username: { type: String, require: true, unique: true },
     password: { type: String, require: true },
-    email: { type: String, default: '' },
+    email: { type: String, default: '', sparse: true },
     phone: { type: String, default: '' },
     address: { type: String, default: '' },
     city: { type: String, default: '' },
@@ -16,7 +16,6 @@ const userSchema = mongoose.Schema(
     birthday: { type: String, default: '' },
     story: { type: String, default: '' },
     role: { type: String, default: '' },
-    date_created: { type: Date, default: Date() },
     salt: {
       type: String,
       require: true,
