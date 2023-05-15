@@ -9,7 +9,9 @@ const signin = async (req, res) => {
 
     const user = await userModel
       .findOne({ username })
-      .select('username password salt id name')
+      .select(
+        'username password salt id name email phone address city district sex birthday'
+      )
     if (!user) {
       return responseHandler.badrequest(res, 'User not exist')
     }
@@ -86,6 +88,23 @@ const updatePassword = async (req, res) => {
   }
 }
 
+const updateProfile = async (req, res) => {
+  try {
+    const username = req.user.username
+    const user = await userModel.findOne({ username })
+    if (!user) return responseHandler.unauthorized(res)
+
+    user.setProfile(req.body)
+
+    //save to database
+    await user.save()
+
+    responseHandler.ok(res)
+  } catch (error) {
+    responseHandler.error(res)
+  }
+}
+
 const getInfo = async (req, res) => {
   try {
     const user = await userModel.findById(req.user.id)
@@ -98,4 +117,4 @@ const getInfo = async (req, res) => {
   }
 }
 
-module.exports = { signin, signup, updatePassword, getInfo }
+module.exports = { signin, signup, updatePassword, getInfo, updateProfile }

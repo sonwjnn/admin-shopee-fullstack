@@ -41,5 +41,32 @@ userSchema.methods.validPassword = function (password) {
   return hash === this.password
 }
 
+userSchema.methods.setProfile = function ({
+  displayName,
+  email,
+  phone,
+  address,
+  city,
+  district,
+  sex,
+  birthday
+}) {
+  this.displayName = displayName
+
+  this.email = email
+
+  this.phone = phone
+
+  this.address = address
+
+  this.city = city
+
+  this.district = district
+
+  this.sex = sex
+
+  this.birthday = birthday
+}
+
 // create model
 module.exports = mongoose.model('User', userSchema)
