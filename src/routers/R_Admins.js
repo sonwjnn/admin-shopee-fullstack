@@ -135,7 +135,7 @@ router.post('/processLogin', function (req, res) {
 
                   res
                     .cookie('token', token, { maxAge: 10 * 365 * 24 * 60 * 60 })
-                    .send({ kq: data[0], msg: 'Login successfully.' })
+                    .send({ kq: data[0], msg: 'Login successfully !!' })
                 }
               }
             )
