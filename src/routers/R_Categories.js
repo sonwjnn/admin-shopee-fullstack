@@ -39,7 +39,7 @@ router.get('/index(/:pageNumber?)', async (req, res) => {
         var main = 'categories/main'
         var dateOfC = []
         for (var i = 0; i < data.length; i++) {
-          var stringdate = data[i].date_created.toISOString().substring(0, 10)
+          var stringdate = data[i].createdAt.toISOString().substring(0, 10)
           var arr = stringdate.split('-')
           var stringdate = arr[2] + '-' + arr[1] + '-' + arr[0]
           dateOfC.push(stringdate)
@@ -158,7 +158,7 @@ router.get('/search/(:name?)(/:pageNumber?)', async (req, res) => {
         var flag = 1
         var dateOfC = []
         for (var i = 0; i < data.length; i++) {
-          var stringdate = data[i].date_created.toISOString().substring(0, 10)
+          var stringdate = data[i].createdAt.toISOString().substring(0, 10)
           var arr = stringdate.split('-')
           var stringdate = arr[2] + '-' + arr[1] + '-' + arr[0]
           dateOfC.push(stringdate)
@@ -234,17 +234,11 @@ router.get('/edit/:id', function (req, res) {
 })
 
 router.post('/update', function (req, res) {
-  var id,
-    name,
-    type,
-    flag = 1
+  try {
+    const id = req.body.id
+    const name = req.body.name
 
-  id = req.body.id
-  name = req.body.name
-  type = req.body.type
-
-  if (flag == 1) {
-    var obj = { name, type }
+    var obj = { name }
     const check_obj = { $or: [{ name }] }
 
     cateModel.find(check_obj).exec((err, data) => {
@@ -260,7 +254,7 @@ router.post('/update', function (req, res) {
         })
       }
     })
-  } else {
+  } catch (error) {
     res.send({ kq: 0, msg: error })
   }
 })

@@ -76,19 +76,19 @@ router.post('/add', function (req, res) {
   var name,
     origin,
     price,
-    cateName,
+    type,
     imageName,
     info,
     imageNameTrue,
-    dateOfM,
+    producedAt,
     flag = 1
   name = req.body.name
   origin = req.body.origin
   price = req.body.price
   imageName = req.body.imageName
-  cateName = req.body.cateName
+  type = req.body.type
   info = req.body.info
-  dateOfM = req.body.dateOfM
+  producedAt = req.body.producedAt
   imageNameTrue = req.body.imageNameReal
 
   var idUser = ''
@@ -105,9 +105,9 @@ router.post('/add', function (req, res) {
       origin,
       price,
       imageName,
-      cateName,
+      type,
       info,
-      dateOfM
+      producedAt
     }
 
     const check_obj = { $or: [{ name }] }
@@ -311,10 +311,10 @@ router.post('/update', function (req, res) {
     name,
     origin,
     price,
-    cateName,
+    type,
     imageName,
     info,
-    dateOfM,
+    producedAt,
     flag = 1
 
   id = req.body.id
@@ -322,9 +322,9 @@ router.post('/update', function (req, res) {
   origin = req.body.origin
   price = req.body.price
   imageName = req.body.imageName
-  cateName = req.body.cateName
+  type = req.body.type
   info = req.body.info
-  dateOfM = req.body.dateOfM
+  producedAt = req.body.producedAt
   var error = ''
 
   if (flag == 1) {
@@ -334,9 +334,9 @@ router.post('/update', function (req, res) {
         name,
         origin,
         price,
-        cateName,
+        type,
         info,
-        dateOfM
+        producedAt
       }
     } else {
       obj = {
@@ -344,9 +344,9 @@ router.post('/update', function (req, res) {
         origin,
         price,
         imageName,
-        cateName,
+        type,
         info,
-        dateOfM
+        producedAt
       }
     }
     // check username or email or phone
@@ -424,6 +424,7 @@ router.post('/delete', function (req, res) {
     if (data == '') {
       res.send({ kq: 0, msg: 'Data id not exists' })
     } else {
+      console.log(data)
       productModel.findByIdAndDelete({ _id: data[0]._id }, (err, data2) => {
         if (err) {
           res.send({ kq: 0, msg: 'Connection to database failed' })

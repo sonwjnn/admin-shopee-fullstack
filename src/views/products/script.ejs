@@ -11,9 +11,9 @@
       var name = $('#name').val();
       var origin = $('#origin').val();
       var price = $('#price').val();
-      var cateName = '';
-      cateName = $('#cateType').val();
-      var dateOfM = $('#dateCreated').val();
+      var type = '';
+      type = $('#productType').val();
+      var producedAt = $('#producedAt').val();
       var info = CKEDITOR.instances['productStory'].getData();
 
 
@@ -161,9 +161,9 @@
                 origin,
                 price,
                 imageName,
-                cateName,
+                type,
                 info,
-                dateOfM,
+                producedAt,
                 imageNameReal
               },
               success: function(res) {
@@ -192,8 +192,8 @@
       var name = $('#name').val();
       var origin = $('#origin').val();
       var price = $('#price').val();
-      var cateName = $('#cateType').val();
-      var dateOfM = $('#dateCreated').val();
+      var type = $('#productType').val();
+      var producedAt = $('#producedAt').val();
       var info = CKEDITOR.instances['productInfo'].getData();
 
 
@@ -377,9 +377,9 @@
                 origin,
                 price,
                 imageName: value,
-                cateName,
+                type,
                 info,
-                dateOfM,
+                producedAt,
                 imageNameReal
               },
               success: function(res) {
@@ -402,9 +402,9 @@
               origin,
               price,
               imageName,
-              cateName,
+              type,
               info,
-              dateOfM,
+              producedAt,
               imageNameReal
             },
             success: function(res) {
@@ -498,20 +498,20 @@
         id
       },
       success: function(res) {
-        var dateOfM;
-        if (res.data[0].dateOfM == "" || res.data[0].dateOfM == undefined) {
-          dateOfM = '';
+        var producedAt;
+        if (res.data[0].producedAt == "" || res.data[0].producedAt == undefined) {
+          producedAt = '';
         } else {
-          var arr = res.data[0].dateOfM.split('-');
-          dateOfM = arr[2] + '-' + arr[1] + '-' + arr[0];
+          var arr = res.data[0].producedAt.split('-');
+          producedAt = arr[2] + '-' + arr[1] + '-' + arr[0];
         }
 
         $('#idProduct').val(id);
         $('#name').val(res.data[0].name);
         $('#origin').val(res.data[0].origin);
         $('#price').val(res.data[0].price);
-        $('#dateOfM').val(dateOfM);
-        $('#cateName').val(res.data[0].cateName);
+        $('#producedAt').val(producedAt);
+        $('#productType').val(res.data[0].type);
         var imageNameShow = '';
         imageNameShow = "background-image: url('/img/products/" + res.data[0].imageName + "');";
         $("#imageName").attr('style', imageNameShow);

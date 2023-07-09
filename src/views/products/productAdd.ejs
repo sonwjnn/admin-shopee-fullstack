@@ -43,13 +43,13 @@
               </div>
 
               <div class="form-group col-md-6">
-                <label class="form-label" for="dateCreated">Date of manufacture</label>
-                <input type="date" class="form-control form-control-new" id="dateCreated">
+                <label class="form-label" for="producedAt">Date of manufacture</label>
+                <input type="date" class="form-control form-control-new" id="producedAt">
               </div>
 
               <div class="form-group col-md-6">
-                <label class="form-label display-inline" for="cateType">Cate Type</label>
-                <select id="cateType" class="form-select">
+                <label class="form-label display-inline" for="productType">Type</label>
+                <select id="productType" class="form-select">
                   <% for(var i=0; i < dataCate.length; i++) { %>
                   <option value="<%=dataCate[i].name%>"><%=dataCate[i].name%></option>
                   <% } %>

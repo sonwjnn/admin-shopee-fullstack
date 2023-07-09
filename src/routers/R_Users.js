@@ -1,6 +1,10 @@
 const express = require('express')
 const router = express.Router()
+
 const userModel = require('../models/M_Users')
+const cartModel = require('../models/M_Carts')
+const favoriteModel = require('../models/M_Favorites')
+const reviewModel = require('../models/M_Reviews')
 
 const bcrypt = require('bcryptjs')
 const salt = bcrypt.genSaltSync(10)
@@ -282,37 +286,56 @@ router.post('/showDetail', function (req, res) {
   })
 })
 
-router.post('/delete', function (req, res) {
-  var username = req.body.username
-  const check_obj = { $or: [{ username }] }
-  userModel.find(check_obj).exec((err, data) => {
-    if (err) {
-      res.send({ kq: 0, msg: 'Connection to database failed' })
+router.post('/delete', async function (req, res) {
+  try {
+    const username = req.body.username
+
+    const check_obj = { username }
+    const user = await userModel.findOne(check_obj).exec()
+    if (!user) {
+      res.send({ kq: 0, msg: 'User does not exist' })
+      return
     }
 
-    if (data == '') {
-      res.send({ kq: 0, msg: 'Data id not exists' })
-    } else {
-      userModel.findByIdAndDelete({ _id: data[0]._id }, (err, data) => {
-        if (err) {
-          res.send({ kq: 0, msg: 'Connection to database failed' })
-        } else res.send({ kq: 1, msg: 'Delete data successfully!' })
-      })
-    }
-  })
+    await favoriteModel.deleteMany({ user: user._id })
+
+    await cartModel.deleteMany({ user: user._id })
+
+    await reviewModel.deleteMany({ user: user._id })
+
+    await userModel.deleteOne({ _id: user._id })
+
+    res.send({ kq: 1, msg: 'Delete user successfully!' })
+  } catch (err) {
+    res.send({ kq: 0, msg: 'An error occurred' })
+  }
 })
 
-router.post('/deleteGr', function (req, res) {
-  var arr = JSON.parse(JSON.stringify(req.body))
+router.post('/deleteGr', async function (req, res) {
+  try {
+    const arr = req.body
+    const check_obj = { username: { $in: arr.arr } }
+    const users = await userModel.find(check_obj).exec()
+    const userIds = users.map(item => item._id)
+    const check_other = { user: { $in: userIds } }
 
-  const check_obj = { username: { $in: arr.arr } }
-  userModel.deleteMany(check_obj, (err, data) => {
-    if (err) {
-      res.json({ kq: 0, msg: 'Connection to database failed' })
-    } else {
-      res.json({ kq: 1, msg: 'Delete data successfully!' })
-    }
-  })
+    await favoriteModel.deleteMany(check_other)
+
+    await cartModel.deleteMany(check_other)
+
+    await reviewModel.deleteMany(check_other)
+
+    const deleteResult = await userModel.deleteMany(check_obj)
+
+    res.json({
+      kq: 1,
+      msg: 'Delete data successfully!',
+      deletedCount: deleteResult.deletedCount
+    })
+  } catch (err) {
+    console.log(err)
+    res.json({ kq: 0, msg: 'An error occurred' })
+  }
 })
 
 router.post('/updatePassword', function (req, res) {

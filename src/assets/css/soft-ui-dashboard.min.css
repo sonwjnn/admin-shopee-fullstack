@@ -24831,7 +24831,7 @@ hr.horizontal.gray-light {
 }
 
 .table {
-  border-collapse: inherit;
+  border-collapse: collapse;
 }
 
 .table thead th {

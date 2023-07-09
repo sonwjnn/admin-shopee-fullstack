@@ -1,15 +1,20 @@
 const mongoose = require('mongoose')
+const modelOptions = require('./model.option')
+const { Schema } = require('mongoose')
 
-const userSchema = mongoose.Schema({
-  name: { type: String, require: true, unique: true },
-  origin: { type: String, default: '' },
-  price: { type: String, require: true },
-  imageName: { type: String, default: '' },
-  cateName: { type: String, require: true },
-  info: { type: String, default: '' },
-  dateOfM: { type: String, default: '' },
-  date_created: { type: Date, default: Date() }
-})
+const productSchema = mongoose.Schema(
+  {
+    name: { type: String, require: true, unique: true },
+    origin: { type: String, default: '' },
+    price: { type: String, require: true },
+    imageName: { type: String, default: '' },
+    type: { type: String, require: true },
+    typeId: { type: Schema.Types.ObjectId, ref: 'ProductTypes', require: true },
+    info: { type: String, default: '' },
+    producedAt: { type: Date, default: Date() }
+  },
+  modelOptions
+)
 
 // create model
-module.exports = mongoose.model('product', userSchema)
+module.exports = mongoose.model('Product', productSchema)

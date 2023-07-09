@@ -5,11 +5,11 @@
 <script>
   $(document).ready(function() {
 
-    $('#formCategoriesAdd').on('submit', function(e) {
+    $('#formTypesAdd').on('submit', function(e) {
       e.preventDefault();
       var flag = 1;
       var name = $('#name').val();
-      var type = $('#type').val();
+      var cateName = $('#cateNames').val();
 
 
       if (name == '') {
@@ -29,11 +29,11 @@
       if (flag == 1) {
 
         $.ajax({
-          url: '/admin/categories/add',
+          url: '/admin/productTypes/add',
           type: 'POST',
           data: {
             name,
-            type
+            cateName
           },
           success: function(response) {
 
@@ -53,7 +53,7 @@
 
     var arr = [];
     $.ajax({
-      url: '/admin/categories/getAllCate',
+      url: '/admin/productTypes/getAllCate',
       type: 'GET',
       success: function(res) {
         for (var i = 0; i < res.data.length; i++) {
@@ -72,7 +72,7 @@
 
       var name = $('#searchName').val();
 
-      var link = '/admin/categories/search/' + name;
+      var link = '/admin/productTypes/search/' + name;
       window.location.href = link;
     })
   })
@@ -86,7 +86,7 @@
   function deleteCate() {
     var id = $('#idDelete').text();
     $.ajax({
-      url: '/admin/categories/delete',
+      url: '/admin/productTypes/delete',
       type: 'POST',
       data: {
         id
@@ -125,7 +125,7 @@
     $('#buttonDeleteGr').click(function() {
 
       $.ajax({
-        url: '/admin/categories/deleteGr',
+        url: '/admin/productTypes/deleteGr',
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({
@@ -144,10 +144,11 @@
 <script>
   $(document).ready(function() {
 
-    $('#formCategoriesUpdate').on('submit', function(e) {
+    $('#formTypesUpdate').on('submit', function(e) {
       e.preventDefault();
       var flag = 1;
       var name = $('#name').val();
+      var cateName = $('#cateNames').val();
       var id = $('#idCate').text();
 
       if (name == '') {
@@ -167,11 +168,12 @@
       if (flag == 1) {
 
         $.ajax({
-          url: '/admin/categories/update',
+          url: '/admin/productTypes/update',
           type: 'POST',
           data: {
             id,
             name,
+            cateName
           },
           success: function(response) {
 

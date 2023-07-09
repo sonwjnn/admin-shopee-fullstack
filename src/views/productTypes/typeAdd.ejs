@@ -7,23 +7,30 @@
           <div class="col-md-6">
             <div class="card card-plain">
               <div class="card-header pb-0 text-left">
-                <h4 class="font-weight-bolder text-info text-gradient">New Category</h4>
-                <p class="mb-0">Enter your new infomation into the category</p>
+                <h4 class="font-weight-bolder text-info text-gradient">New Types of Products</h4>
+                <p class="mb-0">Enter your new infomation into the types of products</p>
               </div>
               <div class="card-body">
-                <form id="formCategoriesAdd">
+                <form id="formTypesAdd">
                   <label class="display-inline" for="name">Name <span id="nameError" class="spanError"></span></label>
                   <div class="mb-3">
                     <input type="text" class="form-control form-control-new" placeholder="Name..." aria-label="Password" aria-describedby="password-addon" id="name">
                     <span id="nameErrorText" class="spanError"></span>
                   </div>
+                  <label>Type</label>
+                  <select class="form-select " id="cateNames">
+                    <option value="" hidden>  Choose  </option>
+                    <% for(var i=0; i < cates.length; i++) { %>
+                      <option value="<%=cates[i].name%>"><%=cates[i].name%></option>
+                    <% } %>
+                  </select>
 
                   <div class="text-center">
-                    <button type="submit" class="btn bg-gradient-info w-100 mt-2 mb-0">
+                    <button type="submit" class="btn bg-gradient-info w-100 mt-4 mb-0">
                       Save Changes</button>
                   </div>
                   <hr>
-                  <button type="button" class="btn btn-outline-info" onclick="location.href='/admin/categories/index'"> Back </button>
+                  <button type="button" class="btn btn-outline-info" onclick="location.href='/admin/productTypes/index'"> Back </button>
                 </form>
               </div>
 

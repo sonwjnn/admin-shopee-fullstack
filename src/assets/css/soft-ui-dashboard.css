@@ -22810,9 +22810,14 @@ hr.horizontal.gray-light {
   transition: .3s ease;
 }
 
-.navbar-vertical.navbar-expand-xs .navbar-nav .nav-link:hover {
-  background-color: #e8e8e8 !important;
+.navbar-vertical.navbar-expand-xs .navbar-nav .nav-link:not(.active):hover {
+  background-color: #f5f5f5 !important;
   border-radius: .5rem 
+}
+
+
+.navbar-vertical.navbar-expand-xs .navbar-nav .nav-link .nav-link-text {
+  letter-spacing: 0.2px;
 }
 
 .navbar-vertical.navbar-expand-xs .navbar-nav .nav-link .nav-link-text,
@@ -25025,7 +25030,7 @@ hr.horizontal.gray-light {
 }
 
 .table {
-  border-collapse: inherit;
+  border-collapse: collapse;
 }
 
 .table thead th {

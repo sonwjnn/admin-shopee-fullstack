@@ -17,10 +17,7 @@ const reviewSchema = mongoose.Schema(
       type: String,
       require: true
     },
-    productId: {
-      type: String,
-      require: true
-    },
+    productId: { type: Schema.Types.ObjectId, ref: 'Product', require: true },
     productTitle: {
       type: String,
       require: true

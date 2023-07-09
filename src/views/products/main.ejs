@@ -3,7 +3,7 @@
     <div class="col-12">
       <div class="card mb-4">
         <div class="card-header pb-0">
-          <h6>Products table</h6>
+          <h6>Products Table</h6>
         </div>
 
         <div class="card-body pt-0 pb-0">
@@ -20,7 +20,7 @@
 
         </div>
         <div class="card-body px-0 pt-0 pb-2">
-          <div class="table-responsive p-0">
+          <div class="table-responsive px-2">
             <table class="table align-items-center mb-0" id="productTable">
               <thead>
                 <tr>
@@ -28,15 +28,15 @@
                   <th class="text-center table-w-10 text-center text-secondary text-sm">Ordinal</th>
 
                   <th class="text-center table-w-100 text-secondary text-sm">Name</th>
-                  <th class="text-center table-w-100 text-secondary text-sm">Cate Type</th>
+                  <th class="text-center table-w-100 text-secondary text-sm">Product Type</th>
                   <th class="text-center table-w-100 text-sm text-secondary">Origin</th>
                   <th class="text-center table-w-100 text-sm text-secondary">Price ($)</th>
 
-                  <th class="text-center table-w-10 text-secondary text-sm pl-0 ml-0 pr-0 mr-0">Detail
+                  <th class="text-center table-w-10 text-secondary text-sm ">Detail
                   </th>
-                  <th class="text-center table-w-10 text-secondary text-sm pl-0 ml-0 pr-0 mr-0">Edit
+                  <th class="text-center table-w-10 text-secondary text-sm ">Edit
                   </th>
-                  <th class="text-center table-w-10 text-secondary text-sm pl-0 ml-0 pr-0 mr-0">Delete
+                  <th class="text-center table-w-10 text-secondary text-sm ">Delete
                   </th>
                 </tr>
               </thead>
@@ -66,7 +66,7 @@
 
                   <td class="align-middle text-center text-sm">
                     <span class="badge badge-sm btn-dark-gradient">
-                      <%=data[i].cateName%>
+                      <%=data[i].type%>
                     </span>
                   </td>
 
@@ -214,8 +214,8 @@
                         </div>
 
                         <div class="form-group">
-                          <label class="form-label" for="cateName">Cate Name</label>
-                          <input type="text" class="form-control form-control-new" id="cateName" value="Phone" disabled>
+                          <label class="form-label" for="productType">Cate Name</label>
+                          <input type="text" class="form-control form-control-new" id="productType" value="Phone" disabled>
                         </div>
 
 
@@ -230,8 +230,8 @@
                         </div>
 
                         <div class="form-group">
-                          <label class="form-label" for="dateOfM">Date of manufacture</label>
-                          <input type="text" class="form-control form-control-new" id="dateOfM" value="2015-05-05" disabled>
+                          <label class="form-label" for="producedAt">Date of manufacture</label>
+                          <input type="text" class="form-control form-control-new" id="producedAt" value="2015-05-05" disabled>
                         </div>
                       </div>
 
@@ -269,8 +269,8 @@
   </div>
 </div>
 
+<div id="idDelete" style="opacity: 0;"></div>
 
-<div id="idDelete"></div>
 <!-- Modal -->
 <div class="modal fade" id="exampleModalCenter3" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">

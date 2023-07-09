@@ -1,10 +1,12 @@
 const mongoose = require('mongoose')
+const modelOptions = require('./model.option')
 
-const cateSchema = mongoose.Schema({
-  name: { type: String, require: true, unique: true },
-  type: { type: String, require: true, default: '' },
-  date_created: { type: Date, default: Date() }
-})
+const cateSchema = mongoose.Schema(
+  {
+    name: { type: String, require: true, unique: true }
+  },
+  modelOptions
+)
 
 // create model
-module.exports = mongoose.model('category', cateSchema)
+module.exports = mongoose.model('Category', cateSchema)
