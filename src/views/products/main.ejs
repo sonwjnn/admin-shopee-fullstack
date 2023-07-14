@@ -29,8 +29,8 @@
 
                   <th class="text-center table-w-100 text-secondary text-sm">Name</th>
                   <th class="text-center table-w-100 text-secondary text-sm">Product Type</th>
-                  <th class="text-center table-w-100 text-sm text-secondary">Origin</th>
-                  <th class="text-center table-w-100 text-sm text-secondary">Price ($)</th>
+                  <th class="text-center table-w-100 text-secondary text-sm">Cate Type</th>
+                  <th class="text-center table-w-100 text-sm text-secondary">Price</th>
 
                   <th class="text-center table-w-10 text-secondary text-sm ">Detail
                   </th>
@@ -66,13 +66,13 @@
 
                   <td class="align-middle text-center text-sm">
                     <span class="badge badge-sm btn-dark-gradient">
-                      <%=data[i].type%>
+                      <%=data[i].typeId.name%>
                     </span>
                   </td>
 
                   <td class="align-middle text-center">
                     <span class="text-sm">
-                      <%=data[i].origin%>
+                      <%=data[i].cateId.name%>
                     </span>
                   </td>
 
@@ -107,9 +107,14 @@
             <div class="container mt-3">
 
               <ul class="pagination justify-content-center">
-
+                <% if(sumPage > 1) { %>
                 <% if(flag==0) { %>
-                <li class="page-item"><a class="page-link buttonNoAfter" href="/admin/products/index/<%= pageNumber-1 %>"><i class="fa fa-chevron-left" aria-hidden="true"></i></a></li>
+                <li class="page-item">
+                  <%if(pageNumber !== 1) {%>
+                  <a class="page-link buttonNoAfter" href="/admin/products/index/<%= pageNumber-1 %>"><i class="fa fa-chevron-left" aria-hidden="true"></i>
+                  </a>
+                  <% } %>
+                </li>
                 <% for(var i=1; i <=sumPage; i++) { %>
                 <% if(pageNumber==i) { %>
                 <li class="page-item"><a class="page-link active active2 buttonNoAfter" href="/admin/products/index/<%= i %>">
@@ -123,7 +128,12 @@
                   </a></li>
                 <% } %>
                 <% } %>
-                <li class="page-item"><a class="page-link buttonNoAfter" href="/admin/products/index/<%= pageNumber + 1 %>"><i class="fa fa-chevron-right" aria-hidden="true"></i></a></li>
+                <li class="page-item">
+                  <% if(sumPage > 0 && +sumPage !== +pageNumber) {%>
+                  <a class="page-link buttonNoAfter" href="/admin/products/index/<%= +pageNumber + 1 %>"><i class="fa fa-chevron-right" aria-hidden="true"></i>
+                  </a>
+                  <% } %>
+                </li>
                 <% } else {%>
                 <li class="page-item"><a class="page-link buttonNoAfter" href="/admin/products/search/<%=name%>/<%= pageNumber-1 %>"><i class="fa fa-chevron-left" aria-hidden="true"></i></a></li>
                 <% for(var i=1; i <=sumPage; i++) { %>
@@ -142,9 +152,7 @@
                 <li class="page-item"><a class="page-link buttonNoAfter" href="/admin/products/search/<%=name%>/<%= pageNumber + 1 %>"><i class="fa fa-chevron-right" aria-hidden="true"></i></a>
                 </li>
                 <% } %>
-
-
-
+                <% } %>
               </ul>
               <ul class="pagination justify-content-end" style="margin:20px 0">
                 <button type="button" class="btn bg-gradient-info text-white" onclick="location.href='/admin/products/index'"> Refresh </button>

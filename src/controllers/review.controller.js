@@ -1,4 +1,4 @@
-const reviewModel = require('../models/M_Reviews')
+const reviewModel = require('../models/review.model')
 const responseHandler = require('../handlers/response.handler')
 
 const create = async (req, res) => {

@@ -4,7 +4,7 @@ const { Schema } = require('mongoose')
 
 const typeSchema = mongoose.Schema(
   {
-    name: { type: String, require: true, unique: true },
+    name: { type: String, require: true },
     cateId: { type: Schema.Types.ObjectId, ref: 'Category', require: true }
   },
   modelOptions

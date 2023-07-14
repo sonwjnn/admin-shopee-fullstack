@@ -1,9 +1,9 @@
 const express = require('express')
 const router = express.Router()
-const cateModel = require('../models/M_Categories')
+const cateModel = require('../models/category.model')
 
 router.get('/index(/:pageNumber?)', async (req, res) => {
-  const limit = 5
+  const limit = 8
 
   var sumData = await cateModel.find()
   var sumPage = 0
@@ -60,7 +60,7 @@ router.get('/index(/:pageNumber?)', async (req, res) => {
 
 router.get('/add', (req, res) => {
   var index = 'categories'
-  var main = 'categories/cateAdd'
+  var main = 'categories/add.category.ejs'
   res.render('index', { main, index })
 })
 
@@ -123,7 +123,7 @@ router.get('/search/(:name?)(/:pageNumber?)', async (req, res) => {
     obj_find = { name: { $regex: regex } }
   }
 
-  const limit = 5
+  const limit = 8
 
   var sumPage = 0
   var sumData = await cateModel.find(obj_find)
@@ -223,7 +223,7 @@ router.get('/edit/:id', function (req, res) {
           res.send({ kq: 0, msg: 'Data is not exists.' })
         } else {
           var index = 'categories'
-          var main = 'categories/cateEdit'
+          var main = 'categories/edit.category.ejs'
           res.render('index', { main, index, data })
         }
       }

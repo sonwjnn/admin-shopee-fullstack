@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const userModel = require('../models/M_Users')
+const userModel = require('../models/user.model')
 const fs = require('fs')
 const filepath = 'src/assets/json/archiveToken.json'
 

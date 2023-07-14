@@ -1,11 +1,11 @@
 const express = require('express')
 const router = express.Router()
-const typeModel = require('../models/M_ProductTypes')
-const cateModel = require('../models/M_Categories')
+const typeModel = require('../models/type.model')
+const cateModel = require('../models/category.model')
 
 router.get('/index(/:pageNumber?)', async (req, res) => {
   try {
-    const limit = 5
+    const limit = 8
 
     var sumData = await typeModel.find()
     var sumPage = 0
@@ -72,7 +72,7 @@ router.get('/index(/:pageNumber?)', async (req, res) => {
 router.get('/add', async (req, res) => {
   try {
     var index = 'types of products'
-    var main = 'productTypes/typeAdd'
+    var main = 'productTypes/add.type.ejs'
 
     const cates = await cateModel.find().exec()
     res.render('index', { main, index, cates })
@@ -86,20 +86,15 @@ router.post('/add', async function (req, res) {
     const name = req.body.name
     const cateName = req.body.cateName
 
-    const type = await typeModel.find({ $or: [{ name: name }] }).exec()
+    const cate = await cateModel.findOne({ name: cateName }).exec()
 
-    if (type.length === 0) {
-      const cate = await cateModel.findOne({ name: cateName }).exec()
-
-      await typeModel.create({
-        name,
-        cateId: cate._id
-      })
-      res.send({ kq: 1, msg: 'Data added successfully' })
-    } else {
-      res.send({ kq: 0, msg: 'The cate name already exists.' })
-    }
+    await typeModel.create({
+      name,
+      cateId: cate._id
+    })
+    res.send({ kq: 1, msg: 'Data added successfully' })
   } catch (err) {
+    console.log(err)
     res.send({ kq: 0, msg: 'Connection to the database failed' })
   }
 })
@@ -124,7 +119,7 @@ router.get('/search/(:name?)(/:pageNumber?)', async (req, res) => {
     obj_find = { name: { $regex: regex } }
   }
 
-  const limit = 5
+  const limit = 8
 
   var sumPage = 0
   var sumData = await typeModel.find(obj_find)
@@ -235,7 +230,7 @@ router.get('/edit/:id', async function (req, res) {
             })
             const cates = await cateModel.find().exec()
             var index = 'product types'
-            var main = 'productTypes/typeEdit'
+            var main = 'productTypes/edit.type.ejs'
             res.render('index', { main, index, data, cates })
           }
         }
@@ -270,6 +265,17 @@ router.post('/update', async function (req, res) {
     })
   } catch (error) {
     res.send({ kq: 0, msg: error })
+  }
+})
+
+router.get('/getTypeByName/:name', async (req, res) => {
+  try {
+    const name = req.params.name
+    const type = await typeModel.find({ name })
+
+    res.send({ kq: 1, data: type, msg: 'Get type successfully.' })
+  } catch (error) {
+    res.send({ kq: 0, msg: 'Something went wrong!' })
   }
 })
 

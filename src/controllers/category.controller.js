@@ -3,7 +3,7 @@ const responseHandler = require('../handlers/response.handler.js')
 // import tmdbApi from "../tmdb/tmdb.api.js";
 // import userModel from "../models/user.model.js";
 // import favoriteModel from "../models/favorite.model.js";
-const cateModel = require('../models/M_Categories.js')
+const cateModel = require('../models/category.model.js')
 
 // import tokenMiddleWare from "../middlewares/token.middleware.js";
 

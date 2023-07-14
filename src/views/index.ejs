@@ -2,23 +2,23 @@
 <html lang="vi">
 
 <head>
-  <%-include('partials/head')%>
+  <%-include('partials/head.patial.ejs')%>
 </head>
 
 <body class="g-sidenav-show  bg-gray-100">
   <div class="d-lg-none hiden" id="index"><%=index%></div>
 
-  <%-include('partials/header')%>
-  <%-include('partials/mainNav')%>
+  <%-include('partials/header.patial.ejs')%>
+  <%-include('partials/main_nav.patial.ejs')%>
 
   <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg" id="main">
-    <%-include('partials/otherNav')%>
+    <%-include('partials/other_nav.patial.ejs')%>
     <%-include(main)%>
 
-    <%-include('partials/right')%>
+    <%-include('partials/right.patial.ejs')%>
 
   </main>
-  <%-include('partials/footer')%>
+  <%-include('partials/footer.patial.ejs')%>
 
   <%-include('partials/script')%>
 

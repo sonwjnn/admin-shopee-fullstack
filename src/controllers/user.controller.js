@@ -1,4 +1,4 @@
-const userModel = require('../models/M_Users')
+const userModel = require('../models/user.model')
 const responseHandler = require('../handlers/response.handler')
 const env = require('../configs/environment')
 const jsonwebtoken = require('jsonwebtoken')

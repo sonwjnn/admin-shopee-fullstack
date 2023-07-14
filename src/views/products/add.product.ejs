@@ -4,42 +4,52 @@
     <div class="col-md-12">
       <div class="card">
         <div class="card-body">
-          <form id="formProductsEdit">
+          <form id="formProductsAdd">
             <div class="alert-warning text-white text-min text-space-xl hiden" id="noteProducts"></div>
             <div class="row">
-              <input type="text" class="form-control form-control-new hiden" id="id" value="<%=data[0]._id%>">
-
               <div class="form-group col-md-6">
                 <label class="form-label display-inline" for="name">Product Name <span id="nameError" class="spanError"></span></label>
-                <input type="text" class="form-control form-control-new" id="name" placeholder="Ex: Iphone 14" value="<%=data[0].name%>">
+                <input type="text" class="form-control form-control-new" id="name" placeholder="Ex: Iphone 14" name="name">
                 <span id="nameErrorText" class="spanError"></span>
               </div>
 
               <div class="form-group col-md-6">
                 <label class="form-label display-inline" for="origin">Origin <span id="originError" class="spanError"></span></label>
-                <input type="text" class="form-control form-control-new" id="origin" placeholder="Ex: Made in China" value="<%=data[0].origin%>">
+                <input type="text" class="form-control form-control-new" id="origin" placeholder="Ex: Made in China">
                 <span id="originErrorText" class="spanError"></span>
               </div>
 
               <div class="form-group col-md-6">
-                <label class="form-label display-inline" for="price">Price($) <span id="priceError" class="spanError"></span></label>
-                <input type="text" class="form-control form-control-new" id="price" placeholder="Ex: 2000" value="<%=data[0].price%>">
-                <span id="priceErrorText" class="spanError"></span>
+
+
+                <div class="row">
+                  <div class="col-md-4">
+                    <label class="form-label display-inline" for="price">Price <span id="priceError" class="spanError"></span></label>
+                    <input type="text" class="form-control form-control-new" id="price" placeholder="Ex: 2000">
+                    <span id="priceErrorText" class="spanError"></span>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label display-inline" for="discount">Discount <span id="discountError" class="spanError"></span></label>
+                    <input type="text" class="form-control form-control-new" id="discount" placeholder="Ex: 50">
+                    <span id="discountErrorText" class="spanError"></span>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label display-inline" for="discountPrice">Discount Price<span id="discountPriceError" class="spanError"></span></label>
+                    <input type="text" class="form-control form-control-new" id="discountPrice" placeholder="Ex: 50">
+                    <span id="discountPriceErrorText" class="spanError"></span>
+                  </div>
+                </div>
               </div>
 
               <div class="form-group col-md-6">
 
-                <label class="form-label display-inline" id="labelNewFile" for="image">Image <span id="imageError" class="spanError"></span></label>
+                <label class="form-label display-inline" for="image">Image <span id="imageError" class="spanError"></span></label>
                 <div class="row">
-                  <div class="col-md-9 paddingRightNone">
-                    <input type="file" class="form-control form-control-new hiden" id="image" name="productsImage">
-                    <input type="text" class="form-control form-control-new" id="imageShow" value="<%=data[0].imageName%>" disabled>
-
+                  <div class="col-md-10dot5 paddingRightNone">
+                    <input type="file" class="form-control form-control-new" id="image" name="productsImage">
                   </div>
-                  <div class="col-md-3 paddingLeftNone display-inline">
-
-                    <button id="newFile" type="button" class="btn btn-outline-info btn-products-new display-inline">New file</button>
-                    <button type="button" class="btn btn-outline-info btn-products-new display-inline" data-toggle="modal" data-target="#exampleModalCenter">
+                  <div class="col-md-1 paddingLeftNone">
+                    <button type="button" class="btn btn-outline-info btn-products-new" data-toggle="modal" data-target="#exampleModalCenter">
                       <i class="fa fa-database" aria-hidden="true"></i></button>
                   </div>
 
@@ -48,32 +58,35 @@
                 <span id="imageErrorText" class="spanError"></span>
               </div>
 
-              <div class="form-group col-md-6">
-                <label class="form-label" for="producedAt">Date of manufacture</label>
-                <input type="date" class="form-control form-control-new" id="producedAt" value="<%=data[0].producedAt%>">
-              </div>
 
               <div class="form-group col-md-6">
-                <label class="form-label display-inline" for="productType">Cate Type</label>
+                <label class="form-label display-inline" for="productType">Product Type</label>
                 <select id="productType" class="form-select">
-                  <option value="<%=data[0].type%>" hidden><%=data[0].type%></option>
-                  <% for(var i=0; i < dataCate.length; i++) { %>
-                  <option value="<%=dataCate[i].name%>"><%=dataCate[i].name%></option>
+                  <option value="" hidden> Choose product type </option>
+                  <% for(var i=0; i < types.length; i++) { %>
+                  <option value="<%=types[i]%>"><%=types[i]%></option>
                   <% } %>
                 </select>
-
               </div>
+
+              <div class="form-group col-md-6">
+                <label class="form-label display-inline" for="cateType">Cate Type</label>
+                <select id="cateType" class="form-select" disabled>
+                  <option value="" hidden> Choose cate type </option>
+                </select>
+              </div>
+
+              <div class="form-group col-md-6">
+                <label class="form-label" for="producedAt">Date of manufacture</label>
+                <input type="date" class="form-control form-control-new" id="producedAt">
+              </div>
+
+
 
 
               <div class="form-group col-md-12">
-                <label class="form-label" for="productInfo">Product Description</label>
-                <textarea class="form-control" id="productInfo" cols="30" rows="10" name="contentStory"></textarea>
-              </div>
-
-
-
-              <div id="storyid" class="hiden">
-                <%=data[0].info%>
+                <label class="form-label" for="productstory">Product Description</label>
+                <textarea class="form-control" id="productStory" cols="30" rows="10" name="contentStory"></textarea>
               </div>
             </div>
             <!--  <div class="form-group">
@@ -86,7 +99,7 @@
                         </div> -->
             <button type="button" class="btn btn-outline-info me-2" onclick="location.href='/admin/products/index'"> Back </button>
             <button type="submit" class="btn alert-info text-white"> Save </button>
-            <button type="button" id="clickMe" class="hiden">click</button>
+
           </form>
         </div>
       </div>
@@ -269,8 +282,7 @@
     </div>
   </div>
 </div>
-
-
+<button type="button" class="btn btn-outline-info pt-2 pb-2 hiden" id="popupInfo" data-toggle="modal" data-target="#exampleModalCenter3">popup</button>
 
 
 <div class="modal fade" id="exampleModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -284,7 +296,6 @@
   </div>
 </div>
 
-<button type="button" class="btn btn-outline-info pt-2 pb-2 hiden" id="popupInfo" data-toggle="modal" data-target="#exampleModalCenter3">popup</button>
 <div class="modal fade" id="exampleModalCenter3" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content border-none">

@@ -2,8 +2,8 @@ const express = require('express')
 const router = express.Router()
 const responseHandler = require('../handlers/response.handler.js')
 
-const cartModel = require('../models/M_Carts.js')
-const userModel = require('../models/M_Users')
+const cartModel = require('../models/cart.model.js')
+const userModel = require('../models/user.model.js')
 
 const getCartsOfUser = async (req, res) => {
   try {

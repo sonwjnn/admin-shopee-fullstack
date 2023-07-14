@@ -1,6 +1,6 @@
 const jsonwebtoken = require('jsonwebtoken')
 const responseHandler = require('../handlers/response.handler.js')
-const userModel = require('../models/M_Users.js')
+const userModel = require('../models/user.model.js')
 const tokenDecode = req => {
   try {
     const bearerHeader = req.headers['authorization']

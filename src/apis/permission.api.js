@@ -86,7 +86,6 @@ router.post('/processLogin', function (req, res) {
 
   username = req.body.username
   password = req.body.password
-  console.log(username, password)
   if (flag == 1) {
     userModel.find({ useame }).exec((err, data) => {
       if (err) {

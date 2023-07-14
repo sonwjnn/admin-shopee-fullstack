@@ -1,10 +1,12 @@
 const express = require('express')
-const router = express.Router()
 const multer = require('multer')
 const fs = require('fs')
-const productModel = require('../models/M_Products')
-const cateModel = require('../models/M_Categories')
+const productModel = require('../models/product.model')
+const cateModel = require('../models/category.model')
+const typeModel = require('../models/type.model')
 const filepath = 'angularShopping/src/assets/json/archiveImage.json'
+const tokenMiddleware = require('../middlewares/token.middleware')
+const productController = require('../controllers/product.controller.js')
 
 var jwt = require('jsonwebtoken')
 var secret = 'none'
@@ -12,129 +14,74 @@ var secret = 'none'
 var imageNameSend = ''
 var imageNameReal = ''
 
+const router = express.Router({ mergeParams: true })
+
 router.get('/index(/:pageNumber?)', async (req, res) => {
-  const limit = 5
-
-  var sumData = await productModel.find()
-  var sumPage = 0
-  if (sumData.length != 0) {
-    var sumPage = Math.ceil(sumData.length / limit)
-  }
-
-  var pageNumber = req.params.pageNumber
-
-  if (pageNumber == 1 || pageNumber == undefined || pageNumber < 1) {
-    pageNumber = 1
-  }
-
-  if (pageNumber > sumPage && sumPage != 0) {
-    pageNumber = sumPage
-  }
-
-  // set up var skip
-  var skip = (pageNumber - 1) * limit
-
-  productModel
-    .find()
-    .limit(limit)
-    .skip(skip)
-    .sort({ _id: 1 })
-    .exec((err, data) => {
-      if (err) {
-        throw err
-      } else {
-        var index = 'products'
-        var main = 'products/main'
-        var flag = 0
-        var name = ''
-        res.render('index', {
-          main,
-          index,
-          data,
-          sumPage,
-          pageNumber,
-          name,
-          flag
-        })
-      }
-    })
-})
-
-router.get('/add', (req, res) => {
-  cateModel.find().exec((err, dataCate) => {
-    if (err) {
-      throw err
-    } else {
-      var index = 'products'
-      var main = 'products/productAdd'
-      res.render('index', { main, index, dataCate })
+  try {
+    const limit = 8
+    const productsCount = await productModel.countDocuments()
+    var sumPage = 0
+    if (productsCount != 0) {
+      sumPage = Math.ceil(productsCount / limit)
     }
-  })
-})
 
-router.post('/add', function (req, res) {
-  var name,
-    origin,
-    price,
-    type,
-    imageName,
-    info,
-    imageNameTrue,
-    producedAt,
-    flag = 1
-  name = req.body.name
-  origin = req.body.origin
-  price = req.body.price
-  imageName = req.body.imageName
-  type = req.body.type
-  info = req.body.info
-  producedAt = req.body.producedAt
-  imageNameTrue = req.body.imageNameReal
+    var pageNumber = req.params.pageNumber
 
-  var idUser = ''
-  jwt.verify(req.cookies.token, secret, function (err, decoded) {
-    if (err) throw err
-    else {
-      idUser = decoded.data
+    if (pageNumber == 1 || pageNumber == undefined || pageNumber < 1) {
+      pageNumber = 1
     }
-  })
 
-  if (flag == 1) {
-    const obj = {
+    if (pageNumber > sumPage && sumPage != 0) {
+      pageNumber = sumPage
+    }
+
+    // set up var skip
+    const skip = (pageNumber - 1) * limit
+
+    const products = await productModel
+      .find()
+      .populate('cateId', 'name')
+      .populate('typeId', 'name')
+      .limit(limit)
+      .skip(skip)
+      .sort({ _id: 1 })
+
+    const index = 'products',
+      main = 'products/main',
+      flag = 0,
+      name = ''
+    res.render('index', {
+      main,
+      index,
+      data: products,
+      sumPage,
+      pageNumber,
       name,
-      origin,
-      price,
-      imageName,
-      type,
-      info,
-      producedAt
-    }
-
-    const check_obj = { $or: [{ name }] }
-
-    productModel.find(check_obj).exec((err, data) => {
-      if (err) {
-        res.send({ kq: 0, msg: 'Connection to database failed' })
-      } else {
-        if (data == '') {
-          /* if(imageNameTrue != ''){
-                            readJsonFile(filepath, idUser, imageNameTrue);
-                        }
-                        */
-          productModel.create(obj, (err, data) => {
-            if (err) {
-              res.send({ kq: 0, msg: 'Connection to database failed' })
-            } else {
-              res.send({ kq: 1, msg: 'Data added successfully' })
-            }
-          })
-        } else {
-          res.send({ kq: 0, msg: 'Product name is already exists!' })
-        }
-      }
+      flag
     })
+  } catch (error) {
+    console.log(error)
+    res.send({ kq: 0, msg: error })
   }
 })
+
+router.get('/add', async (req, res) => {
+  try {
+    const types = await typeModel.find().select('name')
+
+    // Lọc ra các type có tên trùng nhau
+    const uniqueTypeNames = [...new Set(types.map(type => type.name))]
+
+    var index = 'products'
+    var main = 'products/add.product.ejs'
+
+    res.render('index', { main, index, types: uniqueTypeNames })
+  } catch (error) {
+    res.send({ kq: 0, msg: 'Something went wrong with types or cates!' })
+  }
+})
+
+router.post('/add', productController.addProduct)
 
 // declare storage
 const storage = multer.diskStorage({
@@ -243,7 +190,7 @@ router.get('/search/(:name?)(/:pageNumber?)', async (req, res) => {
     obj_find = { name: { $regex: regex } }
   }
 
-  const limit = 5
+  const limit = 8
 
   var sumPage = 0
   var sumData = await productModel.find(obj_find)
@@ -384,34 +331,7 @@ router.post('/update', function (req, res) {
   }
 })
 
-router.get('/edit/:id', function (req, res) {
-  var id = req.params.id
-
-  if (id != '') {
-    const check_obj = { $or: [{ _id: id }] }
-    productModel.find(check_obj).exec((err, data) => {
-      if (err) {
-        throw err
-      } else {
-        if (data == '') {
-          res.send({ kq: 0, msg: 'Data is not exists.' })
-        } else {
-          cateModel.find().exec((err, dataCate) => {
-            if (err) {
-              throw err
-            } else {
-              var index = 'products'
-              var main = 'products/productEdit'
-              res.render('index', { main, index, data, dataCate })
-            }
-          })
-        }
-      }
-    })
-  } else {
-    res.render('404page')
-  }
-})
+router.get('/edit/:id', productController.editProduct)
 
 router.post('/delete', function (req, res) {
   var _id = req.body.id

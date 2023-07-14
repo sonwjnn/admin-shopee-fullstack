@@ -2,8 +2,8 @@ const express = require('express')
 const router = express.Router()
 const responseHandler = require('../handlers/response.handler.js')
 
-const favoriteModel = require('../models/M_Favorites.js')
-const userModel = require('../models/M_Users')
+const favoriteModel = require('../models/favorite.model.js')
+const userModel = require('../models/user.model.js')
 
 const getFavoritesOfUser = async (req, res) => {
   try {
@@ -23,10 +23,7 @@ const addFavorite = async (req, res) => {
       user: req.user.id,
       productId: req.body.productId
     })
-    if (isFavorite) {
-      await isFavorite.save()
-      return responseHandler.ok(res, isFavorite)
-    }
+    if (isFavorite) return responseHandler.ok(res, isFavorite)
 
     const favorite = new favoriteModel({
       ...req.body,
@@ -35,6 +32,8 @@ const addFavorite = async (req, res) => {
     await favorite.save()
 
     responseHandler.created(res, favorite)
+
+    res.send({ kq: 1, data, msg: 'Add favorite successfully.' })
   } catch (error) {
     responseHandler.error(res)
   }

@@ -9,15 +9,16 @@ const cartSchema = mongoose.Schema(
       ref: 'User',
       required: true
     },
-    productId: { type: Schema.Types.ObjectId, require: true },
+    productId: { type: Schema.Types.ObjectId, ref: 'Product', require: true },
+    typeId: { type: Schema.Types.ObjectId, ref: 'ProductTypes', require: true },
+    cateId: { type: Schema.Types.ObjectId, ref: 'Category', require: true },
     productTitle: { type: String, default: '' },
     productImage: { type: String, default: '' },
     productPrice: { type: String, default: '' },
-    productType: { type: String, default: '' },
-    status: { type: String, default: '' },
     phone: { type: String, default: '' },
     address: { type: String, default: '' },
-    quantity: { type: String, default: '' }
+    quantity: { type: String, default: '' },
+    status: { type: String, default: '' }
   },
   modelOptions
 )

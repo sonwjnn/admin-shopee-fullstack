@@ -6,23 +6,23 @@ router.get('/', (req, res) => {
 })
 
 // custom
-router.use('/categories', require('../apis/A_Categories.js'))
-router.use('/products', require('../apis/A_Products.js'))
-router.use('/user', require('../apis/A_Users.js'))
-router.use('/reviews', require('../apis/A_Reviews.js'))
+router.use('/categories', require('../apis/category.api'))
+router.use('/products', require('../apis/product.api'))
+router.use('/user', require('../apis/user.api'))
+router.use('/reviews', require('../apis/review.api'))
 
 // admin
-router.use('/admin', require('../routers/R_Admins.js'))
-router.use('/admin/dashboards', require('../routers/R_Dashboards'))
-router.use('/admin/categories', require('../routers/R_Categories.js'))
-router.use('/admin/products', require('../routers/R_Products'))
-router.use('/admin/users', require('../routers/R_Users'))
-router.use('/admin/profile', require('../routers/R_Profile'))
-router.use('/admin/password', require('../routers/R_Password.js'))
-router.use('/admin/productTypes', require('../routers/R_ProductTypes.js'))
+router.use('/admin', require('../routers/admin.route'))
+router.use('/admin/dashboards', require('../routers/dashboard.route'))
+router.use('/admin/categories', require('../routers/category.route'))
+router.use('/admin/products', require('../routers/product.route'))
+router.use('/admin/users', require('../routers/user.route'))
+router.use('/admin/profile', require('../routers/profile.route'))
+router.use('/admin/password', require('../routers/password.route'))
+router.use('/admin/productTypes', require('../routers/type.route'))
 
 // user
-router.use('/user', require('../routers/RU_Users.js'))
+router.use('/user', require('../routers/ui_user.route'))
 
 //cookie
 router.get('/createCookie', (req, res) => {

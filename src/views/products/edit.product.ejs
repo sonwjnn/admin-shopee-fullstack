@@ -4,36 +4,42 @@
     <div class="col-md-12">
       <div class="card">
         <div class="card-body">
-          <form id="formProductsAdd">
+          <form id="formProductsEdit">
             <div class="alert-warning text-white text-min text-space-xl hiden" id="noteProducts"></div>
             <div class="row">
+              <input type="text" class="form-control form-control-new hiden" id="id" value="<%=data._id%>">
+
               <div class="form-group col-md-6">
                 <label class="form-label display-inline" for="name">Product Name <span id="nameError" class="spanError"></span></label>
-                <input type="text" class="form-control form-control-new" id="name" placeholder="Ex: Iphone 14" name="name">
+                <input type="text" class="form-control form-control-new" id="name" placeholder="Ex: Iphone 14" value="<%=data.name%>">
                 <span id="nameErrorText" class="spanError"></span>
               </div>
 
               <div class="form-group col-md-6">
                 <label class="form-label display-inline" for="origin">Origin <span id="originError" class="spanError"></span></label>
-                <input type="text" class="form-control form-control-new" id="origin" placeholder="Ex: Made in China">
+                <input type="text" class="form-control form-control-new" id="origin" placeholder="Ex: Made in China" value="<%=data.origin%>">
                 <span id="originErrorText" class="spanError"></span>
               </div>
 
               <div class="form-group col-md-6">
                 <label class="form-label display-inline" for="price">Price($) <span id="priceError" class="spanError"></span></label>
-                <input type="text" class="form-control form-control-new" id="price" placeholder="Ex: 2000">
+                <input type="text" class="form-control form-control-new" id="price" placeholder="Ex: 2000" value="<%=data.price%>">
                 <span id="priceErrorText" class="spanError"></span>
               </div>
 
               <div class="form-group col-md-6">
 
-                <label class="form-label display-inline" for="image">Image <span id="imageError" class="spanError"></span></label>
+                <label class="form-label display-inline" id="labelNewFile" for="image">Image <span id="imageError" class="spanError"></span></label>
                 <div class="row">
-                  <div class="col-md-10dot5 paddingRightNone">
-                    <input type="file" class="form-control form-control-new" id="image" name="productsImage">
+                  <div class="col-md-9 paddingRightNone">
+                    <input type="file" class="form-control form-control-new hiden" id="image" name="productsImage">
+                    <input type="text" class="form-control form-control-new" id="imageShow" value="<%=data.imageName%>" disabled>
+
                   </div>
-                  <div class="col-md-1 paddingLeftNone">
-                    <button type="button" class="btn btn-outline-info btn-products-new" data-toggle="modal" data-target="#exampleModalCenter">
+                  <div class="col-md-3 paddingLeftNone display-inline">
+
+                    <button id="newFile" type="button" class="btn btn-outline-info btn-products-new display-inline">New file</button>
+                    <button type="button" class="btn btn-outline-info btn-products-new display-inline" data-toggle="modal" data-target="#exampleModalCenter">
                       <i class="fa fa-database" aria-hidden="true"></i></button>
                   </div>
 
@@ -43,24 +49,38 @@
               </div>
 
               <div class="form-group col-md-6">
-                <label class="form-label" for="producedAt">Date of manufacture</label>
-                <input type="date" class="form-control form-control-new" id="producedAt">
+                <label class="form-label display-inline" for="productType">Product Type</label>
+                <select id="productType" class="form-select">
+                  <option value="" hidden><%=data.typeId.name%></option>
+                  <% for(var i=0; i < types.length; i++) { %>
+                  <option value="<%=types[i]%>"><%=types[i]%></option>
+                  <% } %>
+                </select>
               </div>
 
               <div class="form-group col-md-6">
-                <label class="form-label display-inline" for="productType">Type</label>
-                <select id="productType" class="form-select">
-                  <% for(var i=0; i < dataCate.length; i++) { %>
-                  <option value="<%=dataCate[i].name%>"><%=dataCate[i].name%></option>
-                  <% } %>
+                <label class="form-label display-inline" for="cateType">Cate Type</label>
+                <select id="cateType" class="form-select" disabled>
+                  <option value="" hidden><%=data.cateId.name%></option>
                 </select>
+              </div>
 
+              <div class="form-group col-md-6">
+                <label class="form-label" for="producedAt">Date of manufacture</label>
+                <input type="date" class="form-control form-control-new" id="producedAt" value="<%=producedAt%>">
               </div>
 
 
+
               <div class="form-group col-md-12">
-                <label class="form-label" for="productstory">Product Description</label>
-                <textarea class="form-control" id="productStory" cols="30" rows="10" name="contentStory"></textarea>
+                <label class="form-label" for="productInfo">Product Description</label>
+                <textarea class="form-control" id="productInfo" cols="30" rows="10" name="contentStory"></textarea>
+              </div>
+
+
+
+              <div id="storyid" class="hiden">
+                <%=data.info%>
               </div>
             </div>
             <!--  <div class="form-group">
@@ -73,7 +93,7 @@
                         </div> -->
             <button type="button" class="btn btn-outline-info me-2" onclick="location.href='/admin/products/index'"> Back </button>
             <button type="submit" class="btn alert-info text-white"> Save </button>
-
+            <button type="button" id="clickMe" class="hiden">click</button>
           </form>
         </div>
       </div>
@@ -256,7 +276,8 @@
     </div>
   </div>
 </div>
-<button type="button" class="btn btn-outline-info pt-2 pb-2 hiden" id="popupInfo" data-toggle="modal" data-target="#exampleModalCenter3">popup</button>
+
+
 
 
 <div class="modal fade" id="exampleModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -270,6 +291,7 @@
   </div>
 </div>
 
+<button type="button" class="btn btn-outline-info pt-2 pb-2 hiden" id="popupInfo" data-toggle="modal" data-target="#exampleModalCenter3">popup</button>
 <div class="modal fade" id="exampleModalCenter3" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content border-none">

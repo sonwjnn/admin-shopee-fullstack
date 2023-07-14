@@ -11,9 +11,11 @@
       var name = $('#name').val();
       var origin = $('#origin').val();
       var price = $('#price').val();
-      var type = '';
-      type = $('#productType').val();
+
+      const productType = $('#productType').val()
+      const cateType = $('#cateType').val()
       var producedAt = $('#producedAt').val();
+      const discount = $('discount').val()
       var info = CKEDITOR.instances['productStory'].getData();
 
 
@@ -160,8 +162,9 @@
                 name,
                 origin,
                 price,
+                productType,
+                cateType,
                 imageName,
-                type,
                 info,
                 producedAt,
                 imageNameReal
@@ -503,7 +506,7 @@
           producedAt = '';
         } else {
           var arr = res.data[0].producedAt.split('-');
-          producedAt = arr[2] + '-' + arr[1] + '-' + arr[0];
+          producedAt = arr[2].substring(0, 2) + '-' + arr[1] + '-' + arr[0];
         }
 
         $('#idProduct').val(id);
@@ -623,6 +626,51 @@
         name = name + path[i];
       }
       $('#imageShow').val(name);
+    });
+  });
+</script>
+
+<script>
+  $(document).ready(async function() {
+    const cates = [];
+    const types = [];
+
+    $.ajax({
+      url: '/admin/categories/getAllCate',
+      type: 'GET',
+      success: function(res) {
+        for (var i = 0; i < res.data.length; i++) {
+          cates[i] = res.data[i];
+        }
+      }
+    });
+
+
+    $("#productType").change(function(event) {
+      const selectedType = event.target.value;
+      const cateType = document.getElementById('cateType');
+      cateType.innerHTML = '';
+
+      $.ajax({
+        url: '/admin/productTypes/getTypeByName/' + selectedType,
+        type: 'GET',
+        success: function(res) {
+          cateType.disabled = false
+          for (var i = 0; i < res.data.length; ++i) {
+            types[i] = res.data[i];
+          }
+          types.forEach(function(type) {
+            cates.forEach(function(cate) {
+              if (type.name === selectedType && type.cateId === cate._id) {
+                const option = document.createElement('option');
+                option.value = cate.name;
+                option.textContent = cate.name;
+                cateType.appendChild(option);
+              };
+            });
+          });
+        }
+      });
     });
   });
 </script>

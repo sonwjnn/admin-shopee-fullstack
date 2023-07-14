@@ -1,5 +1,7 @@
-const responseWithData = (res, statusCode, data) =>
+const responseWithData = (res, statusCode, data) => {
+  if (res.headersSent) return
   res.status(statusCode).json(data)
+}
 
 const error = res =>
   responseWithData(res, 500, {

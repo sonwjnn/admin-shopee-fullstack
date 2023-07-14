@@ -1,16 +1,16 @@
 const express = require('express')
 const router = express.Router()
 
-const userModel = require('../models/M_Users')
-const cartModel = require('../models/M_Carts')
-const favoriteModel = require('../models/M_Favorites')
-const reviewModel = require('../models/M_Reviews')
+const userModel = require('../models/user.model')
+const cartModel = require('../models/cart.model')
+const favoriteModel = require('../models/favorite.model')
+const reviewModel = require('../models/review.model')
 
 const bcrypt = require('bcryptjs')
 const salt = bcrypt.genSaltSync(10)
 
 router.get('/index(/:pageNumber?)', async (req, res) => {
-  const limit = 5
+  const limit = 8
   var sumPage = 0
   var sumData = await userModel.find()
   if (sumData.length != 0) {
@@ -69,7 +69,7 @@ router.get('/edit/:username', function (req, res) {
         if (data == '') {
         } else {
           var index = 'users'
-          var main = 'users/usersEdit'
+          var main = 'users/edit.user.ejs'
 
           res.render('index', { main, index, data })
         }
@@ -93,7 +93,7 @@ router.get('/password/:username', function (req, res) {
           res.send({ kq: 0, msg: 'Username is not exists' })
         } else {
           var index = 'users'
-          var main = 'users/usersPassChange'
+          var main = 'users/updatePassword.user.ejs'
 
           res.render('index', { main, index, data })
         }
@@ -105,7 +105,7 @@ router.get('/password/:username', function (req, res) {
 
 router.get('/add', (req, res) => {
   var index = 'users'
-  var main = 'users/usersAdd'
+  var main = 'users/add.user.ejs'
   res.render('index', { main, index })
 })
 
@@ -397,7 +397,7 @@ router.get('/search/(:name?)(/:pageNumber?)', async (req, res) => {
     obj_find = { name: { $regex: regex } }
   }
 
-  const limit = 5
+  const limit = 8
 
   var sumPage = 0
   var sumData = await userModel.find(obj_find)
