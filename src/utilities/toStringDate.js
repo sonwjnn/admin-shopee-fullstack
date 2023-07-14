@@ -1,13 +1,11 @@
 const toStringDate = {
   dmy: string => {
-    const dmy = string.toISOString().substring(0, 10).split('-')
-    const dateString = dmy[2] + '-' + dmy[1] + '-' + dmy[0]
-    return dateString
+    const [year, month, day] = string.toISOString().substring(0, 10).split('-')
+    return `${day}-${month}-${year}`
   },
   ymd: string => {
-    const ymd = string.toISOString().substring(0, 10).split('-')
-    const dateString = ymd[0] + '-' + ymd[1] + '-' + ymd[2]
-    return dateString
+    const [year, month, day] = string.toISOString().substring(0, 10).split('-')
+    return `${year}-${month}-${day}`
   }
 }
 

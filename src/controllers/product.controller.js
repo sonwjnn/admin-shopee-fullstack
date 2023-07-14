@@ -12,7 +12,7 @@ const { toStringDate } = require('../utilities/toStringDate')
 
 const addProduct = async (req, res) => {
   try {
-    const { name, productType, cateType } = req.body
+    const { name, productType, cateType, discount } = req.body
     // var idUser = ''
     // jwt.verify(req.cookies.token, secret, function (err, decoded) {
     //   if (err) throw err

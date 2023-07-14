@@ -14,8 +14,8 @@
 
       const productType = $('#productType').val()
       const cateType = $('#cateType').val()
-      var producedAt = $('#producedAt').val();
-      const discount = $('discount').val()
+      const producedAt = $('#producedAt').val();
+      const discount = $('#discount').val()
       var info = CKEDITOR.instances['productStory'].getData();
 
 
@@ -166,6 +166,7 @@
                 cateType,
                 imageName,
                 info,
+                discount,
                 producedAt,
                 imageNameReal
               },
@@ -630,7 +631,12 @@
   });
 </script>
 
+
 <script>
+  /*
+    The logic is that when selecting or changing a product type,
+    a new category is suggested when adding products
+  */
   $(document).ready(async function() {
     const cates = [];
     const types = [];
@@ -645,10 +651,9 @@
       }
     });
 
-
+    const cateType = document.getElementById('cateType');
     $("#productType").change(function(event) {
       const selectedType = event.target.value;
-      const cateType = document.getElementById('cateType');
       cateType.innerHTML = '';
 
       $.ajax({
@@ -673,4 +678,25 @@
       });
     });
   });
+</script>
+
+<script>
+  $(document).ready(() => {
+    $('#price').on('input', updateDiscountPrice);
+    $('#discount').on('input', updateDiscountPrice);
+
+    function updateDiscountPrice() {
+      const priceValue = parseFloat($('#price').val());
+      const discountValue = parseFloat($('#discount').val());
+
+      if (priceValue && discountValue) {
+        const discountPriceValue = priceValue - (priceValue * discountValue) / 100;
+        $('#discountPrice').val(discountPriceValue.toFixed(2));
+      } else if (!discountValue && priceValue) {
+        $('#discountPrice').val(priceValue.toFixed(2));
+      } else if (!priceValue) {
+        $('#discountPrice').val('');
+      }
+    }
+  })
 </script>
