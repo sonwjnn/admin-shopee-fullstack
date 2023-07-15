@@ -38,7 +38,6 @@ const addProduct = async (req, res) => {
 
     res.send({ kq: 0, msg: 'Add product successfully!' })
 
-    // error must to fix
     responseHandler.created(res, product)
   } catch (error) {
     res.send({ kq: 0, msg: 'Connection to database failed' })
@@ -46,16 +45,93 @@ const addProduct = async (req, res) => {
   }
 }
 
+/**
+  TODO: must to add case cate type and product type
+ */
 const editProduct = async (req, res) => {
   try {
+    const {
+      id,
+      name,
+      origin,
+      price,
+      cateType,
+      productType,
+      discount,
+      discountPrice,
+      imageName,
+      info,
+      producedAt
+    } = req.body
+
+    var obj
+    if (imageName == '') {
+      obj = {
+        name,
+        origin,
+        price,
+        discount,
+        discountPrice,
+        info,
+        producedAt
+      }
+    } else {
+      obj = {
+        name,
+        origin,
+        price,
+        discount,
+        imageName,
+        discountPrice,
+        info,
+        producedAt
+      }
+    }
+    // check username or email or phone
+    const check_obj = { $or: [{ name }] }
+
+    productModel.find(check_obj).exec((err, data) => {
+      if (err) {
+        res.send({ kq: 0, msg: 'Connection to database failed' })
+      } else {
+        if (imageName == '') {
+        } else {
+          try {
+            var path =
+              'angularShopping/src/assets/img/products/' + data[0].imageName
+            fs.unlinkSync(path)
+          } catch (err) {
+            if (err.code === 'ENOENT') {
+              console.log('File not found!')
+            } else {
+              throw err
+            }
+          }
+        }
+        productModel.updateMany({ _id: id }, obj, (err, data) => {
+          if (err) {
+            res.send({ kq: 0, msg: 'Product name is already exists!' })
+          } else {
+            res.send({ kq: 1, msg: 'Update data successfully' })
+          }
+        })
+      }
+    })
+  } catch (error) {
+    res.send({ kq: 0, msg: 'Edit product failed' })
+    responseHandler.error(res)
+  }
+}
+
+const editProductPayload = async (req, res) => {
+  try {
     const id = req.params.id
-    const objectId = mongoose.Types.ObjectId(id)
     const product = await productModel
-      .findOne({ _id: objectId })
+      .findOne({ _id: id })
       .populate('cateId', 'name')
       .populate('typeId', 'name')
 
-    if (!product) return res.send({ kq: 0, msg: 'Data is not exists.' })
+    if (!product) return res.send({ kq: 0, msg: 'Product is not exists.' })
 
     const types = await typeModel.find().select('name')
     const uniqueTypeNames = [...new Set(types.map(type => type.name))]
@@ -70,7 +146,7 @@ const editProduct = async (req, res) => {
       producedAt
     })
   } catch (error) {
-    res.send({ kq: 0, msg: 'Edit product failed' })
+    res.send({ kq: 0, msg: 'Edit product payload failed' })
     responseHandler.error(res)
   }
 }
@@ -126,7 +202,11 @@ const getList = async (req, res) => {
 const getDetail = async (req, res) => {
   try {
     const { productId } = req.params
-    const product = await productModel.findById(productId).lean()
+    const product = await productModel
+      .findById(productId)
+      .populate('cateId', 'name')
+      .populate('typeId', 'name')
+      .lean()
     const tokenDecoded = tokenMiddleware.tokenDecode(req)
     if (tokenDecoded) {
       const user = await userModel.findById(tokenDecoded.data)
@@ -156,4 +236,10 @@ const getDetail = async (req, res) => {
   }
 }
 
-module.exports = { getList, getDetail, addProduct, editProduct }
+module.exports = {
+  getList,
+  getDetail,
+  addProduct,
+  editProduct,
+  editProductPayload
+}

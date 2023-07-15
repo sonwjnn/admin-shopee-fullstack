@@ -101,6 +101,13 @@ input[type='checkbox'] {
   border-radius: 0px 0px 0px 0px !important;
 }
 
+.form-control-none {
+  box-shadow: none !important;
+  border-style: solid !important;
+  border-width: 0px 0px 0px 0px !important;
+  border-radius: 4px !important;
+}
+
 .noti {
   border: solid;
   border-color: white;

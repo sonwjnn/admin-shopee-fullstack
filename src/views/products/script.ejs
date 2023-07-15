@@ -193,10 +193,13 @@
       e.preventDefault();
       var flag = 1;
       var flagSyntax = 1;
-      var name = $('#name').val();
-      var origin = $('#origin').val();
-      var price = $('#price').val();
-      var type = $('#productType').val();
+      const name = $('#name').val();
+      const origin = $('#origin').val();
+      const price = $('#price').val();
+      const discount = $('#discount').val();
+      const discountPrice = $('#discountPrice').val();
+      const productType = $('#productType').val();
+      const cateType = $('#cateType').val();
       var producedAt = $('#producedAt').val();
       var info = CKEDITOR.instances['productInfo'].getData();
 
@@ -373,7 +376,7 @@
             $('#imageShow').val(value);
             var id = $('#id').val();
             $.ajax({
-              url: '/admin/products/update',
+              url: '/admin/products/edit',
               type: 'POST',
               data: {
                 id,
@@ -381,7 +384,10 @@
                 origin,
                 price,
                 imageName: value,
-                type,
+                discount,
+                discountPrice,
+                productType,
+                cateType,
                 info,
                 producedAt,
                 imageNameReal
@@ -398,7 +404,7 @@
         if (true) {
           var id = $('#id').val();
           $.ajax({
-            url: '/admin/products/update',
+            url: '/admin/products/edit',
             type: 'POST',
             data: {
               id,
@@ -406,7 +412,10 @@
               origin,
               price,
               imageName,
-              type,
+              discount,
+              discountPrice,
+              productType,
+              cateType,
               info,
               producedAt,
               imageNameReal
@@ -494,33 +503,41 @@
 
 <script>
   function getName(id) {
-
     $.ajax({
-      url: '/admin/products/showDetail',
+      url: `/admin/products/detail/${id}`,
       type: 'POST',
-      data: {
-        id
-      },
-      success: function(res) {
+      success: function(data) {
+        const {
+          name,
+          origin,
+          price,
+          imageName,
+          info
+        } = data
+
+        const productType = data.typeId.name
+        const cateType = data.cateId.name
+
         var producedAt;
-        if (res.data[0].producedAt == "" || res.data[0].producedAt == undefined) {
+        if (data.producedAt == "" || data.producedAt == undefined) {
           producedAt = '';
         } else {
-          var arr = res.data[0].producedAt.split('-');
+          var arr = data.producedAt.split('-');
           producedAt = arr[2].substring(0, 2) + '-' + arr[1] + '-' + arr[0];
         }
 
         $('#idProduct').val(id);
-        $('#name').val(res.data[0].name);
-        $('#origin').val(res.data[0].origin);
-        $('#price').val(res.data[0].price);
+        $('#name').val(name);
+        $('#origin').val(origin);
+        $('#price').val(price);
         $('#producedAt').val(producedAt);
-        $('#productType').val(res.data[0].type);
+        $('#productType').val(productType);
+        $('#cateType').val(cateType);
         var imageNameShow = '';
-        imageNameShow = "background-image: url('/img/products/" + res.data[0].imageName + "');";
+        imageNameShow = "background-image: url('/img/products/" + imageName + "');";
         $("#imageName").attr('style', imageNameShow);
 
-        CKEDITOR.instances['info'].setData(res.data[0].info);
+        CKEDITOR.instances['info'].setData(info);
 
 
         $('#popupDetail').click();

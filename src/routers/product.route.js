@@ -236,102 +236,11 @@ router.get('/search/(:name?)(/:pageNumber?)', async (req, res) => {
     })
 })
 
-router.post('/showDetail', function (req, res) {
-  var id = req.body.id
+router.get('/detail/:productId', productController.getDetail)
 
-  const check_obj = { _id: id }
-  productModel.find(check_obj).exec((err, data) => {
-    if (err) {
-      res.send({ kq: 0, msg: 'Connection to database failed' })
-    } else {
-      if (data == '') {
-        res.send({ kq: 0, data, msg: 'Data id not exists' })
-      } else {
-        res.send({ kq: 1, data, msg: 'Get data sucesssfully' })
-      }
-    }
-  })
-})
+router.post('/edit', productController.editProduct)
 
-router.post('/update', function (req, res) {
-  var id,
-    name,
-    origin,
-    price,
-    type,
-    imageName,
-    info,
-    producedAt,
-    flag = 1
-
-  id = req.body.id
-  name = req.body.name
-  origin = req.body.origin
-  price = req.body.price
-  imageName = req.body.imageName
-  type = req.body.type
-  info = req.body.info
-  producedAt = req.body.producedAt
-  var error = ''
-
-  if (flag == 1) {
-    var obj
-    if (imageName == '') {
-      obj = {
-        name,
-        origin,
-        price,
-        type,
-        info,
-        producedAt
-      }
-    } else {
-      obj = {
-        name,
-        origin,
-        price,
-        imageName,
-        type,
-        info,
-        producedAt
-      }
-    }
-    // check username or email or phone
-    const check_obj = { $or: [{ name }] }
-
-    productModel.find(check_obj).exec((err, data) => {
-      if (err) {
-        res.send({ kq: 0, msg: 'Connection to database failed' })
-      } else {
-        if (imageName == '') {
-        } else {
-          try {
-            var path =
-              'angularShopping/src/assets/img/products/' + data[0].imageName
-            fs.unlinkSync(path)
-          } catch (err) {
-            if (err.code === 'ENOENT') {
-              console.log('File not found!')
-            } else {
-              throw err
-            }
-          }
-        }
-        productModel.updateMany({ _id: id }, obj, (err, data) => {
-          if (err) {
-            res.send({ kq: 0, msg: 'Product name is already exists!' })
-          } else {
-            res.send({ kq: 1, msg: 'Update data successfully' })
-          }
-        })
-      }
-    })
-  } else {
-    res.send({ kq: 0, msg: error })
-  }
-})
-
-router.get('/edit/:id', productController.editProduct)
+router.get('/edit/:id', productController.editProductPayload)
 
 router.post('/delete', function (req, res) {
   var _id = req.body.id
