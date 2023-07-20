@@ -33,7 +33,7 @@ const remove = async (req, res) => {
 
     await review.deleteOne()
 
-    responseHandler.ok(res)
+    return responseHandler.ok(res)
   } catch (error) {
     responseHandler.error(error)
   }

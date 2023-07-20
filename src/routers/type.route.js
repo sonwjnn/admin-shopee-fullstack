@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const typeModel = require('../models/type.model')
 const cateModel = require('../models/category.model')
+const { toStringColor } = require('../utilities/toStringColor')
 
 router.get('/index(/:pageNumber?)', async (req, res) => {
   try {
@@ -51,6 +52,10 @@ router.get('/index(/:pageNumber?)', async (req, res) => {
           const ymd = item.createdAt.toISOString().substring(0, 10).split('-')
           const dateString = ymd[2] + '-' + ymd[1] + '-' + ymd[0]
           dateOfC.push(dateString)
+        })
+
+        data.forEach(product => {
+          product.colorCate = toStringColor(product.cateId.name)
         })
 
         res.render('index', {

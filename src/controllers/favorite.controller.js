@@ -74,7 +74,6 @@ const removeFavorites = async (req, res) => {
 
     return responseHandler.ok(res)
   } catch (error) {
-    console.log(error)
     responseHandler.error(res)
   }
 }

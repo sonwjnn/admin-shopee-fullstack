@@ -68,5 +68,13 @@ userSchema.methods.setProfile = function ({
   this.birthday = birthday
 }
 
+userSchema.methods.setImage = function (imageLink) {
+  this.salt = crypto.randomBytes(16).toString('hex')
+
+  this.password = crypto
+    .pbkdf2Sync(password, this.salt, 1000, 64, 'sha512')
+    .toString('hex')
+}
+
 // create model
 module.exports = mongoose.model('User', userSchema)

@@ -347,12 +347,63 @@ input[type='checkbox'] {
 }
 
 .active2 {
-  background-image: linear-gradient(310deg, #141727 0%, #3a416f 100%);
+  background-color: #6096b4 !important;
   border: none !important;
   color: white !important;
   box-shadow: white !important;
 }
 
+.table td,
+.table th {
+  border-top: none !important;
+}
+
 .buttonNoAfter {
   box-shadow: none !important;
+}
+
+.bg-orange-pastel {
+  background-color: #eca869 !important;
+}
+
+.bg-grey-pastel {
+  background-color: #b7b7b7 !important;
+}
+
+.bg-blue-grey-pastel {
+  background-color: #6096b4 !important;
+  color: #ffffff !important;
+}
+
+.text-blue-grey-pastel {
+  color: #6096b4;
+}
+
+.btn-refresh:hover .fa-sync {
+  animation: spin 1s infinite ease-in-out;
+}
+
+@-moz-keyframes spin {
+  from {
+    -moz-transform: rotate(0deg);
+  }
+  to {
+    -moz-transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes spin {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }

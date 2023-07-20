@@ -35,7 +35,6 @@ const addCart = async (req, res) => {
 
     responseHandler.created(res, cart)
   } catch (error) {
-    console.log(error)
     responseHandler.error(res)
   }
 }

@@ -3,6 +3,7 @@
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 
 <script>
+  // form product add
   $(document).ready(function() {
     $('#formProductsAdd').on('submit', function(e) {
       e.preventDefault();
@@ -16,6 +17,7 @@
       const cateType = $('#cateType').val()
       const producedAt = $('#producedAt').val();
       const discount = $('#discount').val()
+      const status = $('#status').val()
       var info = CKEDITOR.instances['productStory'].getData();
 
 
@@ -168,7 +170,8 @@
                 info,
                 discount,
                 producedAt,
-                imageNameReal
+                imageNameReal,
+                status
               },
               success: function(res) {
                 console.log(res.msg);
@@ -188,6 +191,7 @@
 </script>
 
 <script>
+  // form product edit
   $(document).ready(function() {
     $('#formProductsEdit').on('submit', function(e) {
       e.preventDefault();
@@ -198,8 +202,9 @@
       const price = $('#price').val();
       const discount = $('#discount').val();
       const discountPrice = $('#discountPrice').val();
-      const productType = $('#productType').val();
-      const cateType = $('#cateType').val();
+      const productType = $('#productType').val()
+      const cateType = $('#cateType').val()
+      const status = $('#status').val()
       var producedAt = $('#producedAt').val();
       var info = CKEDITOR.instances['productInfo'].getData();
 
@@ -390,7 +395,8 @@
                 cateType,
                 info,
                 producedAt,
-                imageNameReal
+                imageNameReal,
+                status
               },
               success: function(res) {
                 console.log(res.msg);
@@ -418,7 +424,8 @@
               cateType,
               info,
               producedAt,
-              imageNameReal
+              imageNameReal,
+              status
             },
             success: function(res) {
               console.log(res.msg);
@@ -505,46 +512,54 @@
   function getName(id) {
     $.ajax({
       url: `/admin/products/detail/${id}`,
-      type: 'POST',
+      type: 'GET',
       success: function(data) {
-        const {
-          name,
-          origin,
-          price,
-          imageName,
-          info
-        } = data
+        //key = #{key} is id of element html, value is value
+        const mapping = {
+          idProduct: 'id',
+          name: 'name',
+          origin: 'origin',
+          price: 'price',
+          discount: 'discount',
+          discountPrice: 'discountPrice',
+          producedAt: 'producedAt',
+          productType: 'typeId.name',
+          cateType: 'cateId.name',
+          info: 'info',
+          status: 'status'
+        };
 
-        const productType = data.typeId.name
-        const cateType = data.cateId.name
-
-        var producedAt;
-        if (data.producedAt == "" || data.producedAt == undefined) {
-          producedAt = '';
-        } else {
-          var arr = data.producedAt.split('-');
-          producedAt = arr[2].substring(0, 2) + '-' + arr[1] + '-' + arr[0];
+        for (const key in mapping) {
+          const value = mapping[key];
+          let fieldValue = data;
+          value.split('.').forEach(prop => {
+            fieldValue = fieldValue[prop];
+          });
+          $('#' + key).val(fieldValue);
         }
 
-        $('#idProduct').val(id);
-        $('#name').val(name);
-        $('#origin').val(origin);
-        $('#price').val(price);
-        $('#producedAt').val(producedAt);
-        $('#productType').val(productType);
-        $('#cateType').val(cateType);
-        var imageNameShow = '';
-        imageNameShow = "background-image: url('/img/products/" + imageName + "');";
+        if (data.producedAt && data.producedAt !== "") {
+          const [year, month, day] = data.producedAt.split('-');
+          const formattedProducedAt = `${day.substring(0, 2)}-${month}-${year}`;
+          $('#producedAt').val(formattedProducedAt);
+        } else {
+          $('#producedAt').val('');
+        }
+
+        const imageNameShow = `background-image: url('/img/products/${data.imageName}');`;
         $("#imageName").attr('style', imageNameShow);
 
-        CKEDITOR.instances['info'].setData(info);
-
+        CKEDITOR.instances['info'].setData(data.info);
 
         $('#popupDetail').click();
       }
     });
   }
 </script>
+
+
+
+
 
 <script>
   $('#clickMe').click(function() {
@@ -565,11 +580,8 @@
   function deleteProduct() {
     var id = $('#idDelete').text();
     $.ajax({
-      url: '/admin/products/delete',
-      type: 'POST',
-      data: {
-        id
-      },
+      url: '/admin/products/' + id,
+      type: 'DELETE',
       success: function(res) {
         location.reload();
       }
@@ -580,7 +592,7 @@
 
 <script>
   $(document).ready(function() {
-    var arr = [];
+    var ids = [];
 
     $('.deleteGr').click(function() {
       var i = 0;
@@ -588,12 +600,11 @@
         var id = $(this).closest("tr").find("td:nth-child(4)").text();
         id = id.replace(/ /g, '');
         id = id.replace(/(\r\n|\n|\r)/gm, "");
-        console.log(id);
-        arr[i] = id;
+        ids[i] = id;
         i++;
       });
 
-      if (arr.length == 0) {
+      if (ids.length == 0) {
         $('#popupDeleteGrNoData').click();
       } else {
         $('#popupDeleteGr').click();
@@ -604,11 +615,11 @@
     $('#buttonDeleteGr').click(function() {
 
       $.ajax({
-        url: '/admin/products/deleteGr',
+        url: '/admin/products/deleteGroup',
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({
-          arr: arr
+          ids
         }),
         success: function(res) {
           location.reload();

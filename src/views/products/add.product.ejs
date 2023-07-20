@@ -79,13 +79,23 @@
                 <input type="date" class="form-control form-control-new" id="producedAt">
               </div>
 
-
+              <div class="form-group col-md-6">
+                <label class="form-label display-inline" for="status">Status</label>
+                <select id="status" class="form-select">
+                  <option value="" hidden> Choose status </option>
+                  <% for(var i=0; i < status.length; i++) { %>
+                  <option value="<%=status[i]%>"><%=status[i]%></option>
+                  <% } %>
+                </select>
+              </div>
 
 
               <div class="form-group col-md-12">
                 <label class="form-label" for="productstory">Product Description</label>
                 <textarea class="form-control" id="productStory" cols="30" rows="10" name="contentStory"></textarea>
               </div>
+
+
             </div>
             <!--  <div class="form-group">
                             <div class="form-check">
@@ -95,8 +105,8 @@
                                 </label>
                             </div>
                         </div> -->
-            <button type="button" class="btn btn-outline-info me-2" onclick="location.href='/admin/products/index'"> Back </button>
-            <button type="submit" class="btn alert-info text-white"> Save </button>
+            <button type="button" class="btn btn-outline-info me-2" onclick="window.history.back()"> Back </button>
+            <button type="submit" class="btn bg-blue-grey-pastel text-white"> Save </button>
 
           </form>
         </div>

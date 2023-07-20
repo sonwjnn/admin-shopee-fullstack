@@ -6,9 +6,10 @@ const cateModel = require('../models/category.model')
 const typeModel = require('../models/type.model')
 const filepath = 'angularShopping/src/assets/json/archiveImage.json'
 const tokenMiddleware = require('../middlewares/token.middleware')
-const productController = require('../controllers/product.controller.js')
+const productController = require('../controllers/product.controller')
 
 var jwt = require('jsonwebtoken')
+const { toStringColor } = require('../utilities/toStringColor')
 var secret = 'none'
 
 var imageNameSend = ''
@@ -46,6 +47,11 @@ router.get('/index(/:pageNumber?)', async (req, res) => {
       .skip(skip)
       .sort({ _id: 1 })
 
+    products.forEach(product => {
+      product.colorType = toStringColor(product.typeId.name)
+      product.colorCate = toStringColor(product.cateId.name)
+    })
+
     const index = 'products',
       main = 'products/main',
       flag = 0,
@@ -60,26 +66,11 @@ router.get('/index(/:pageNumber?)', async (req, res) => {
       flag
     })
   } catch (error) {
-    console.log(error)
     res.send({ kq: 0, msg: error })
   }
 })
 
-router.get('/add', async (req, res) => {
-  try {
-    const types = await typeModel.find().select('name')
-
-    // Lọc ra các type có tên trùng nhau
-    const uniqueTypeNames = [...new Set(types.map(type => type.name))]
-
-    var index = 'products'
-    var main = 'products/add.product.ejs'
-
-    res.render('index', { main, index, types: uniqueTypeNames })
-  } catch (error) {
-    res.send({ kq: 0, msg: 'Something went wrong with types or cates!' })
-  }
-})
+router.get('/add', productController.addProductPayload)
 
 router.post('/add', productController.addProduct)
 
@@ -240,75 +231,11 @@ router.get('/detail/:productId', productController.getDetail)
 
 router.post('/edit', productController.editProduct)
 
-router.get('/edit/:id', productController.editProductPayload)
+router.get('/edit/:productId', productController.editProductPayload)
 
-router.post('/delete', function (req, res) {
-  var _id = req.body.id
-  const check_obj = { $or: [{ _id }] }
-  productModel.find(check_obj).exec((err, data) => {
-    if (err) {
-      res.send({ kq: 0, msg: 'Connection to database failed' })
-    }
+router.delete('/:productId', productController.removeProduct)
 
-    if (data == '') {
-      res.send({ kq: 0, msg: 'Data id not exists' })
-    } else {
-      console.log(data)
-      productModel.findByIdAndDelete({ _id: data[0]._id }, (err, data2) => {
-        if (err) {
-          res.send({ kq: 0, msg: 'Connection to database failed' })
-        } else {
-          try {
-            var path =
-              'angularShopping/src/assets/img/products/' + data[0].imageName
-            fs.unlinkSync(path)
-          } catch (err) {
-            if (err.code === 'ENOENT') {
-              console.log('File not found!')
-            } else {
-              throw err
-            }
-          }
-          res.send({ kq: 1, msg: 'Delete data successfully!' })
-        }
-      })
-    }
-  })
-})
-
-router.post('/deleteGr', async function (req, res) {
-  var arr = JSON.parse(JSON.stringify(req.body))
-
-  const check_obj = { _id: { $in: arr.arr } }
-
-  await productModel.find(check_obj).exec((err, data) => {
-    if (err) {
-      res.send({ kq: 0, msg: 'Connection to database failed' })
-    } else {
-      for (var i = 0; i < data.length; i++) {
-        try {
-          var path =
-            'angularShopping/src/assets/img/products/' + data[i].imageName
-          fs.unlinkSync(path)
-        } catch (err) {
-          if (err.code === 'ENOENT') {
-            console.log('File not found!')
-          } else {
-            throw err
-          }
-        }
-      }
-    }
-  })
-
-  productModel.deleteMany(check_obj, (err, data) => {
-    if (err) {
-      res.json({ kq: 0, msg: 'Connection to database failed' })
-    } else {
-      res.json({ kq: 1, msg: 'Delete data successfully!' })
-    }
-  })
-})
+router.post('/deleteGroup', productController.removeProducts)
 
 const readJsonFile = function (filepath, id, imageName) {
   var fileString = fs.readFileSync(filepath).toString()

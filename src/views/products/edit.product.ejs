@@ -65,7 +65,7 @@
               <div class="form-group col-md-6">
                 <label class="form-label display-inline" for="productType">Product Type</label>
                 <select id="productType" class="form-select">
-                  <option value="" hidden><%=data.typeId.name%></option>
+                  <option value="<%=data.typeId.name%>" hidden><%=data.typeId.name%></option>
                   <% for(var i=0; i < types.length; i++) { %>
                   <option value="<%=types[i]%>"><%=types[i]%></option>
                   <% } %>
@@ -75,7 +75,7 @@
               <div class="form-group col-md-6">
                 <label class="form-label display-inline" for="cateType">Cate Type</label>
                 <select id="cateType" class="form-select" disabled>
-                  <option value="" hidden><%=data.cateId.name%></option>
+                  <option value="<%=data.cateId.name%>" hidden><%=data.cateId.name%></option>
                 </select>
               </div>
 
@@ -84,7 +84,15 @@
                 <input type="date" class="form-control form-control-new" id="producedAt" value="<%=producedAt%>">
               </div>
 
-
+              <div class="form-group col-md-6">
+                <label class="form-label display-inline" for="status">Status</label>
+                <select id="status" class="form-select">
+                  <option value="<%=data.status%>" hidden><%=data.status%></option>
+                  <% for(var i=0; i < status.length; i++) { %>
+                  <option value="<%=status[i]%>"><%=status[i]%></option>
+                  <% } %>
+                </select>
+              </div>
 
               <div class="form-group col-md-12">
                 <label class="form-label" for="productInfo">Product Description</label>
@@ -105,8 +113,8 @@
                                 </label>
                             </div>
                         </div> -->
-            <button type="button" class="btn btn-outline-info me-2" onclick="location.href='/admin/products/index'"> Back </button>
-            <button type="submit" class="btn alert-info text-white"> Save </button>
+            <button type="button" class="btn btn-outline-info me-2" onclick="window.history.back()"> Back </button>
+            <button type="submit" class="btn bg-blue-grey-pastel text-white"> Save </button>
             <button type="button" id="clickMe" class="hiden">click</button>
           </form>
         </div>

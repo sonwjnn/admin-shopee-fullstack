@@ -9,6 +9,7 @@ const userModel = require('../models/user.model')
 const favoriteModel = require('../models/favorite.model')
 const typeModel = require('../models/type.model')
 const { toStringDate } = require('../utilities/toStringDate')
+const fs = require('fs')
 
 const addProduct = async (req, res) => {
   try {
@@ -26,7 +27,10 @@ const addProduct = async (req, res) => {
       return res.send({ kq: 0, msg: 'Product name is already exists!' })
 
     const cate = await categoryModel.findOne({ name: cateType })
-    const type = await typeModel.findOne({ name: productType })
+    const type = await typeModel.findOne({
+      name: productType,
+      cateId: cate._id
+    })
 
     const product = new productModel({
       ...req.body,
@@ -45,89 +49,66 @@ const addProduct = async (req, res) => {
   }
 }
 
-/**
-  TODO: must to add case cate type and product type
- */
+const addProductPayload = async (req, res) => {
+  try {
+    const types = await typeModel.find().select('name')
+
+    // Lọc ra các type có tên trùng nhau
+    const uniqueTypeNames = [...new Set(types.map(type => type.name))]
+
+    const status = [
+      'Có sẵn',
+      'Hoạt động',
+      'Ngừng hoạt động',
+      'Ngừng sản xuất',
+      'Đã xóa'
+    ]
+    var index = 'products'
+    var main = 'products/add.product.ejs'
+
+    res.render('index', { main, index, types: uniqueTypeNames, status })
+  } catch (error) {
+    res.send({ kq: 0, msg: 'Something went wrong with types or cates!' })
+  }
+}
+
 const editProduct = async (req, res) => {
   try {
-    const {
-      id,
-      name,
-      origin,
-      price,
-      cateType,
-      productType,
-      discount,
-      discountPrice,
-      imageName,
-      info,
-      producedAt
-    } = req.body
-
-    var obj
-    if (imageName == '') {
-      obj = {
-        name,
-        origin,
-        price,
-        discount,
-        discountPrice,
-        info,
-        producedAt
-      }
-    } else {
-      obj = {
-        name,
-        origin,
-        price,
-        discount,
-        imageName,
-        discountPrice,
-        info,
-        producedAt
-      }
-    }
-    // check username or email or phone
-    const check_obj = { $or: [{ name }] }
-
-    productModel.find(check_obj).exec((err, data) => {
-      if (err) {
-        res.send({ kq: 0, msg: 'Connection to database failed' })
-      } else {
-        if (imageName == '') {
-        } else {
-          try {
-            var path =
-              'angularShopping/src/assets/img/products/' + data[0].imageName
-            fs.unlinkSync(path)
-          } catch (err) {
-            if (err.code === 'ENOENT') {
-              console.log('File not found!')
-            } else {
-              throw err
-            }
-          }
-        }
-        productModel.updateMany({ _id: id }, obj, (err, data) => {
-          if (err) {
-            res.send({ kq: 0, msg: 'Product name is already exists!' })
-          } else {
-            res.send({ kq: 1, msg: 'Update data successfully' })
-          }
-        })
-      }
+    const { id, cateType, productType, imageName } = req.body
+    const cate = await categoryModel.findOne({ name: cateType })
+    const type = await typeModel.findOne({
+      name: productType,
+      cateId: cate._id
     })
+
+    const currentProduct = await productModel.findOne({ _id: id })
+
+    if (imageName !== '' && imageName !== currentProduct.imageName) {
+      const path = 'src/assets/img/products/' + currentProduct.imageName
+      fs.unlinkSync(path)
+    }
+
+    const update = {
+      ...req.body,
+      cateId: cate._id,
+      typeId: type._id
+    }
+
+    if (imageName === '') delete update.imageName
+
+    await productModel.updateOne({ _id: id }, update)
+
+    res.send({ kq: 1, msg: 'Successfully updated product data' })
   } catch (error) {
-    res.send({ kq: 0, msg: 'Edit product failed' })
-    responseHandler.error(res)
+    res.send({ kq: 0, msg: 'Failed to edit product' })
   }
 }
 
 const editProductPayload = async (req, res) => {
   try {
-    const id = req.params.id
+    const { productId } = req.params
     const product = await productModel
-      .findOne({ _id: id })
+      .findOne({ _id: productId })
       .populate('cateId', 'name')
       .populate('typeId', 'name')
 
@@ -135,6 +116,13 @@ const editProductPayload = async (req, res) => {
 
     const types = await typeModel.find().select('name')
     const uniqueTypeNames = [...new Set(types.map(type => type.name))]
+    const status = [
+      'Có sẵn',
+      'Hoạt động',
+      'Ngừng hoạt động',
+      'Ngừng sản xuất',
+      'Đã xóa'
+    ]
     const producedAt = toStringDate.ymd(product.producedAt)
     const index = 'products'
     const main = 'products/edit.product.ejs'
@@ -143,11 +131,56 @@ const editProductPayload = async (req, res) => {
       index,
       data: product,
       types: uniqueTypeNames,
-      producedAt
+      producedAt,
+      status
     })
   } catch (error) {
+    console.log(error)
     res.send({ kq: 0, msg: 'Edit product payload failed' })
     responseHandler.error(res)
+  }
+}
+
+const removeProduct = async (req, res) => {
+  try {
+    const { productId } = req.params
+    const product = await productModel.findOne({ _id: productId })
+    if (!product) {
+      res.send({ kq: 0, msg: 'Data id not exists' })
+      return responseHandler.notfound(res)
+    }
+
+    const path = 'src/assets/img/products/' + product.imageName
+    fs.unlinkSync(path)
+
+    await product.deleteOne()
+
+    res.send({ kq: 1, msg: 'Remove product successfully!' })
+    responseHandler.ok(res)
+  } catch (error) {
+    res.send({ kq: 0, msg: 'Failed to remove product' })
+  }
+}
+
+const removeProducts = async function (req, res) {
+  try {
+    const productIds = JSON.parse(JSON.stringify(req.body)).ids
+    const products = await productModel.find({ _id: { $in: productIds } })
+    if (!products) {
+      res.send({ kq: 0, msg: 'Data id not exists' })
+      return responseHandler.notfound(res)
+    }
+    for (const product of products) {
+      var path = 'src/assets/img/products/' + product.imageName
+      fs.unlinkSync(path)
+    }
+
+    await productModel.deleteMany({ _id: { $in: productIds } })
+
+    res.send({ kq: 1, msg: 'Remove products successfully!' })
+    responseHandler.ok(res)
+  } catch (error) {
+    res.send({ kq: 0, msg: 'Failed to remove products' })
   }
 }
 
@@ -240,6 +273,9 @@ module.exports = {
   getList,
   getDetail,
   addProduct,
+  addProductPayload,
   editProduct,
-  editProductPayload
+  editProductPayload,
+  removeProduct,
+  removeProducts
 }

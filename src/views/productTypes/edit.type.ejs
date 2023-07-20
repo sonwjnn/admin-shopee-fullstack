@@ -7,7 +7,7 @@
           <div class="col-md-6">
             <div class="card card-plain">
               <div class="card-header pb-0 text-left">
-                <h4 class="font-weight-bolder text-info text-gradient">Update Types of Products</h4>
+                <h4 class="font-weight-bolder text-blue-grey-pastel">Update Types of Products</h4>
                 <p class="mb-0">Enter your new infomation into the types of product</p>
               </div>
               <div class="card-body">
@@ -22,16 +22,16 @@
                   <select class="form-select" id="cateNames">
                     <option value="<%=data[0].cateName%>" hidden><%=data[0].cateName%></option>
                     <% for(var i=0; i < cates.length; i++) { %>
-                      <option value="<%=cates[i].name%>"><%=cates[i].name%></option>
+                    <option value="<%=cates[i].name%>"><%=cates[i].name%></option>
                     <% } %>
                   </select>
 
                   <div class="text-center">
-                    <button type="submit" class="btn bg-gradient-info w-100 mt-4 mb-0">
+                    <button type="submit" class="btn bg-blue-grey-pastel w-100 mt-4 mb-0">
                       Save Changes</button>
                   </div>
                   <hr>
-                  <button type="button" class="btn btn-outline-info" onclick="location.href='/admin/productTypes/index'"> Back </button>
+                  <button type="button" class="btn btn-outline-info" onclick="window.history.back()"> Back </button>
                 </form>
               </div>
 
@@ -40,7 +40,7 @@
           <div class="col-md-1"></div>
           <div class="col-md-5">
             <div class="oblique top-0 h-100 d-md-block d-none me-n8 img-w-max">
-              <div class="bg-cover ms-auto h-100 ms-n6" style="background-image:url('/img/curved-images/curved14.jpg')"></div>
+              <div class="bg-cover ms-auto h-100 ms-n6" style="background-image:url('/img/curved-images/curvedCity.jpg')"></div>
             </div>
           </div>
         </div>

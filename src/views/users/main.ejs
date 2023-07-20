@@ -85,13 +85,13 @@
 
                   <% if(data[i].role == 'user') { %>
                   <td class="align-middle text-center text-sm">
-                    <span class="badge badge-sm bg-gradient-dark">
+                    <span class="badge badge-sm bg-grey-pastel">
                       <%=data[i].role%>
                     </span>
                   </td>
                   <% } else {%>
                   <td class="align-middle text-center text-sm">
-                    <span class="badge badge-sm bg-gradient-warning">
+                    <span class="badge badge-sm bg-blue-grey-pastel">
                       <%=data[i].role%>
                     </span>
                   </td>
@@ -154,7 +154,10 @@
 
               </ul>
               <ul class="pagination justify-content-end" style="margin:20px 0">
-                <button type="button" class="btn bg-gradient-info text-white" onclick="location.href='/admin/users/index'"> Refresh </button>
+                <button type="button" class="btn btn-outline-info btn-refresh" onclick="location.href='/admin/users/index'">
+                  <i class="fas fa-sync mr-1"></i>
+                  Refresh
+                </button>
               </ul>
 
             </div>

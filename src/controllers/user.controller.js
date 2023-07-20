@@ -63,7 +63,6 @@ const signup = async (req, res) => {
       id: user.id
     })
   } catch (error) {
-    console.log(error)
     responseHandler.error(res)
   }
 }

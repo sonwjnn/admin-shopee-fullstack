@@ -29,8 +29,8 @@
 
                   <th class="text-center table-w-100 text-secondary text-sm">Name</th>
                   <th class="text-center table-w-100 text-secondary text-sm">Product Type</th>
-                  <th class="text-center table-w-100 text-secondary text-sm">Cate Type</th>
                   <th class="text-center table-w-100 text-sm text-secondary">Price</th>
+                  <th class="text-center table-w-100 text-secondary text-sm">Cate Type</th>
 
                   <th class="text-center table-w-10 text-secondary text-sm ">Detail
                   </th>
@@ -63,22 +63,21 @@
                       <%=data[i]._id%>
                     </p>
                   </td>
-
                   <td class="align-middle text-center text-sm">
-                    <span class="badge badge-sm btn-dark-gradient">
-                      <%=data[i].typeId.name%>
-                    </span>
-                  </td>
-
-                  <td class="align-middle text-center">
-                    <span class="text-sm">
-                      <%=data[i].cateId.name%>
+                    <span class="badge badge-sm " style="background: <%= data[i].colorType %>">
+                      <%= data[i].typeId.name %>
                     </span>
                   </td>
 
                   <td class="align-middle text-center">
                     <span class="text-sm">
                       <%=data[i].price%>
+                    </span>
+                  </td>
+
+                  <td class=" align-middle text-center text-sm">
+                    <span class="badge badge-sm " style="background: <%= data[i].colorCate %>">
+                      <%=data[i].cateId.name%>
                     </span>
                   </td>
 
@@ -155,7 +154,10 @@
                 <% } %>
               </ul>
               <ul class="pagination justify-content-end" style="margin:20px 0">
-                <button type="button" class="btn bg-gradient-info text-white" onclick="location.href='/admin/products/index'"> Refresh </button>
+                <button type="button" class="btn btn-outline-info btn-refresh" onclick="location.href='/admin/products/index'">
+                  <i class="fas fa-sync mr-1"></i>
+                  Refresh
+                </button>
               </ul>
 
             </div>
@@ -213,11 +215,11 @@
                     <div class="row">
                       <div class="col-md-6">
 
-                        <input type="text" class="form-control form-control-new hiden" id="idProduct" value="" disabled>
+                        <input type="text" class="form-control form-control-none hiden" id="idProduct" value="" disabled>
 
                         <div class="form-group">
                           <label class="form-label" for="name">Product Name</label>
-                          <input type="text" class="form-control form-control-new" id="name" placeholder="" value="Iphone 14" disabled>
+                          <input type="text" class="form-control form-control-none" id="name" placeholder="" value="Iphone 14" disabled>
                         </div>
 
                         <div class="form-group">
@@ -232,17 +234,36 @@
 
                         <div class="form-group">
                           <label class="form-label" for="origin">Origin</label>
-                          <input type="text" class="form-control form-control-new" id="origin" placeholder="" value="Made in China" disabled>
+                          <input type="text" class="form-control form-control-none" id="origin" placeholder="" value="Made in China" disabled>
                         </div>
 
                         <div class="form-group">
-                          <label class="form-label" for="price">Price</label>
-                          <input type="text" class="form-control form-control-new" id="price" placeholder="" value="2000$" disabled>
+
+                          <div class="row">
+                            <div class="col-md-4">
+                              <label class="form-label display-inline" for="price">Price <span id="priceError" class="spanError"></span></label>
+                              <input type="text" class="form-control form-control-none" id="price" placeholder="Ex: 2000" value="" disabled>
+
+                            </div>
+                            <div class="col-md-4">
+                              <label class="form-label display-inline" for="discount">Discount (%)<span id="discountError" class="spanError"></span></label>
+                              <input type="text" class="form-control form-control-none" id="discount" placeholder="Ex: 50" value="" disabled>
+                            </div>
+                            <div class="col-md-4">
+                              <label class="form-label display-inline" for="discountPrice">Discount Price<span id="discountPriceError" class="spanError"></span></label>
+                              <input type="text" class="form-control form-control-none" id="discountPrice" readonly value="" disabled>
+                            </div>
+                          </div>
                         </div>
 
                         <div class="form-group">
                           <label class="form-label" for="producedAt">Date of manufacture</label>
-                          <input type="text" class="form-control form-control-new" id="producedAt" value="2015-05-05" disabled>
+                          <input type="text" class="form-control form-control-none" id="producedAt" value="" disabled>
+                        </div>
+
+                        <div class="form-group">
+                          <label class="form-label" for="status">Status</label>
+                          <input type="text" class="form-control form-control-none" id="status" value="" disabled>
                         </div>
                       </div>
 
