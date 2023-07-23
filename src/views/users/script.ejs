@@ -111,82 +111,6 @@
 </script>
 
 
-<script>
-  var HaNoi = "Hoan Kiem,Dong Da,Ba Dinh,Hai Ba Trung,Hoang Mai,Thanh Xuan,Long Bien,Nam Tu Liem,other";
-  var HCM = "District 1,District 2,District 3,Hoc Mon,Go Vap,other";
-  $(document).ready(function() {
-    $('#cityMem').change(function(event) {
-      let selected = event.target.value;
-      if (selected == 'Ha Noi') {
-        $("#districtMem option").each(function() {
-          $(this).remove();
-        });
-        $('#districtMem').html('<option value="" disabled selected hidden>-Choose-</option>');
-
-        $.each(HaNoi.split(","), function(i, e) {
-          $('#districtMem').append($('<option>', {
-            value: e,
-            text: e
-          }));
-        });
-      } else {
-        $("#districtMem option").each(function() {
-          $(this).remove();
-        });
-        $('#districtMem').html('<option value="" disabled selected hidden>-Choose-</option>');
-        $.each(HCM.split(","), function(i, e) {
-          $('#districtMem').append($('<option>', {
-            value: e,
-            text: e
-          }));
-        });
-      }
-
-    });
-  });
-</script>
-
-<script>
-  var HaNoi = "Hoan Kiem,Dong Da,Ba Dinh,Hai Ba Trung,Hoang Mai,Thanh Xuan,Long Bien,Nam Tu Liem,other";
-  var HCM = "District 1,District 2,District 3,Hoc Mon,Go Vap,other";
-
-  $(document).ready(function() {
-    var thisCity = $('#thisCity').val();
-    if (thisCity == 'Ha Noi') {
-
-
-      var thisDis = $('#thisDis').val();
-      if (thisDis != '') {
-        $.each(HaNoi.split(","), function(i, e) {
-          $('#districtMem').append($('<option>', {
-            value: e,
-            text: e
-          }));
-        });
-      } else {
-        $('#districtMem').html('<option value="" disabled selected hidden>-Choose-</option>');
-      }
-
-    } else if (thisCity == 'TP HCM') {
-
-      var thisDis = $('#thisDis').val();
-      if (thisDis != '') {
-        $.each(HCM.split(","), function(i, e) {
-          $('#districtMem').append($('<option>', {
-            value: e,
-            text: e
-          }));
-        });
-      } else {
-        $('#districtMem').html('<option value="" disabled selected hidden>-Choose-</option>');
-
-      }
-    } else {
-      $('#districtMem').html('<option value="" disabled selected hidden>-Choose City-</option>');
-    }
-  });
-</script>
-
 
 
 
@@ -224,6 +148,8 @@
           $('#birthday').val(birthday);
 
           CKEDITOR.instances['story'].setData(res.data[0].story);
+
+          $('#exampleModalCenter2').attr('style', 'overflow: auto !important;')
           $('#popupDetail').click();
         }
       });
@@ -252,132 +178,22 @@
 
     $('#formMembersAdd').on('submit', function(e) {
       e.preventDefault();
-      var flag = 1;
-      var flagSyntax = 1;
-      var name = $('#nameMem').val();
-      var username = $('#usernameMem').val();
-      var password = $('#passwordMem').val();
+      const flag = 1;
+      const flagSyntax = 1;
+      const displayName = $('#nameMem').val();
+      const username = $('#usernameMem').val();
+      const password = $('#passwordAdd').val();
+      const confirmPassword = $('#confirmPassword').val()
+      const phone = $('#phoneMem').val();
+      const address = $('#addressMem').val();
+      const email = $('#emailMem').val();
+      const city = localStorage.getItem('address_1_saved')
+      const district = localStorage.getItem('address_2_saved')
+      const sex = $('#sexMem').val();
+      const birthday = $('#birthdayMem').val();
+      const role = $('#role').val();
+      const story = CKEDITOR.instances['storyMem'].getData();
 
-      var phone = $('#phoneMem').val();
-      var address = $('#addressMem').val();
-      var email = $('#emailMem').val();
-      var city = $('#cityMem').val();
-      var district = $('#districtMem').val();
-      var sex = $('#sexMem').val();
-      var birthday = $('#birthdayMem').val();
-      var role = $('#role').val();
-      var story = CKEDITOR.instances['storyMem'].getData();
-
-
-      var patternUsername = /\W/;
-      if (username == '') {
-        flag = 0;
-        $("#usernameMemError").html("(*)");
-        $("#usernameMemErrorText").html("Please fill up the infomation above");
-      } else if (username.length > 50) {
-        flagSyntax = 0;
-        $("#usernameMemError").html("(+)");
-        $("#usernameMemErrorText").html("username has maximum 50 characters");
-      } else if (patternUsername.test(username)) {
-        flagSyntax = 0;
-        $("#usernameMemError").html("(+)");
-        $("#usernameMemErrorText").html("Username must not contain especial characters");
-      } else {
-        $("#usernameMemError").html("");
-        $("#usernameMemErrorText").html("");
-      }
-
-      var regexPhone = /^([09|03|07|08|05]{2}([0-9]{8}))$/;
-
-      if (phone == '') {
-        flag = 0;
-        $("#phoneMemError").html("(*)");
-        $("#phoneMemErrorText").html("Please fill up the infomation above");
-      } else if (regexPhone.test(phone) == false) {
-        flagSyntax = 0;
-        $("#phoneMemError").html("(+)");
-        $("#phoneMemErrorText").html("The phone is not valid");
-      } else {
-        $("#phoneMemError").html("");
-        $("#phoneMemErrorText").html("");
-      }
-
-
-
-      var pattern = /[0-9]+/;
-      var pattern1 = /[a-z]+/;
-      var pattern2 = /[A-Z]+/;
-      var pattern3 = /[!@#$%^&*]+/;
-      var pattern4 = /.{6,}/;
-
-
-      if (password == '') {
-        flag = 0;
-        $("#passwordMemError").html("(*)");
-        $("#passwordMemErrorText").html("Please fill up the infomation above");
-      } else if (password.length < 6 || password.length > 30) {
-        flagSyntax = 0;
-        $("#passwordMemError").html("(+)");
-        $("#passwordMemErrorText").html("Password must contain at least 6 characters");
-      } else if (pattern.test(password) == false || pattern1.test(password) == false ||
-        pattern2.test(password) == false || pattern3.test(password) == false || pattern4.test(password) == false) {
-        flagSyntax = 0;
-        $("#passwordMemError").html("(+)");
-        $("#passwordMemErrorText").html("Password must contain at least 1 lowercase, 1 uppercase, 1 number and 1 special character");
-      } else {
-        $("#passwordMemError").html("");
-        $("#passwordMemErrorText").html("");
-      }
-
-
-
-      if (name == '') {
-        flag = 0;
-        $("#nameMemError").html("(*)");
-        $("#nameMemErrorText").html("Please fill up the infomation above");
-      } else {
-        $("#nameMemError").html("");
-        $("#nameMemErrorText").html("");
-      }
-
-      if (address == '') {
-        flag = 0;
-        $("#addressMemError").html("(*)");
-        $("#addressMemErrorText").html("Please fill up the infomation above");
-      } else {
-        $("#addressMemError").html("");
-        $("#addressMemErrorText").html("");
-      }
-
-
-      var patternEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-      if (email == '') {
-        flag = 0;
-        $("#emailMemError").html("(*)");
-        $("#emailMemErrorText").html("Please fill up the infomation above");
-      } else if (patternEmail.test(email) == false) {
-        flagSyntax = 0;
-        $("#emailMemError").html("(+)");
-        $("#emailMemErrorText").html("The email is not valid");
-      } else {
-        $("#emailMemError").html("");
-        $("#emailMemErrorText").html("");
-      }
-
-      var textError = 'Note:';
-
-      if (flag == 0) {
-        textError = textError + '<br> &emsp;(*): Enter missing information field';
-        $('#noteMember').html(textError);
-        $('#noteMember').removeClass('hiden');
-        $('#noteMember').addClass('unhiden');
-      }
-      if (flagSyntax == 0) {
-        textError = textError + '<br> &emsp;(+): Wrong syntax';
-        $('#noteMember').html(textError);
-        $('#noteMember').removeClass('hiden');
-        $('#noteMember').addClass('unhiden');
-      }
 
       if (flag == 0 || flagSyntax == 0) {
         $('#main').animate({
@@ -389,15 +205,16 @@
       if (flag == 1 && flagSyntax == 1) {
         $('#noteMember').removeClass('unhiden');
         $('#noteMember').addClass('hiden');
-
+        console.log(password)
         $.ajax({
           url: '/admin/users/add',
           type: 'POST',
           data: {
-            name,
+            displayName,
             username,
             password,
             phone,
+            confirmPassword,
             email,
             address,
             city,
@@ -408,9 +225,14 @@
             story
           },
           success: function(response) {
-
             $('#msg').html(response.msg);
             $('#popupInfo').click();
+          },
+          error: function(xhr, status, error) {
+            if (xhr.responseJSON) {
+              $("#msg").html(xhr.responseJSON.error);
+              $("#popupInfo").click();
+            }
           }
         });
         return false;
@@ -424,144 +246,52 @@
 
     $('#formMembersEdit').on('submit', function(e) {
       e.preventDefault();
-      var flag = 1;
-      var flagSyntax = 1;
-      var name = $('#nameMem').val();
-      var username = $('#usernameMem').val();
 
-      var phone = $('#phoneMem').val();
-      var address = $('#addressMem').val();
-      var email = $('#emailMem').val();
-      var city = $('#cityMem').val();
-      var district = $('#districtMem').val();
-      var sex = $('#sexMem').val();
-      var birthday = $('#birthdayMem').val();
-      var role = $('#role').val();
-      var story = CKEDITOR.instances['story'].getData();
+      const displayName = $('#nameMem').val();
+      const username = $('#usernameMem').val();
 
+      const phone = $('#phoneMem').val();
+      const address = $('#addressMem').val();
+      const email = $('#emailMem').val();
+      const city = localStorage.getItem('address_1_saved')
+      const district = $('.district').val();
+      const sex = $('#sexMem').val();
+      const birthday = $('#birthdayMem').val();
+      const role = $('#role').val();
+      const story = CKEDITOR.instances['story'].getData();
 
-      var patternUsername = /\W/;
-      if (username == '') {
-        flag = 0;
-        $("#usernameMemError").html("(*)");
-        $("#usernameMemErrorText").html("Please fill up the infomation above");
-      } else if (username.length > 50) {
-        flagSyntax = 0;
-        $("#usernameMemError").html("(+)");
-        $("#usernameMemErrorText").html("username has maximum 50 characters");
-      } else if (patternUsername.test(username)) {
-        flagSyntax = 0;
-        $("#usernameMemError").html("(+)");
-        $("#usernameMemErrorText").html("Username must not contain especial characters");
-      } else {
-        $("#usernameMemError").html("");
-        $("#usernameMemErrorText").html("");
-      }
-
-
-
-      var regexPhone = /^([09|03|07|08|05]{2}([0-9]{8}))$/;
-
-      if (phone == '') {
-        flag = 0;
-        $("#phoneMemError").html("(*)");
-        $("#phoneMemErrorText").html("Please fill up the infomation above");
-      } else if (regexPhone.test(phone) == false) {
-        flagSyntax = 0;
-        $("#phoneMemError").html("(+)");
-        $("#phoneMemErrorText").html("The phone is not valid");
-      } else {
-        $("#phoneMemError").html("");
-        $("#phoneMemErrorText").html("");
-      }
-
-
-
-      if (name == '') {
-        flag = 0;
-        $("#nameMemError").html("(*)");
-        $("#nameMemErrorText").html("Please fill up the infomation above");
-      } else {
-        $("#nameMemError").html("");
-        $("#nameMemErrorText").html("");
-      }
-
-      if (address == '') {
-        flag = 0;
-        $("#addressMemError").html("(*)");
-        $("#addressMemErrorText").html("Please fill up the infomation above");
-      } else {
-        $("#addressMemError").html("");
-        $("#addressMemErrorText").html("");
-      }
-
-
-      var patternEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-      if (email == '') {
-        flag = 0;
-        $("#emailMemError").html("(*)");
-        $("#emailMemErrorText").html("Please fill up the infomation above");
-      } else if (patternEmail.test(email) == false) {
-        flagSyntax = 0;
-        $("#emailMemError").html("(+)");
-        $("#emailMemErrorText").html("The email is not valid");
-      } else {
-        $("#emailMemError").html("");
-        $("#emailMemErrorText").html("");
-      }
-
-      var textError = 'Note:';
-
-      if (flag == 0) {
-        textError = textError + '<br> &emsp;(*): Enter missing information field';
-        $('#noteMember').html(textError);
-        $('#noteMember').removeClass('hiden');
-        $('#noteMember').addClass('unhiden');
-      }
-      if (flagSyntax == 0) {
-        textError = textError + '<br> &emsp;(+): Wrong syntax';
-        $('#noteMember').html(textError);
-        $('#noteMember').removeClass('hiden');
-        $('#noteMember').addClass('unhiden');
-      }
-
-      if (flag == 0 || flagSyntax == 0) {
-        $('#main').animate({
-          scrollTop: 0
-        }, 300);
-      }
-
-
-
-      if (flag == 1 && flagSyntax == 1) {
-        $('#noteMember').removeClass('unhiden');
-        $('#noteMember').addClass('hiden');
-        var id = $('#idUser').val();
-        $.ajax({
-          url: '/admin/users/update',
-          type: 'POST',
-          data: {
-            id,
-            name,
-            username,
-            phone,
-            email,
-            address,
-            city,
-            district,
-            sex,
-            birthday,
-            role,
-            story
-          },
-          success: function(res) {
-
-            $('#msg').html(res.msg);
-            $('#popupInfo').click();
+      $('#noteMember').removeClass('unhiden');
+      $('#noteMember').addClass('hiden');
+      var id = $('#idUser').val();
+      $.ajax({
+        url: '/admin/users/update',
+        type: 'POST',
+        data: {
+          id,
+          displayName,
+          username,
+          phone,
+          email,
+          address,
+          city,
+          district,
+          sex,
+          birthday,
+          role,
+          story
+        },
+        success: function(res) {
+          $('#msg').html(res.msg || res.message);
+          $('#popupInfo').click();
+        },
+        error: function(xhr, status, error) {
+          if (xhr.responseJSON && xhr.responseJSON.message) {
+            $("#msg").html(xhr.responseJSON.message);
+            $("#popupInfo").click();
           }
-        });
-        return false;
-      }
+        }
+      });
+      return false;
     })
   });
 </script>
@@ -690,6 +420,81 @@
 
       var link = '/admin/users/search/' + name;
       window.location.href = link;
+    })
+  })
+</script>
+
+<script src="/provinceCity.js"></script>
+<script>
+  if (address_2 = localStorage.getItem('address_2_saved')) {
+    $('select[name="calc_shipping_district"] option').each(function() {
+      if ($(this).text() == address_2) {
+        $(this).attr('selected', '')
+      }
+    })
+    $('input.billing_address_2').attr('value', address_2)
+  }
+
+  if (district = localStorage.getItem('district')) {
+    $('select[name="calc_shipping_district"]').html(district)
+    $('select[name="calc_shipping_district"]').on('change', function() {
+      var target = $(this).children('option:selected')
+      target.attr('selected', '')
+      $('select[name="calc_shipping_district"] option').not(target).removeAttr('selected')
+      address_2 = target.text()
+      $('input.billing_address_2').attr('value', address_2)
+      district = $('select[name="calc_shipping_district"]').html()
+      localStorage.setItem('district', district)
+      localStorage.setItem('address_2_saved', address_2)
+    })
+  }
+
+  $('select[name="calc_shipping_provinces"]').each(function() {
+    var $this = $(this),
+      stc = ''
+    c.forEach(function(i, e) {
+      e += +1
+      stc += '<option value=' + e + '>' + i + '</option>'
+      $this.html('<option value="">Province/ City</option>' + stc)
+      if (address_1 = localStorage.getItem('address_1_saved')) {
+        $('select[name="calc_shipping_provinces"] option').each(function() {
+          if ($(this).text() == address_1) {
+            $(this).attr('selected', '')
+          }
+        })
+        $('input.billing_address_1').attr('value', address_1)
+      }
+
+      $this.on('change', function(i) {
+        i = $this.children('option:selected').index() - 1
+        var str = '',
+          r = $this.val()
+        if (r != '') {
+          arr[i].forEach(function(el) {
+            str += '<option value="' + el + '">' + el + '</option>'
+            $('select[name="calc_shipping_district"]').html('<option value="">District</option>' + str)
+          })
+          var address_1 = $this.children('option:selected').text()
+          var district = $('select[name="calc_shipping_district"]').html()
+          localStorage.setItem('address_1_saved', address_1)
+          localStorage.setItem('district', district)
+          $('select[name="calc_shipping_district"]').on('change', function() {
+            var target = $(this).children('option:selected')
+            target.attr('selected', '')
+            $('select[name="calc_shipping_district"] option').not(target).removeAttr('selected')
+            var address_2 = target.text()
+            $('input.billing_address_2').attr('value', address_2)
+            district = $('select[name="calc_shipping_district"]').html()
+            localStorage.setItem('district', district)
+            localStorage.setItem('address_2_saved', address_2)
+          })
+        } else {
+          $('select[name="calc_shipping_district"]').html('<option value="">District</option>')
+          district = $('select[name="calc_shipping_district"]').html()
+          localStorage.setItem('district', district)
+          localStorage.removeItem('address_1_saved', address_1)
+        }
+      })
     })
   })
 </script>

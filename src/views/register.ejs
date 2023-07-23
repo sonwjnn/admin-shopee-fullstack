@@ -41,19 +41,25 @@
           <div class="col-xl-4 col-lg-5 col-md-7 mx-auto">
             <div class="card z-index-0">
               <div class="card-header text-center pt-4">
-                <h5>Register with</h5>
+                <h5>Register</h5>
               </div>
               <div class="row px-xl-5 px-sm-4 px-3"></div>
               <div class="card-body">
-                <form role="form text-left">
+                <form class="signupForm" role="form text-left">
                   <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="Name" aria-label="Name" aria-describedby="email-addon" />
+                    <input type="text" class="form-control" placeholder="Display name" aria-label="username" aria-describedby="email-addon" id="displayName" />
                   </div>
+
                   <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="User Name" aria-label="Name" aria-describedby="email-addon" />
+                    <input type="text" class="form-control" placeholder="User name" aria-label="username" aria-describedby="email-addon" id="username" />
                   </div>
+
                   <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="Password" aria-label="Name" aria-describedby="email-addon" />
+                    <input type="password" class="form-control" placeholder="Password" aria-label="password" aria-describedby="email-addon" id="password" />
+                  </div>
+
+                  <div class="mb-3">
+                    <input type="password" class="form-control" placeholder="Confirm password" aria-label="password" aria-describedby="email-addon" id="confirmPassword" />
                   </div>
                   <div class="form-check form-check-info text-left">
                     <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked />
@@ -63,7 +69,7 @@
                     </label>
                   </div>
                   <div class="text-center">
-                    <button type="button" class="btn bg-gradient-dark w-100 my-4 mb-2">
+                    <button type="submit" class="btn bg-gradient-dark w-100 my-4 mb-2">
                       Sign up
                     </button>
                   </div>
@@ -79,6 +85,48 @@
       </div>
     </section>
   </main>
+
+  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header alert-info">
+          <h5 class="modal-title text-white" id="exampleModalLongTitle">
+            <i class="fa fa-flag" aria-hidden="true"></i> Notification
+          </h5>
+        </div>
+        <div class="modal-body center text-black">
+          <div class="d-flex">
+            <div id="notify-register"></div>
+            &nbsp
+            <div class="timeout"><span id="s"></span></div>
+          </div>
+          <div class="center" id="loadding">
+            <div class="lds-ring pl-5-loading">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer" id="close">
+          <button type="button" class="btn btn-secondary mt-0 mb-0" data-dismiss="modal">
+            Close
+          </button>
+        </div>
+        <br id="br" class="hiden" />
+      </div>
+    </div>
+  </div>
+  <button id="notify-register-btn" type="button" class="btn btn-primary hiden" style="display: none;" data-toggle="modal" data-target="#exampleModalCenter">
+    Launch demo modal
+  </button>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+
+
   <!--   Core JS Files   -->
   <script src="/js/core/popper.min.js"></script>
   <script src="/js/core/bootstrap.min.js"></script>
@@ -97,6 +145,85 @@
   <script async defer src="https://buttons.github.io/buttons.js"></script>
   <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="/js/soft-ui-dashboard.min.js?v=1.0.6"></script>
+
+
+  <!--Logic signup-->
+  <script>
+    $(document).ready(function() {
+      $(".timeout").hide();
+
+      $(".signupForm").on("submit", (e) => {
+        e.preventDefault();
+
+        const displayName = $("#displayName").val();
+        const username = $("#username").val();
+        const confirmPassword = $("#confirmPassword").val();
+        const password = $("#password").val();
+
+        if (!displayName) {
+          $("#displayName").addClass("setredPlace");
+          $("#displayName").attr("placeholder", "Please fill in here").focus();
+          return
+        } else {
+          $("#displayName").attr("placeholder", "");
+        }
+
+        if (!username) {
+          $("#username").addClass("setredPlace");
+          $("#username").attr("placeholder", "Please fill in here").focus();
+          return
+        } else {
+          $("#username").attr("placeholder", "");
+        }
+
+        if (!password) {
+          $("#password").addClass("setredPlace");
+          $("#password").attr("placeholder", "Please fill in here").focus();
+          return
+        } else {
+          $("#password").attr("placeholder", "");
+        }
+
+        if (!confirmPassword) {
+          $("#confirmPassword").addClass("setredPlace");
+          $("#confirmPassword").attr("placeholder", "Please fill in here").focus();
+          return
+        } else {
+          $("#confirmPassword").attr("placeholder", "");
+        }
+
+
+        $.ajax({
+          url: "/admin/signup",
+          type: "POST",
+          data: {
+            displayName,
+            username,
+            password,
+            confirmPassword,
+            role: 'admin'
+          },
+          success: function(results) {
+            $("#notify-register").html(results.msg || results.message);
+            $("#loadding").hide();
+            $("#notify-register-btn").click();
+            setTimeout(() => {
+              window.location.href = "/";
+            }, 2000)
+          },
+          error: function(xhr, status, error) {
+            $("#notify-register").html(xhr.responseJSON.error);
+            $("#loadding").hide();
+            $("#notify-register-btn").click();
+          },
+
+        });
+        return false;
+
+      })
+    });
+  </script>
+
 </body>
 
 </html>

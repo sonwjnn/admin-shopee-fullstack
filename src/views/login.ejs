@@ -158,14 +158,16 @@
 
         if (flag == 1) {
           $.ajax({
-            url: "/admin/processLogin",
+            url: "/admin/signin",
             type: "POST",
             data: {
               username,
-              password
+              password,
+              admin: true
             },
             success: function(results) {
-              $("#ketqua").html(results.msg);
+              console.log(results)
+              $("#ketqua").html(results.msg || results.message);
 
               if (results.kq == 1) {
                 window.location.href = "/";

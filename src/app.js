@@ -1,8 +1,8 @@
 const express = require('express')
 const path = require('path')
-const env = require('./src/configs/environment')
-const { connectDb } = require('./src/configs/mongodb.js')
-const { corsOptions } = require('./src/configs/cors')
+const env = require('./configs/environment')
+const { connectDb } = require('./configs/mongodb.js')
+const { corsOptions } = require('./configs/cors')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
 
@@ -15,9 +15,10 @@ connectDb()
 
 const boostServer = () => {
   const app = express()
-
-  app.use(express.static('./src/assets'))
-  app.set('views', path.join(__dirname, './src/views'))
+  /*   app.use(express.static('./assets')) */
+  app.use(express.static(path.join(__dirname, './assets')))
+  app.use(express.static(path.join(__dirname, './utilities')))
+  app.set('views', path.join(__dirname, './views'))
   app.set('view engine', 'ejs')
 
   app.use(cors(corsOptions))
@@ -28,7 +29,7 @@ const boostServer = () => {
   app.use(bodyParser.urlencoded({ extended: false }))
   app.use(bodyParser.json())
 
-  app.use('/', require('./src/configs/controls'))
+  app.use('/', require('./configs/controls'))
 
   app.listen(env.APP_PORT, () => {
     console.log(

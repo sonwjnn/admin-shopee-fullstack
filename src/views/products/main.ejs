@@ -5,13 +5,13 @@
         <div class="card-header pb-0">
           <h6>Products Table</h6>
         </div>
-
         <div class="card-body pt-0 pb-0">
           <button type="button" class="btn btn-outline-info pt-2 pb-2 me-2" onclick="location.href='/admin/products/add'">
             <i class="fa fa-plus-square-o me-1" aria-hidden="true"></i> Add New</button>
 
           <button type="button" class="btn btn-outline-danger pt-2 pb-2 deleteGr"><i class="fa fa-trash-o me-1" aria-hidden="true"></i> Delete Selected</button>
-          <form id="searchForm" class="display-inline">
+          <form id="searc
+          hForm" class="display-inline">
             <button type="submit" class="btn btn-outline-dark pt-2 pb-2 display-inline floatRight ml-2"><i class="fas fa-search" aria-hidden="true"></i></button>
             <input type="text" class="form-control form-control-new col-md-3 floatRight" id="searchName" placeholder="Product name..." value="<%=name%>">
 
@@ -205,7 +205,6 @@
         </button>
       </div>
       <div class="modal-body mt-0 pt-0">
-
         <div class="container-fluid py-4">
           <div class="row">
             <div class="col-md-12">
@@ -214,7 +213,6 @@
                   <form autocomplete="off">
                     <div class="row">
                       <div class="col-md-6">
-
                         <input type="text" class="form-control form-control-none hiden" id="idProduct" value="" disabled>
 
                         <div class="form-group">
@@ -280,18 +278,12 @@
                         <textarea class="form-control" id="info" cols="30" rows="10" name="contentStory" disabled></textarea>
                       </div>
                     </div>
-
-
-
-
                   </form>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
-
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-dark" id="edit">Edit</button>

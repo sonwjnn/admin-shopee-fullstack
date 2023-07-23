@@ -41,31 +41,30 @@ userSchema.methods.validPassword = function (password) {
   return hash === this.password
 }
 
-userSchema.methods.setProfile = function ({
-  displayName,
-  email,
-  phone,
-  address,
-  city,
-  district,
-  sex,
-  birthday
-}) {
-  this.displayName = displayName
+userSchema.methods.setProfile = function (props) {
+  const {
+    displayName,
+    email,
+    phone,
+    address,
+    city,
+    district,
+    sex,
+    birthday,
+    role,
+    story
+  } = props
 
+  this.name = displayName
   this.email = email
-
   this.phone = phone
-
   this.address = address
-
   this.city = city
-
   this.district = district
-
   this.sex = sex
-
   this.birthday = birthday
+  this.role = role
+  this.story = story
 }
 
 userSchema.methods.setImage = function (imageLink) {

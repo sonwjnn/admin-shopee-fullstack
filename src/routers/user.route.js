@@ -5,9 +5,9 @@ const userModel = require('../models/user.model')
 const cartModel = require('../models/cart.model')
 const favoriteModel = require('../models/favorite.model')
 const reviewModel = require('../models/review.model')
-
-const bcrypt = require('bcryptjs')
-const salt = bcrypt.genSaltSync(10)
+const userController = require('../controllers/user.controller')
+const { body } = require('express-validator')
+const requestHandler = require('../handlers/resquest.handler')
 
 router.get('/index(/:pageNumber?)', async (req, res) => {
   const limit = 8
@@ -56,26 +56,21 @@ router.get('/index(/:pageNumber?)', async (req, res) => {
     })
 })
 
-router.get('/edit/:username', function (req, res) {
-  var username = req.params.username
+router.get('/edit/:username', async (req, res) => {
+  try {
+    const username = req.params.username
+    const user = await userModel.findOne({ username })
 
-  if (username != '') {
-    // check username
-    const check_obj = { $or: [{ username }] }
-    userModel.find(check_obj).exec((err, data) => {
-      if (err) {
-        throw err
-      } else {
-        if (data == '') {
-        } else {
-          var index = 'users'
-          var main = 'users/edit.user.ejs'
+    if (!user) {
+      return responseHandler.notfound(res)
+    }
 
-          res.render('index', { main, index, data })
-        }
-      }
-    })
-  } else {
+    const index = 'users'
+    const main = 'users/edit.user.ejs'
+    res.render('index', { main, index, data: user })
+  } catch (error) {
+    console.log(error)
+    responseHandler.error(res)
   }
 })
 
@@ -109,164 +104,52 @@ router.get('/add', (req, res) => {
   res.render('index', { main, index })
 })
 
-router.post('/add', function (req, res) {
-  var name,
-    username,
-    password,
-    phone,
-    email,
-    address,
-    city,
-    district,
-    sex,
-    birthday,
-    story,
-    role,
-    error = '',
-    flag = 1
+router.post(
+  '/add',
+  body('username')
+    .exists()
+    .withMessage('username is required')
+    .isLength({ min: 9 })
+    .withMessage('username minium 8 characters')
+    .custom(async value => {
+      const user = await userModel.findOne({ username: value })
+      if (user) return Promise.reject('username already used')
+    }),
+  body('password')
+    .exists()
+    .withMessage('password is required')
+    .isLength({ min: 9 })
+    .withMessage('password minium 8 characters'),
+  body('confirmPassword')
+    .exists()
+    .withMessage('confirm password is required')
+    .isLength({ min: 9 })
+    .withMessage('confirm password minium 8 characters')
+    .custom((value, { req }) => {
+      if (value !== req.body.password)
+        throw new Error('confirm password not match')
+      return true
+    }),
+  body('displayName')
+    .exists()
+    .withMessage('display name is required')
+    .isLength({ min: 9 })
+    .withMessage('displayName minium 8 characters'),
+  requestHandler.validate,
+  userController.add
+)
 
-  name = req.body.name
-  username = req.body.username
-  password = req.body.password
-  email = req.body.email
-  phone = req.body.phone
-  address = req.body.address
-  city = req.body.city
-  district = req.body.district
-  sex = req.body.sex
-  birthday = req.body.birthday
-  role = req.body.role
-  story = req.body.story
+router.post(
+  '/update',
 
-  if (flag == 1) {
-    const obj = {
-      name,
-      username,
-      password: bcrypt.hashSync(password, salt),
-      email,
-      phone,
-      address,
-      city,
-      district,
-      sex,
-      birthday,
-      role,
-      story
-    }
-
-    // check username or email or phone
-    const check_obj = { $or: [{ username }, { email }, { phone }] }
-
-    userModel.find(check_obj).exec((err, data) => {
-      if (err) {
-        res.send({ kq: 0, msg: 'Connection to database failed' })
-      } else {
-        if (data == '') {
-          userModel.create(obj, (err, data) => {
-            if (err) {
-              res.send({ kq: 0, msg: 'Connection to database failed' })
-            } else {
-              res.send({ kq: 1, msg: 'Data added successfully' })
-            }
-          })
-        } else {
-          res.send({
-            kq: 0,
-            msg: 'Data already exists! <br> Please check again your username, phone and email.'
-          })
-        }
-      }
-    })
-  } else {
-    res.send({ kq: 0, msg: error })
-  }
-})
-
-router.post('/update', function (req, res) {
-  var id,
-    name,
-    username,
-    phone,
-    email,
-    address,
-    city,
-    district,
-    sex,
-    birthday,
-    role,
-    story,
-    error = '',
-    flag = 1
-
-  id = req.body.id
-  username = req.body.username
-  name = req.body.name
-  email = req.body.email
-  phone = req.body.phone
-  address = req.body.address
-  city = req.body.city
-  district = req.body.district
-  sex = req.body.sex
-  birthday = req.body.birthday
-  role = req.body.role
-  story = req.body.story
-
-  if (flag == 1) {
-    const obj = {
-      name,
-      email,
-      phone,
-      address,
-      city,
-      district,
-      sex,
-      birthday,
-      role,
-      story
-    }
-
-    // check username or email or phone
-    const check_obj = { $or: [{ email }, { phone }] }
-
-    userModel.find(check_obj).exec((err, data) => {
-      if (err) {
-        res.send({ kq: 0, msg: 'Connection to database failed' })
-      } else {
-        if (data.length == 0) {
-          userModel.updateMany({ username: username }, obj, (err, data) => {
-            if (err) {
-              res.send({ kq: 0, msg: 'Connection to database failed' })
-            } else {
-              res.send({ kq: 1, msg: 'Update data successfully' })
-            }
-          })
-        } else if (data.length == 1) {
-          if (data[0]._id == id) {
-            userModel.updateMany({ username: username }, obj, (err, data) => {
-              if (err) {
-                res.send({ kq: 0, msg: 'Connection to database failed' })
-              } else {
-                res.send({ kq: 1, msg: 'Update data successfully' })
-              }
-            })
-          } else {
-            res.send({
-              kq: 0,
-              msg: 'Data already exists! <br> Please check again your phone and email.'
-            })
-          }
-        } else {
-          res.send({
-            kq: 0,
-            msg: 'Data already exists! <br> Please check again your phone and email.'
-          })
-        }
-      }
-    })
-  } else {
-    res.send({ kq: 0, msg: error })
-  }
-})
+  body('displayName')
+    .exists()
+    .withMessage('display name is required')
+    .isLength({ min: 9 })
+    .withMessage('displayName minium 8 characters'),
+  requestHandler.validate,
+  userController.updateProfile
+)
 
 router.post('/showDetail', function (req, res) {
   var username = req.body.username

@@ -15,18 +15,24 @@
                 <span id="usernameMemErrorText" class="spanError"></span>
               </div>
 
-              <div class="form-group col-md-6">
 
-                <label class="form-label display-inline" for="passwordMem">Password <span id="passwordMemError" class="spanError"></span></label>
-                <input type="password" class="form-control form-control-new" id="passwordMem" placeholder="Ex: 123456" autocomplete="new-password" />
-                <span id="passwordMemErrorText" class="spanError"></span>
-              </div>
 
               <div class="form-group col-md-6">
-
                 <label class="form-label display-inline" for="nameMem">Full Name <span id="nameMemError" class="spanError"></span></label>
                 <input type="text" class="form-control form-control-new" id="nameMem" placeholder="Ex: Nguyen Van A">
                 <span id="nameMemErrorText" class="spanError"></span>
+              </div>
+
+              <div class="form-group col-md-6">
+                <label class="form-label display-inline" for="passwordAdd">Password <span id="passwordError" class="spanError"></span></label>
+                <input type="password" class="form-control form-control-new" id="passwordAdd" placeholder="Ex: 123456" autocomplete="new-password" />
+                <span id="passwordErrorText" class="spanError"></span>
+              </div>
+
+              <div class="form-group col-md-6">
+                <label class="form-label display-inline" for="confirmPassword">Confirm Password <span id="confirmPasswordMemError" class="spanError"></span></label>
+                <input type="password" class="form-control form-control-new" id="confirmPassword" placeholder="Ex: 123456" autocomplete="new-password" />
+                <span id="confirmPasswordErrorText" class="spanError"></span>
               </div>
 
               <div class="form-group col-md-6">
@@ -44,26 +50,22 @@
 
               <div class="form-group col-md-6">
 
-                <label class="form-label display-inline" for="addressMem">Address<span id="addressMemError" class="spanError"></span></label>
+                <label class="form-label display-inline" for="addressMem">Address Detail<span id="addressMemError" class="spanError"></span></label>
                 <input type="text" class="form-control form-control-new" id="addressMem" placeholder="Ex: 10 Pham Van Dong">
                 <span id="addressMemErrorText" class="spanError">
               </div>
 
-
-
               <div class="form-group col-md-6">
-                <label class="form-label" for="cityMem">Country/City</label>
-                <select id="cityMem" class="form-select">
-                  <option value="" disabled selected hidden> Choose </option>
-                  <option value="Ha Noi">Ha Noi</option>
-                  <option value="TP HCM">TP HCM</option>
+                <label class="form-label">Province/ City</label>
+                <select class="form-select" name="calc_shipping_provinces" required="">
+                  <option value="" disabled selected hidden> Province/ City </option>
                 </select>
-              </div>
 
+              </div>
               <div class="form-group col-md-6">
-                <label class="form-label" for="districtMem">District</label>
-                <select id="districtMem" class="form-select">
-                  <option value="" disabled selected hidden> Choose City </option>
+                <label class="form-label">District</label>
+                <select class="form-select" name="calc_shipping_district" required="">
+                  <option value="" disabled selected hidden> District </option>
                 </select>
               </div>
 
