@@ -1,18 +1,10 @@
 const express = require('express')
 const router = express.Router()
 const userModel = require('../models/user.model')
-
 const userController = require('../controllers/user.controller')
 const tokenMiddleware = require('../middlewares/token.middleware')
 const { body } = require('express-validator')
-const requestHandler = require('../handlers/resquest.handler')
-
-var jwt = require('jsonwebtoken')
-
-const bcrypt = require('bcryptjs')
-const salt = bcrypt.genSaltSync(10)
-
-// Read and write token into file json
+const requestHandler = require('../handlers/request.handler')
 
 router.get('/login', (req, res) => {
   if (req.cookies.token) return res.clearCookie('token').render('login')

@@ -1,8 +1,8 @@
 const express = require('express')
 const { body } = require('express-validator')
-const tokenMiddleware = require('../middlewares/token.middleware.js')
-const reviewController = require('../controllers/review.controller.js')
-const requestHandler = require('../handlers/resquest.handler.js')
+const tokenMiddleware = require('../middlewares/token.middleware')
+const reviewController = require('../controllers/review.controller')
+const requestHandler = require('../handlers/request.handler')
 
 const router = express.Router({ mergeParams: true })
 

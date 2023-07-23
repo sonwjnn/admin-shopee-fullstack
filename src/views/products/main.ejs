@@ -64,7 +64,7 @@
                     </p>
                   </td>
                   <td class="align-middle text-center text-sm">
-                    <span class="badge badge-sm " style="background: <%= data[i].colorType %>">
+                    <span class="badge badge-sm  text-sm text-dark text-capitalize">
                       <%= data[i].typeId.name %>
                     </span>
                   </td>
@@ -76,7 +76,7 @@
                   </td>
 
                   <td class=" align-middle text-center text-sm">
-                    <span class="badge badge-sm " style="background: <%= data[i].colorCate %>">
+                    <span class="badge badge-sm  text-sm text-dark text-capitalize">
                       <%=data[i].cateId.name%>
                     </span>
                   </td>
@@ -154,7 +154,7 @@
                 <% } %>
               </ul>
               <ul class="pagination justify-content-end" style="margin:20px 0">
-                <button type="button" class="btn btn-outline-info btn-refresh" onclick="location.href='/admin/products/index'">
+                <button type="button" class="btn btn-outline-info btn-refresh" onclick="window.location.reload()">
                   <i class="fas fa-sync mr-1"></i>
                   Refresh
                 </button>

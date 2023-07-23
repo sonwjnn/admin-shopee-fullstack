@@ -1,74 +1,50 @@
 const express = require('express')
 const router = express.Router()
 const userModel = require('../models/user.model')
+const userController = require('../controllers/user.controller')
 const fs = require('fs')
 const filepath = 'angularShopping/src/assets/json/archiveToken.json'
+const tokenMiddleware = require('../middlewares/token.middleware')
+const requestHandler = require('../handlers/request.handler')
+const { body } = require('express-validator')
 
 var jwt = require('jsonwebtoken')
-var secret = 'none'
 
 const bcrypt = require('bcryptjs')
 const e = require('express')
 const salt = bcrypt.genSaltSync(10)
 
 router.get('/index', (req, res) => {
-  jwt.verify(req.cookies.token, secret, function (err, decoded) {
-    var id = decoded.data
-    userModel.find({ _id: id }).exec((err, data) => {
-      if (err) {
-        throw err
-      } else {
-        if (data == '') {
-        } else {
-          var index = 'password'
-          var main = 'password/main'
-          res.render('index', { main, index, data })
-        }
-      }
-    })
-  })
+  const index = 'password'
+  const main = 'password/main'
+  res.render('index', { main, index })
 })
 
-router.post('/updatePassword', function (req, res) {
-  var username,
-    oldPass,
-    newPass,
-    flag = 1
-  var password = ''
-
-  username = req.body.username
-  oldPass = req.body.oldPass
-  newPass = req.body.newPass
-
-  newPass = bcrypt.hashSync(newPass, salt)
-  const obj = {
-    password: newPass
-  }
-
-  if (flag == 1) {
-    const check_obj = { $or: [{ username }] }
-    userModel.find(check_obj).exec((err, data) => {
-      if (err) {
-        res.send({ kq: 0, msg: 'Connection to database failed' })
-      } else {
-        password = data[0].password
-        if (bcrypt.compareSync(oldPass, password)) {
-          userModel.updateMany({ username: username }, obj, (err, data) => {
-            if (err) {
-              res.send({ kq: 0, msg: 'Connection to database failed' })
-            } else {
-              res.send({
-                kq: 1,
-                msg: 'Password updated. Do you want to log out?'
-              })
-            }
-          })
-        } else {
-          res.send({ kq: 0, msg: 'The password you entered is not correct!' })
-        }
-      }
-    })
-  }
-})
+router.post(
+  '/update-password',
+  tokenMiddleware.authServer,
+  body('password')
+    .exists()
+    .withMessage('password is required')
+    .isLength({ min: 9 })
+    .withMessage('password minium 8 characters'),
+  body('newPassword')
+    .exists()
+    .withMessage('new password is required')
+    .isLength({ min: 9 })
+    .withMessage('new password minium 8 characters'),
+  body('confirmNewPassword')
+    .exists()
+    .withMessage('confirm new password is required')
+    .isLength({ min: 9 })
+    .withMessage('confirm new password minium 8 characters')
+    .custom((value, { req }) => {
+      if (value !== req.body.newPassword)
+        throw new Error('confirm new password not match')
+      return true
+    }),
+  requestHandler.validate,
+  userController.updatePassword
+)
 
 module.exports = router

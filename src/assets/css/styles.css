@@ -347,7 +347,7 @@ input[type='checkbox'] {
 }
 
 .active2 {
-  background-color: #6096b4 !important;
+  background-image: linear-gradient(310deg, #2152ff 0%, #02c6f3 100%);
   border: none !important;
   color: white !important;
   box-shadow: white !important;
@@ -370,12 +370,12 @@ input[type='checkbox'] {
   background-color: #b7b7b7 !important;
 }
 
-.bg-blue-grey-pastel {
+.bg-gradient-info {
   background-color: #6096b4 !important;
   color: #ffffff !important;
 }
 
-.text-blue-grey-pastel {
+.text-gradient text-info {
   color: #6096b4;
 }
 

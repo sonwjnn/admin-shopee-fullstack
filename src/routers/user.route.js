@@ -7,7 +7,7 @@ const favoriteModel = require('../models/favorite.model')
 const reviewModel = require('../models/review.model')
 const userController = require('../controllers/user.controller')
 const { body } = require('express-validator')
-const requestHandler = require('../handlers/resquest.handler')
+const requestHandler = require('../handlers/request.handler')
 
 router.get('/index(/:pageNumber?)', async (req, res) => {
   const limit = 8

@@ -99,9 +99,8 @@ const updatePassword = async (req, res) => {
     //save to database
     await user.save()
 
-    responseHandler.ok(res)
+    responseHandler.ok(res, { message: 'Update password successfully!' })
   } catch (error) {
-    console.log(error)
     responseHandler.error(error)
   }
 }
@@ -123,7 +122,6 @@ const updateProfile = async (req, res) => {
 
     responseHandler.ok(res, { message: 'Update user successfully!' })
   } catch (error) {
-    console.log(error)
     responseHandler.error(res)
   }
 }
@@ -175,7 +173,6 @@ const add = async (req, res) => {
       msg: 'Add user successfully!'
     })
   } catch (error) {
-    console.log(error)
     responseHandler.error(res)
   }
 }

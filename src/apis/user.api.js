@@ -5,7 +5,7 @@ const router = express.Router()
 const cartController = require('../controllers/cart.controller.js')
 const favoriteController = require('../controllers/favorite.controller.js')
 const userController = require('../controllers/user.controller.js')
-const requestHandler = require('../handlers/resquest.handler.js')
+const requestHandler = require('../handlers/request.handler.js')
 
 const bcrypt = require('bcryptjs')
 const salt = bcrypt.genSaltSync(10)

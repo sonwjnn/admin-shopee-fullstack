@@ -3,7 +3,7 @@ const router = express.Router()
 const userModel = require('../models/user.model')
 const responseHandler = require('../handlers/response.handler')
 const userController = require('../controllers/user.controller')
-const requestHandler = require('../handlers/resquest.handler')
+const requestHandler = require('../handlers/request.handler')
 const { body } = require('express-validator')
 
 var jwt = require('jsonwebtoken')

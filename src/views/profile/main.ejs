@@ -98,10 +98,16 @@
             </div>
 
             <div id="storyid" class="hiden"><%=data.story%> </div>
+            <span class="d-flex justify-content-between">
+              <button type="submit" class="btn bg-gradient-info"> Save </button>
+              <button type="button" class="btn btn-outline-info btn-refresh" onclick="window.location.reload()">
+                <i class="fas fa-sync mr-1"></i>
+                Refresh
+              </button>
+            </span>
+          </form>
 
-
-            <button type="submit" class="btn bg-blue-grey-pastel"> Save </button>
-            <button type="button" id="clickMe" class="hiden">click</button>
+          <button type="button" id="clickMe" class="hiden">click</button>
           </form>
         </div>
       </div>

@@ -2,7 +2,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 
-
+<!--logic delete users-->
 <script>
   $(document).ready(function() {
     var arr = [];
@@ -44,7 +44,6 @@
   })
 </script>
 
-
 <script>
   $(document).ready(function() {
     var arr = [];
@@ -80,6 +79,7 @@
   })
 </script>
 
+<!--logic delete user-->
 <script>
   $(document).ready(function() {
     $(".delete").click(function() {
@@ -110,10 +110,7 @@
   })
 </script>
 
-
-
-
-
+<!--form detail user-->
 <script>
   $(document).ready(function() {
     $(".detail").click(function() {
@@ -172,7 +169,7 @@
 </script>
 
 
-
+<!--form add user-->
 <script>
   $(document).ready(function() {
 
@@ -241,6 +238,7 @@
   });
 </script>
 
+<!--form edit user-->
 <script>
   $(document).ready(function() {
 
@@ -296,105 +294,42 @@
   });
 </script>
 
-
+<!--form update password user-->
 <script>
   $(document).ready(function() {
     $('#formChangePass').on('submit', function(e) {
       e.preventDefault();
-      var flag = 1;
-      var username = $('#thisUsername').val();
-      var oldPass = $('#oldPass').val();
-      var newPass = $('#newPass').val();
-      var confirmPass = $('#confirmPass').val();
+      const username = $('#thisUsername').val();
+      const password = $('#oldPass').val();
+      const newPassword = $('#newPass').val();
+      const confirmNewPassword = $('#confirmPass').val();
 
-      var pattern = /[0-9]+/;
-      var pattern1 = /[a-z]+/;
-      var pattern2 = /[A-Z]+/;
-      var pattern3 = /[!@#$%^&*]+/;
-      var pattern4 = /.{6,}/;
-
-
-      if (oldPass.length == 0) {
-        flag = 0;
-        $("#oldPassError").html("(*)");
-        $("#oldPassErrorText").html("Please fill up the infomation above");
-      } else if (oldPass.length < 6 || oldPass.length > 30) {
-        flag = 0;
-        $("#oldPassError").html("(*)");
-        $("#oldPassErrorText").html("Password has minimum 6 and maximum 30 characters");
-      } else if (pattern.test(oldPass) == false || pattern1.test(oldPass) == false ||
-        pattern2.test(oldPass) == false || pattern3.test(oldPass) == false || pattern4.test(oldPass) == false) {
-        flag = 0;
-        $("#oldPassError").html("(*)");
-        $("#oldPassErrorText").html("Password is not correct");
-      } else {
-        $("#oldPassError").html("");
-        $("#oldPassErrorText").html("");
-      }
-
-      if (newPass.length == 0) {
-        flag = 0;
-        $("#newPassError").html("(*)");
-        $("#newPassErrorText").html("Please fill up the infomation above");
-      } else if (newPass.length < 6 || newPass.length > 30) {
-        flag = 0;
-        $("#newPassError").html("(*)");
-        $("#newPassErrorText").html("Password has minimum 6 and maximum 30 characters");
-      } else if (pattern.test(oldPass) == false || pattern1.test(oldPass) == false ||
-        pattern2.test(oldPass) == false || pattern3.test(oldPass) == false || pattern4.test(oldPass) == false) {
-        flag = 0;
-        $("#newPassError").html("(*)");
-        $("#newPassErrorText").html("Password must contain at least 1 lowercase, 1 uppercase, 1 number and 1 special character");
-      } else {
-        $("#newPassError").html("");
-        $("#newPassErrorText").html("");
-      }
-
-      if (confirmPass.length == 0) {
-        flag = 0;
-        $("#confirmPassError").html("(*)");
-        $("#confirmPassErrorText").html("Please fill up the infomation above");
-      } else if (confirmPass.length < 6 || confirmPass.length > 30) {
-        flag = 0;
-        $("#confirmPassError").html("(*)");
-        $("#confirmPassErrorText").html("Password has minimum 6 and maximum 30 characters");
-      } else if (pattern.test(oldPass) == false || pattern1.test(oldPass) == false ||
-        pattern2.test(oldPass) == false || pattern3.test(oldPass) == false || pattern4.test(oldPass) == false) {
-        flag = 0;
-        $("#confirmPassError").html("(*)");
-        $("#confirmPassErrorText").html("Password must contain at least 1 lowercase, 1 uppercase, 1 number and 1 special character");
-      } else {
-        $("#confirmPassError").html("");
-        $("#confirmPassErrorText").html("");
-      }
-
-      if (flag == 1) {
-        $.ajax({
-          url: '/admin/users/updatePassword',
-          type: 'POST',
-          data: {
-            username,
-            oldPass,
-            newPass
-          },
-          success: function(res) {
-            if (res.kq == 1) {
-              $('#msg').text(res.msg);
-              $('#popupInfoPassChange').click();
-
-            } else {
-              $('#msg').text(res.msg);
-              $('#popupInfoPassChange').click();
-            }
+      $.ajax({
+        url: '/admin/password/update-password',
+        type: 'POST',
+        data: {
+          username,
+          password,
+          newPassword,
+          confirmNewPassword
+        },
+        success: function(res) {
+          $('#msg').html(res.msg || res.message);
+          $('#popupInfoPassChange').click();
+        },
+        error: function(xhr, status, error) {
+          if (xhr.responseJSON && xhr.responseJSON.message) {
+            $("#msg").html(xhr.responseJSON.message);
+            $("#popupInfoPassChange").click();
           }
-        })
-      }
+        }
+      })
 
     })
   });
 </script>
 
-
+<!--form update password user-->
 <script>
   $(document).ready(function() {
     var arr = [];
@@ -424,6 +359,7 @@
   })
 </script>
 
+<!--logic select province and city of user-->
 <script src="/provinceCity.js"></script>
 <script>
   if (address_2 = localStorage.getItem('address_2_saved')) {
