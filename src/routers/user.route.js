@@ -8,6 +8,7 @@ const reviewModel = require('../models/review.model')
 const userController = require('../controllers/user.controller')
 const { body } = require('express-validator')
 const requestHandler = require('../handlers/request.handler')
+const tokenMiddleware = require('../middlewares/token.middleware.js')
 
 router.get('/index(/:pageNumber?)', async (req, res) => {
   const limit = 8
@@ -104,70 +105,100 @@ router.get('/add', (req, res) => {
   res.render('index', { main, index })
 })
 
+// add user
+const phoneRegex = /^(0\d{9})$/
 router.post(
   '/add',
   body('username')
     .exists()
-    .withMessage('username is required')
-    .isLength({ min: 9 })
-    .withMessage('username minium 8 characters')
+    .withMessage('Username is required')
+    .isLength({ min: 8 })
+    .withMessage('Username minimum 8 characters')
     .custom(async value => {
       const user = await userModel.findOne({ username: value })
-      if (user) return Promise.reject('username already used')
+      if (user) return Promise.reject('Username already used')
     }),
   body('password')
     .exists()
-    .withMessage('password is required')
-    .isLength({ min: 9 })
-    .withMessage('password minium 8 characters'),
+    .withMessage('Password is required')
+    .isLength({ min: 8 })
+    .withMessage('Password minimum 8 characters'),
   body('confirmPassword')
     .exists()
-    .withMessage('confirm password is required')
-    .isLength({ min: 9 })
-    .withMessage('confirm password minium 8 characters')
+    .withMessage('Confirm password is required')
+    .isLength({ min: 8 })
+    .withMessage('Confirm password minimum 8 characters')
     .custom((value, { req }) => {
       if (value !== req.body.password)
-        throw new Error('confirm password not match')
+        throw new Error('Confirm password does not match')
       return true
     }),
   body('displayName')
     .exists()
-    .withMessage('display name is required')
-    .isLength({ min: 9 })
-    .withMessage('displayName minium 8 characters'),
+    .withMessage('Display name is required')
+    .isLength({ min: 8 })
+    .withMessage('DisplayName minimum 8 characters'),
+  body('email')
+    .exists()
+    .withMessage('Email is required')
+    .isEmail()
+    .withMessage('Invalid email format'),
+
+  body('phone')
+    .exists()
+    .withMessage('Phone is required')
+    .matches(phoneRegex)
+    .withMessage(
+      'Invalid phone number format. It should start with "0" and have 10 digits'
+    ),
+  body('address').exists().withMessage('Address is required'),
+  body('city').exists().withMessage('City is required'),
+  body('district').exists().withMessage('District is required'),
+  body('sex').exists().withMessage('Sex is required'),
+  body('birthday').exists().withMessage('Birthday is required'),
+  body('role').exists().withMessage('Role is required'),
+  body('story').exists().withMessage('Story is required'),
   requestHandler.validate,
   userController.add
 )
 
-router.post(
-  '/update',
-
+// update user
+router.put(
+  '/update-profile',
   body('displayName')
     .exists()
-    .withMessage('display name is required')
-    .isLength({ min: 9 })
-    .withMessage('displayName minium 8 characters'),
+    .withMessage('Display name is required')
+    .isLength({ min: 8 })
+    .withMessage('DisplayName minimum 8 characters'),
+  body('email')
+    .exists()
+    .withMessage('Email is required')
+    .isEmail()
+    .withMessage('Invalid email format'),
+
+  body('phone')
+    .exists()
+    .withMessage('Phone is required')
+    .matches(phoneRegex)
+    .withMessage(
+      'Invalid phone number format. It should start with "0" and have 10 digits'
+    ),
+  body('address').exists().withMessage('Address is required'),
+  body('city').exists().withMessage('City is required'),
+  body('district').exists().withMessage('District is required'),
+  body('sex').exists().withMessage('Sex is required'),
+  body('birthday').exists().withMessage('Birthday is required'),
+  body('role').exists().withMessage('Role is required'),
+  body('story').exists().withMessage('Story is required'),
   requestHandler.validate,
   userController.updateProfile
 )
 
-router.post('/showDetail', function (req, res) {
-  var username = req.body.username
-
-  // check username
-  const check_obj = { $or: [{ username }] }
-  userModel.find(check_obj).exec((err, data) => {
-    if (err) {
-      res.send({ kq: 0, msg: 'Connection to database failed' })
-    } else {
-      if (data == '') {
-        res.send({ kq: 0, data, msg: 'Data id not exists' })
-      } else {
-        res.send({ kq: 1, data, msg: 'Get data sucesssfully' })
-      }
-    }
-  })
-})
+router.get(
+  '/detail/:userId',
+  tokenMiddleware.authServer,
+  userController.getDetailById
+)
 
 router.post('/delete', async function (req, res) {
   try {

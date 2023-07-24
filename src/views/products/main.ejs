@@ -2,10 +2,8 @@
   <div class="row">
     <div class="col-12">
       <div class="card mb-4">
-        <div class="card-header pb-0">
-          <h6>Products Table</h6>
-        </div>
-        <div class="card-body pt-0 pb-0">
+
+        <div class="card-body pt-5 pb-0">
           <button type="button" class="btn btn-outline-info pt-2 pb-2 me-2" onclick="location.href='/admin/products/add'">
             <i class="fa fa-plus-square-o me-1" aria-hidden="true"></i> Add New</button>
 
@@ -23,9 +21,9 @@
           <div class="table-responsive px-2">
             <table class="table align-items-center mb-0" id="productTable">
               <thead>
-                <tr>
-                  <th class="text-center table-w-10 text-center text-secondary text-sm">Choose</th>
-                  <th class="text-center table-w-10 text-center text-secondary text-sm">Ordinal</th>
+                <tr class="text-uppercase">
+                  <th class="text-center table-w-10 text-secondary text-sm ">Choose</th>
+                  <th class="text-center table-w-10 text-secondary text-sm">Ordinal</th>
 
                   <th class="text-center table-w-100 text-secondary text-sm">Name</th>
                   <th class="text-center table-w-100 text-secondary text-sm">Product Type</th>
@@ -53,9 +51,9 @@
                     </p>
                   </td>
                   <td class="align-middle text-center">
-                    <p class="text-center text-xs font-weight-bold mb-0">
+                    <span class="text-center text-sm mb-0">
                       <%=data[i].name%>
-                    </p>
+                    </span>
                   </td>
 
                   <td class="align-middle text-center hiden">
@@ -64,7 +62,7 @@
                     </p>
                   </td>
                   <td class="align-middle text-center text-sm">
-                    <span class="badge badge-sm  text-sm text-dark text-capitalize">
+                    <span class=" text-sm ">
                       <%= data[i].typeId.name %>
                     </span>
                   </td>
@@ -76,7 +74,7 @@
                   </td>
 
                   <td class=" align-middle text-center text-sm">
-                    <span class="badge badge-sm  text-sm text-dark text-capitalize">
+                    <span class=" text-sm ">
                       <%=data[i].cateId.name%>
                     </span>
                   </td>
@@ -286,7 +284,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-dark" id="edit">Edit</button>
+        <button type="button" class="btn btn-outline-secondary" id="edit">Edit</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>

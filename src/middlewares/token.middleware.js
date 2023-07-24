@@ -41,11 +41,11 @@ const auth = async (req, res, next) => {
 const authServer = async (req, res, next) => {
   const tokenDecoded = tokenDecode(req)
   if (!tokenDecoded) {
-    return res.redirect('/admin/login')
+    return res.redirect('/admin/signin')
   }
   const user = await userModel.findById(tokenDecoded.data)
   if (!user) {
-    return res.redirect('/admin/login')
+    return res.redirect('/admin/signin')
   }
 
   req.user = user

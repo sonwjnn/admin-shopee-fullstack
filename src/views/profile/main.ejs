@@ -11,14 +11,14 @@
               <div class="form-group col-md-6">
 
                 <label class="form-label display-inline" for="usernameMem">User Name <span id="usernameMemError" class="spanError"></span></label>
-                <input type="text" class="form-control form-control-new" id="usernameMem" value="<%=data.username%>" disabled="disabled">
+                <input type="text" class="form-control form-control-none" id="usernameMem" value="<%=data.username%>" disabled="disabled">
                 <span id="usernameMemErrorText" class="spanError"></span>
               </div>
 
               <div class="form-group col-md-6">
 
                 <label class="form-label display-inline" for="passwordMem">Password <span id="passwordMemError" class="spanError"></span></label>
-                <input type="password" class="form-control form-control-new" id="passwordMem" placeholder="Ex: 123456" autocomplete="new-password" value=<%=data.password%> disabled="disabled" />
+                <input type="password" class="form-control form-control-none" id="passwordMem" placeholder="Ex: 123456" autocomplete="new-password" value=<%=data.password%> disabled="disabled" />
                 <span id="passwordMemErrorText" class="spanError"></span>
               </div>
               <div class="form-group col-md-6">
@@ -85,8 +85,8 @@
                 <label class="form-label display-inline" for="role">Role</label>
                 <select id="role" class="form-select">
                   <option value=<%=data.role%> hidden> <%=data.role%></option>
-                  <option value="user">user</option>
-                  <option value="admin">admin</option>
+                  <option value="user">User</option>
+                  <option value="admin">Admin</option>
 
                 </select>
               </div>

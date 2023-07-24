@@ -508,6 +508,7 @@
   })
 </script>
 
+<script src="/toStringDate.js"></script>
 <script>
   function getName(id) {
     $.ajax({
@@ -516,7 +517,7 @@
       success: function(data) {
         //key = #{key} is id of element html, value is value
         const mapping = {
-          idProduct: 'id',
+          idUser: 'id',
           name: 'name',
           origin: 'origin',
           price: 'price',
@@ -538,13 +539,9 @@
           $('#' + key).val(fieldValue);
         }
 
-        if (data.producedAt && data.producedAt !== "") {
-          const [year, month, day] = data.producedAt.split('-');
-          const formattedProducedAt = `${day.substring(0, 2)}-${month}-${year}`;
-          $('#producedAt').val(formattedProducedAt);
-        } else {
-          $('#producedAt').val('');
-        }
+        const formattedProducedAt = toStringDate.dmy(data.producedAt)
+        $('#producedAt').val(formattedProducedAt);
+
 
         const imageNameShow = `background-image: url('/img/products/${data.imageName}');`;
         $("#imageName").attr('style', imageNameShow);

@@ -46,7 +46,6 @@ const signin = async (req, res) => {
       msg: 'Login successfully!'
     })
   } catch (error) {
-    console.log(error)
     responseHandler.error(res)
   }
 }
@@ -128,13 +127,27 @@ const updateProfile = async (req, res) => {
 
 const getInfo = async (req, res) => {
   try {
-    const user = await userModel.findById(req.user.id)
+    const id = req.user._id
+    const user = await userModel.findById(id)
 
     if (!user) return responseHandler.notfound(res)
 
-    responseHandler.ok(res, user)
+    return responseHandler.ok(res, user)
   } catch (error) {
-    responseHandler.error(error)
+    responseHandler.error(res)
+  }
+}
+
+const getDetailById = async (req, res) => {
+  try {
+    const userId = req.params.userId
+    const user = await userModel.findById(userId)
+
+    if (!user) return responseHandler.notfound(res)
+
+    return responseHandler.ok(res, user)
+  } catch (error) {
+    responseHandler.error(res)
   }
 }
 
@@ -177,4 +190,12 @@ const add = async (req, res) => {
   }
 }
 
-module.exports = { signin, signup, updatePassword, getInfo, updateProfile, add }
+module.exports = {
+  signin,
+  signup,
+  updatePassword,
+  getInfo,
+  updateProfile,
+  add,
+  getDetailById
+}

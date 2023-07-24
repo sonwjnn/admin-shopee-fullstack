@@ -110,41 +110,43 @@
   })
 </script>
 
+<script src="/toStringDate.js"></script>
 <!--form detail user-->
 <script>
   $(document).ready(function() {
     $(".detail").click(function() {
-      var username = $(this).closest("tr").find("td:nth-child(3)").text();
-      username = username.replace(/ /g, '');
-      username = username.replace(/(\r\n|\n|\r)/gm, "");
-
+      // get and format id from ui of users 
+      const id = $(this).closest("tr").find("td:nth-child(4)").text().replace(/\s+/g, '');;
       $.ajax({
-        url: '/admin/users/showDetail',
-        type: 'POST',
-        data: {
-          username
-        },
+        url: `/admin/users/detail/${id}`,
+        type: 'GET',
         success: function(res) {
-          var birthday;
-          if (res.data[0].birthday == '') {
-            birthday = '';
-          } else {
-            var arr = res.data[0].birthday.split('-');
-            birthday = arr[2] + '-' + arr[1] + '-' + arr[0];
-          }
-          $('#username').val(res.data[0].username);
-          $('#pass').val(res.data[0].password);
-          $('#name').val(res.data[0].name);
-          $('#phone').val(res.data[0].phone);
-          $('#email').val(res.data[0].email);
-          $('#address').val(res.data[0].address);
-          $('#city').val(res.data[0].city);
-          $('#district').val(res.data[0].district);
-          $('#sex').val(res.data[0].sex);
-          $('#role').val(res.data[0].role);
-          $('#birthday').val(birthday);
+          const birthday = toStringDate.dmy(res.birthday)
+          $('#birthday').val(birthday)
 
-          CKEDITOR.instances['story'].setData(res.data[0].story);
+          const mapping = {
+            username: 'username',
+            pass: 'password',
+            name: 'name',
+            phone: 'phone',
+            address: 'address',
+            email: 'email',
+            city: 'city',
+            district: 'district',
+            sex: 'sex',
+            role: 'role',
+          }
+
+          for (const key in mapping) {
+            const value = mapping[key];
+            let fieldValue = res;
+            value.split('.').forEach(prop => {
+              fieldValue = fieldValue[prop];
+            });
+            $('#' + key).val(fieldValue);
+          }
+
+          CKEDITOR.instances['story'].setData(res.story);
 
           $('#exampleModalCenter2').attr('style', 'overflow: auto !important;')
           $('#popupDetail').click();
@@ -227,7 +229,7 @@
           },
           error: function(xhr, status, error) {
             if (xhr.responseJSON) {
-              $("#msg").html(xhr.responseJSON.error);
+              $("#msg").html(xhr.responseJSON.message);
               $("#popupInfo").click();
             }
           }
@@ -241,13 +243,10 @@
 <!--form edit user-->
 <script>
   $(document).ready(function() {
-
     $('#formMembersEdit').on('submit', function(e) {
       e.preventDefault();
-
       const displayName = $('#nameMem').val();
       const username = $('#usernameMem').val();
-
       const phone = $('#phoneMem').val();
       const address = $('#addressMem').val();
       const email = $('#emailMem').val();
@@ -262,8 +261,8 @@
       $('#noteMember').addClass('hiden');
       var id = $('#idUser').val();
       $.ajax({
-        url: '/admin/users/update',
-        type: 'POST',
+        url: '/admin/users/update-profile',
+        type: 'PUT',
         data: {
           id,
           displayName,

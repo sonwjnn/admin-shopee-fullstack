@@ -6,13 +6,13 @@ const tokenMiddleware = require('../middlewares/token.middleware')
 const { body } = require('express-validator')
 const requestHandler = require('../handlers/request.handler')
 
-router.get('/login', (req, res) => {
+router.get('/signin', (req, res) => {
   if (req.cookies.token) return res.clearCookie('token').render('login')
   res.render('login')
 })
 
 router.get(
-  '/register',
+  '/signup',
   (req, res, next) => {
     if (req.cookies.token == '' || req.cookies.token == undefined) {
       next()

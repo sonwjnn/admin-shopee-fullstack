@@ -23,6 +23,10 @@
   width: 10px !important;
 }
 
+.table-w-20 {
+  width: 20px !important;
+}
+
 .table-w-200 {
   width: 200px !important;
 }
@@ -48,10 +52,6 @@
   height: 18px;
   width: 18px;
   vertical-align: middle;
-}
-
-input[type='checkbox'] {
-  accent-color: black;
 }
 
 .titleAdmin {
@@ -347,10 +347,14 @@ input[type='checkbox'] {
 }
 
 .active2 {
-  background-image: linear-gradient(310deg, #2152ff 0%, #02c6f3 100%);
+  background-color: #8293ab !important;
   border: none !important;
   color: white !important;
   box-shadow: white !important;
+}
+
+.product-icon-sidebar {
+  fill: #344767 !important;
 }
 
 .table td,
@@ -381,6 +385,15 @@ input[type='checkbox'] {
 
 .btn-refresh:hover .fa-sync {
   animation: spin 1s infinite ease-in-out;
+}
+
+.navbar-vertical
+  .navbar-nav
+  > .nav-item
+  .nav-link:not(.active)
+  .icon
+  .sidebar-icon {
+  color: #344767;
 }
 
 @-moz-keyframes spin {

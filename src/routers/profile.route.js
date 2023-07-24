@@ -5,8 +5,8 @@ const responseHandler = require('../handlers/response.handler')
 const userController = require('../controllers/user.controller')
 const requestHandler = require('../handlers/request.handler')
 const { body } = require('express-validator')
-
-var jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken')
+const phoneRegex = /^(0\d{9})$/
 
 router.get('/index', async (req, res) => {
   try {
@@ -27,13 +27,32 @@ router.get('/index', async (req, res) => {
   }
 })
 
-router.post(
-  '/update',
+router.put(
+  '/update-profile',
   body('displayName')
     .exists()
-    .withMessage('display name is required')
-    .isLength({ min: 9 })
-    .withMessage('displayName minium 8 characters'),
+    .withMessage('Display name is required')
+    .isLength({ min: 8 })
+    .withMessage('DisplayName minimum 8 characters'),
+  body('email')
+    .exists()
+    .withMessage('Email is required')
+    .isEmail()
+    .withMessage('Invalid email format'),
+  body('phone')
+    .exists()
+    .withMessage('Phone is required')
+    .matches(phoneRegex)
+    .withMessage(
+      'Invalid phone number format. It should start with "0" and have 10 digits'
+    ),
+  body('address').exists().withMessage('Address is required'),
+  body('city').exists().withMessage('City is required'),
+  body('district').exists().withMessage('District is required'),
+  body('sex').exists().withMessage('Sex is required'),
+  body('birthday').exists().withMessage('Birthday is required'),
+  body('role').exists().withMessage('Role is required'),
+  body('story').exists().withMessage('Story is required'),
   requestHandler.validate,
   userController.updateProfile
 )

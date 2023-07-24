@@ -2,11 +2,7 @@
   <div class="row">
     <div class="col-12">
       <div class="card mb-4">
-        <div class="card-header pb-0">
-          <h6>Categories Table</h6>
-        </div>
-
-        <div class="card-body pt-0 pb-0">
+        <div class="card-body pt-5 pb-0">
           <button type="button" class="btn btn-outline-info pt-2 pb-2 me-2" onclick="location.href='/admin/categories/add'">
             <i class="fa fa-plus-square-o me-1" aria-hidden="true"></i> Add New
           </button>
@@ -33,7 +29,7 @@
                   <th class="text-center table-w-10 text-center text-secondary text-sm">
                     Ordinal
                   </th>
-                  <th class="text-center table-w-300 text-secondary text-sx">
+                  <th class="text-center table-w-300 text-secondary text-sm">
                     Name
                   </th>
                   <th class="text-center table-w-200 text-secondary text-sm">
@@ -60,7 +56,7 @@
                   </td>
 
                   <td class="align-middle text-center">
-                    <span class="text-sm font-weight-bold">
+                    <span class="text-sm">
                       <%=data[i].name%>
                     </span>
                   </td>
@@ -73,9 +69,9 @@
 
 
                   <td class="align-middle text-center">
-                    <p class="text-center text-xs font-weight-bold mb-0 dateOfC">
+                    <span class="text-center text-sm dateOfC">
                       <%=dateOfC[i]%>
-                    </p>
+                    </span>
                   </td>
 
                   <td class="align-middle text-center">
@@ -144,7 +140,7 @@
                 <% } %>
                 <% } %>
                 </ul>
-                <ul class="pagination justify-content-end" style="margin: 20px 0">
+                <ul class="pagination justify-content-end">
                   <button type="button" class="btn btn-outline-info btn-refresh" onclick="window.location.reload()">
                     <i class="fas fa-sync mr-1"></i>
                     Refresh

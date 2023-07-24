@@ -91,6 +91,17 @@
   border-width: 2px;
 }
 
+.alert-gradient-info {
+  background-image: linear-gradient(
+    310deg,
+    #2152ff 0%,
+    #21d4fd 100%
+  ) !important;
+  border: solid;
+  border-color: white;
+  border-width: 2px;
+}
+
 .text-white {
   color: white;
 }
