@@ -100,7 +100,7 @@ const updatePassword = async (req, res) => {
 
     responseHandler.ok(res, { message: 'Update password successfully!' })
   } catch (error) {
-    responseHandler.error(error)
+    responseHandler.error(res)
   }
 }
 
@@ -138,7 +138,7 @@ const getInfo = async (req, res) => {
   }
 }
 
-const getDetailById = async (req, res) => {
+const getDetailOfUser = async (req, res) => {
   try {
     const userId = req.params.userId
     const user = await userModel.findById(userId)
@@ -197,5 +197,5 @@ module.exports = {
   getInfo,
   updateProfile,
   add,
-  getDetailById
+  getDetailOfUser
 }

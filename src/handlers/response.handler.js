@@ -2,6 +2,9 @@ const responseWithData = (res, statusCode, data) => {
   if (res.headersSent) return
   res.status(statusCode).json(data)
 }
+const responseWithRenderPage = (res, statusCode) => {
+  res.status(statusCode).render('404page')
+}
 
 const error = res =>
   responseWithData(res, 500, {
@@ -31,4 +34,14 @@ const notfound = res =>
     message: 'Resource not found!'
   })
 
-module.exports = { error, badrequest, ok, created, unauthorized, notfound }
+const notfoundpage = res => responseWithRenderPage(res, 404)
+
+module.exports = {
+  error,
+  badrequest,
+  ok,
+  created,
+  unauthorized,
+  notfound,
+  notfoundpage
+}

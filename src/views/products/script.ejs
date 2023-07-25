@@ -620,6 +620,9 @@
         }),
         success: function(res) {
           location.reload();
+        },
+        error: function(xhr, status, error) {
+          console.log('Error' + error)
         }
       })
 
@@ -667,15 +670,14 @@
     const types = [];
 
     $.ajax({
-      url: '/admin/categories/getAllCate',
+      url: '/admin/categories/list',
       type: 'GET',
       success: function(res) {
-        for (var i = 0; i < res.data.length; i++) {
-          cates[i] = res.data[i];
+        for (var i = 0; i < res.length; i++) {
+          cates[i] = res[i];
         }
       }
     });
-
     const cateType = document.getElementById('cateType');
     $("#productType").change(function(event) {
       const selectedType = event.target.value;

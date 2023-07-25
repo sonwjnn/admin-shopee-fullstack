@@ -237,31 +237,4 @@ router.delete('/:productId', productController.removeProduct)
 
 router.post('/deleteGroup', productController.removeProducts)
 
-const readJsonFile = function (filepath, id, imageName) {
-  var fileString = fs.readFileSync(filepath).toString()
-  var fileObj = [{}]
-  if (fileString == '') {
-    var obj = { id: id, imageName: imageName }
-    fileObj.push(obj)
-  } else {
-    fileObj = JSON.parse(fileString)
-
-    var flag = 1
-    for (var i = 0; i < fileObj.length; i++) {
-      if (id == fileObj[i].id) {
-        fileObj[i].imageName = imageName
-        flag = 0
-      }
-    }
-
-    if (flag == 1) {
-      var obj = { id: id, imageName: imageName }
-      fileObj.push(obj)
-    }
-  }
-
-  var json = JSON.stringify(fileObj)
-  fs.writeFileSync(filepath, json)
-}
-
 module.exports = router

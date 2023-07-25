@@ -12,10 +12,10 @@
               </div>
               <div class="card-body">
                 <form id="formCategoriesUpdate">
-                  <div class="hiden" id="idCate"><%=data[0]._id%></div>
+                  <div class="hiden" id="idCate"><%=data._id%></div>
                   <label class="display-inline" for="name">Name <span id="nameError" class="spanError"></span></label>
                   <div class="mb-3">
-                    <input type="text" class="form-control form-control-new" aria-label="Password" aria-describedby="password-addon" id="name" value="<%=data[0].name%>">
+                    <input type="text" class="form-control form-control-new" aria-label="Password" aria-describedby="password-addon" id="name" value="<%=data.name%>">
                     <span id="nameErrorText" class="spanError"></span>
                   </div>
 

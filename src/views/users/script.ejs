@@ -116,7 +116,7 @@
   $(document).ready(function() {
     $(".detail").click(function() {
       // get and format id from ui of users 
-      const id = $(this).closest("tr").find("td:nth-child(4)").text().replace(/\s+/g, '');;
+      const id = $(this).closest("tr").find("td:nth-child(4)").text().replace(/\s+/g, '');
       $.ajax({
         url: `/admin/users/detail/${id}`,
         type: 'GET',
@@ -161,10 +161,8 @@
 <script>
   $(document).ready(function() {
     $(".edit").click(function() {
-      var username = $(this).closest("tr").find("td:nth-child(3)").text();
-      username = username.replace(/ /g, '');
-      username = username.replace(/(\r\n|\n|\r)/gm, "");
-      var link = '/admin/users/edit/' + username;
+      const username = $(this).closest("tr").find("td:nth-child(3)").text().replace(/\s+/g, '');
+      const link = '/admin/users/edit/' + username;
       window.location.href = link;
     })
   });

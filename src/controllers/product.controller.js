@@ -177,10 +177,9 @@ const removeProducts = async function (req, res) {
 
     await productModel.deleteMany({ _id: { $in: productIds } })
 
-    res.send({ kq: 1, msg: 'Remove products successfully!' })
-    responseHandler.ok(res)
+    return responseHandler.ok(res, 'Products successfully deleted')
   } catch (error) {
-    res.send({ kq: 0, msg: 'Failed to remove products' })
+    responseHandler.error(res)
   }
 }
 

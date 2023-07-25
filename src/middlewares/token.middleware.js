@@ -34,6 +34,7 @@ const auth = async (req, res, next) => {
   if (!user) {
     return responseHandler.unauthorized(res)
   }
+
   req.user = user
   next()
 }
@@ -47,7 +48,6 @@ const authServer = async (req, res, next) => {
   if (!user) {
     return res.redirect('/admin/signin')
   }
-
   req.user = user
   next()
 }

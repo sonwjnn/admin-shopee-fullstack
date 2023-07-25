@@ -197,7 +197,7 @@ router.put(
 router.get(
   '/detail/:userId',
   tokenMiddleware.authServer,
-  userController.getDetailById
+  userController.getDetailOfUser
 )
 
 router.post('/delete', async function (req, res) {

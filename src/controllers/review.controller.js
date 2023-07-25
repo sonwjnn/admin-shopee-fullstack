@@ -16,7 +16,7 @@ const create = async (req, res) => {
       user: req.user
     })
   } catch (error) {
-    responseHandler.error(error)
+    responseHandler.error(res)
   }
 }
 
@@ -35,7 +35,7 @@ const remove = async (req, res) => {
 
     return responseHandler.ok(res)
   } catch (error) {
-    responseHandler.error(error)
+    responseHandler.error(res)
   }
 }
 
@@ -49,7 +49,7 @@ const getReviewsOfUser = async (req, res) => {
 
     responseHandler.ok(res, reviews)
   } catch (error) {
-    responseHandler.error(error)
+    responseHandler.error(res)
   }
 }
 
