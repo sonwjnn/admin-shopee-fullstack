@@ -29,16 +29,22 @@
       if (flag == 1) {
 
         $.ajax({
-          url: '/admin/productTypes/add',
+          url: '/admin/product-types/add',
           type: 'POST',
           data: {
             name,
             cateName
           },
-          success: function(response) {
-
-            $('#msg').html(response.msg);
+          success: function(res) {
+            $('#msg').html(res.msg || res.message);
             $('#popupInfo').click();
+          },
+          error: function(xhr, status, error) {
+            console.log(xhr.responseJSON.message)
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+              $("#msg").html(xhr.responseJSON.message);
+              $("#popupInfo").click();
+            }
           }
         });
 
@@ -53,7 +59,7 @@
 
     var arr = [];
     $.ajax({
-      url: '/admin/productTypes/getAllCate',
+      url: '/admin/product-types/list',
       type: 'GET',
       success: function(res) {
         for (var i = 0; i < res.data.length; i++) {
@@ -72,7 +78,7 @@
 
       var name = $('#searchName').val();
 
-      var link = '/admin/productTypes/search/' + name;
+      var link = '/admin/product-types/search/' + name;
       window.location.href = link;
     })
   })
@@ -86,11 +92,8 @@
   function deleteCate() {
     var id = $('#idDelete').text();
     $.ajax({
-      url: '/admin/productTypes/delete',
-      type: 'POST',
-      data: {
-        id
-      },
+      url: `/admin/product-types/${id}`,
+      type: 'DELETE',
       success: function(res) {
         location.reload();
       }
@@ -101,43 +104,40 @@
 
 <script>
   $(document).ready(function() {
-    var arr = [];
+    let ids = [];
 
     $('.deleteGr').click(function() {
-      var i = 0;
-      $('#cateTable tr').filter(':has(:checkbox:checked)').each(function() {
-        var id = $(this).closest("tr").find("td:nth-child(4)").text();
-        id = id.replace(/ /g, '');
-        id = id.replace(/(\r\n|\n|\r)/gm, "");
-        arr[i] = id;
-        i++;
-      });
+      ids = $('#cateTable tr').filter(':has(:checkbox:checked)').map(function() {
+        var id = $(this).closest("tr").find("td:nth-child(4)").text().trim();
+        return id.replace(/(\r\n|\n|\r)/gm, "");
+      }).get();
 
-      if (arr.length == 0) {
+      if (!ids.length) {
         $('#popupDeleteGrNoData').click();
       } else {
         $('#popupDeleteGr').click();
       }
-
-    })
+    });
 
     $('#buttonDeleteGr').click(function() {
-
       $.ajax({
-        url: '/admin/productTypes/deleteGr',
-        type: 'POST',
+        url: '/admin/product-types',
+        type: 'DELETE',
         contentType: 'application/json',
         data: JSON.stringify({
-          arr: arr
+          ids
         }),
-        success: function(res) {
+        success: function() {
           location.reload();
+        },
+        error: function() {
+          alert('Failed to delete product types.');
         }
-      })
-
-    })
-  })
+      });
+    });
+  });
 </script>
+
 
 
 <script>
@@ -167,17 +167,23 @@
       if (flag == 1) {
 
         $.ajax({
-          url: '/admin/productTypes/update',
-          type: 'POST',
+          url: '/admin/product-types/update',
+          type: 'PUT',
           data: {
             id,
             name,
             cateName
           },
-          success: function(response) {
-
-            $('#msg').html(response.msg);
+          success: function(res) {
+            $('#msg').html(res.msg || res.message);
             $('#popupInfo').click();
+          },
+          error: function(xhr, status, error) {
+            console.log(xhr.responseJSON.message)
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+              $("#msg").html(xhr.responseJSON.message);
+              $("#popupInfo").click();
+            }
           }
         });
 

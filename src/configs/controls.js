@@ -19,7 +19,7 @@ router.use('/admin/products', require('../routers/product.route'))
 router.use('/admin/users', require('../routers/user.route'))
 router.use('/admin/profile', require('../routers/profile.route'))
 router.use('/admin/password', require('../routers/password.route'))
-router.use('/admin/productTypes', require('../routers/type.route'))
+router.use('/admin/product-types', require('../routers/type.route'))
 
 // user
 router.use('/user', require('../routers/ui_user.route'))

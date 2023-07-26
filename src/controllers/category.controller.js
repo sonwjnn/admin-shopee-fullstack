@@ -1,18 +1,17 @@
-const responseHandler = require('../handlers/response.handler.js')
-const cateModel = require('../models/category.model.js')
-const { toStringDate } = require('../utilities/toStringDate.js')
+const responseHandler = require('../handlers/response.handler')
+const cateModel = require('../models/category.model')
+const { toStringDate } = require('../utilities/toStringDate')
+const calculateData = require('../utilities/calculateData')
 
 const renderIndexPage = async (req, res) => {
   try {
-    const limit = 8
-    const sumData = await cateModel.find()
-    const sumPage = Math.ceil(sumData.length / limit)
-    let pageNumber = parseInt(req.params.pageNumber, 10) || 1
+    const pageNumberPayload = parseInt(req.params.pageNumber, 10) || 1
+    const name = ''
 
-    pageNumber = pageNumber < 1 ? 1 : pageNumber
-    pageNumber = pageNumber > sumPage && sumPage !== 0 ? sumPage : pageNumber
-
-    const skip = (pageNumber - 1) * limit
+    const { limit, skip, sumPage, pageNumber } = await calculateData(
+      pageNumberPayload,
+      cateModel
+    )
 
     const cates = await cateModel
       .find()
@@ -22,8 +21,7 @@ const renderIndexPage = async (req, res) => {
 
     const dateOfC = cates.map(cate => toStringDate.dmy(cate.createdAt))
 
-    const flag = 0
-    const name = ''
+    const isIndexPage = 1
     const index = 'categories'
     const main = 'categories/main'
 
@@ -34,43 +32,12 @@ const renderIndexPage = async (req, res) => {
       sumPage,
       pageNumber,
       name,
-      flag,
+      isIndexPage,
       dateOfC
     })
   } catch (error) {
-    console.log(error)
     responseHandler.error(res)
   }
-}
-
-const calculateSearchCate = async (name, pageNumber) => {
-  const limit = 8
-  const obj_find = {}
-
-  if (name && name !== undefined) {
-    const regex = new RegExp(`(${name})`, 'i')
-    obj_find.name = { $regex: regex }
-  }
-
-  const sumData = await cateModel.find(obj_find)
-  const sumPage = Math.ceil(sumData.length / limit)
-
-  if (!pageNumber || pageNumber < 1) {
-    pageNumber = 1
-  }
-
-  if (pageNumber > sumPage && sumPage !== 0) {
-    pageNumber = sumPage
-  }
-
-  const skip = (pageNumber - 1) * limit
-  const cates = await cateModel
-    .find(obj_find)
-    .limit(limit)
-    .skip(skip)
-    .sort({ _id: 1 })
-
-  return { data: cates, sumPage, pageNumber }
 }
 
 const renderSearchPage = async (req, res) => {
@@ -78,28 +45,33 @@ const renderSearchPage = async (req, res) => {
     const name = req.params.name || ''
     const pageNumberPayload = parseInt(req.params.pageNumber, 10) || 1
 
-    const { data, sumPage, pageNumber } = await calculateSearchCate(
-      name,
-      pageNumberPayload
+    const { limit, skip, obj_find, sumPage, pageNumber } = await calculateData(
+      pageNumberPayload,
+      cateModel,
+      name
     )
+
+    const cates = await cateModel
+      .find(obj_find)
+      .limit(limit)
+      .skip(skip)
+      .sort({ _id: 1 })
+
+    const dateOfC = cates.map(cate => toStringDate.dmy(cate.createdAt))
 
     const index = 'categories'
     const main = 'categories/main'
-    const flag = 1
-    const dateOfC = data.map(category => {
-      const stringDate = category.createdAt.toISOString().substring(0, 10)
-      const [year, month, day] = stringDate.split('-')
-      return `${day}-${month}-${year}`
-    })
+    // flag = 1 render index page, flag = 2 render search page
+    const isIndexPage = 0
 
     res.render('index', {
       main,
       index,
-      data,
+      data: cates,
       sumPage,
       pageNumber,
       name,
-      flag,
+      isIndexPage,
       dateOfC
     })
   } catch (error) {
@@ -159,6 +131,9 @@ const add = async (req, res) => {
 const getList = async (req, res) => {
   try {
     const cates = await cateModel.find()
+
+    if (!cates) return responseHandler.notfound(res)
+
     return responseHandler.ok(res, cates)
   } catch (error) {
     responseHandler.error(res)

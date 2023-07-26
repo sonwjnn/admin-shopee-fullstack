@@ -12,15 +12,15 @@
               </div>
               <div class="card-body">
                 <form id="formTypesUpdate">
-                  <div class="hiden" id="idCate"><%=data[0]._id%></div>
+                  <div class="hiden" id="idCate"><%=data._id%></div>
                   <label class="display-inline" for="name">Name <span id="nameError" class="spanError"></span></label>
                   <div class="mb-3">
-                    <input type="text" class="form-control form-control-new" aria-label="Password" aria-describedby="password-addon" id="name" value="<%=data[0].name%>">
+                    <input type="text" class="form-control form-control-new" aria-label="Password" aria-describedby="password-addon" id="name" value="<%=data.name%>">
                     <span id="nameErrorText" class="spanError"></span>
                   </div>
                   <label>Type</label>
                   <select class="form-select" id="cateNames">
-                    <option value="<%=data[0].cateName%>" hidden><%=data[0].cateName%></option>
+                    <option value="<%=data.cateName%>" hidden><%=data.cateId.name%></option>
                     <% for(var i=0; i < cates.length; i++) { %>
                     <option value="<%=cates[i].name%>"><%=cates[i].name%></option>
                     <% } %>

@@ -1,6 +1,5 @@
 const express = require('express')
 const router = express.Router()
-
 const userModel = require('../models/user.model')
 const cartModel = require('../models/cart.model')
 const favoriteModel = require('../models/favorite.model')
@@ -8,7 +7,7 @@ const reviewModel = require('../models/review.model')
 const userController = require('../controllers/user.controller')
 const { body } = require('express-validator')
 const requestHandler = require('../handlers/request.handler')
-const tokenMiddleware = require('../middlewares/token.middleware.js')
+const tokenMiddleware = require('../middlewares/token.middleware')
 
 router.get('/index(/:pageNumber?)', async (req, res) => {
   const limit = 8

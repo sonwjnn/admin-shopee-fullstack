@@ -1,4 +1,3 @@
-const mongoose = require('mongoose')
 const responseHandler = require('../handlers/response.handler')
 const tokenMiddleware = require('../middlewares/token.middleware')
 const cartModel = require('../models/cart.model')
@@ -9,18 +8,146 @@ const userModel = require('../models/user.model')
 const favoriteModel = require('../models/favorite.model')
 const typeModel = require('../models/type.model')
 const { toStringDate } = require('../utilities/toStringDate')
+const calculateData = require('../utilities/calculateData')
 const fs = require('fs')
+
+const renderIndexPage = async (req, res) => {
+  try {
+    const pageNumberPayload = parseInt(req.params.pageNumber, 10) || 1
+    const name = ''
+
+    const { limit, skip, obj_find, sumPage, pageNumber } = await calculateData(
+      pageNumberPayload,
+      productModel,
+      name
+    )
+
+    const products = await productModel
+      .find(obj_find)
+      .populate('cateId', 'name')
+      .populate('typeId', 'name')
+      .limit(limit)
+      .skip(skip)
+      .sort({ _id: 1 })
+
+    if (!products) return responseHandler.notfound(res)
+
+    const index = 'products'
+    const main = 'products/main'
+    const isIndexPage = 1
+    res.render('index', {
+      main,
+      index,
+      data: products,
+      sumPage,
+      pageNumber,
+      name,
+      isIndexPage
+    })
+  } catch (error) {
+    responseHandler.error(res)
+  }
+}
+
+const renderAddPage = async (req, res) => {
+  try {
+    const types = await typeModel.find().select('name')
+
+    // Lọc ra các type có tên trùng nhau
+    const uniqueTypeNames = [...new Set(types.map(type => type.name))]
+
+    const status = [
+      'Có sẵn',
+      'Hoạt động',
+      'Ngừng hoạt động',
+      'Ngừng sản xuất',
+      'Đã xóa'
+    ]
+    var index = 'products'
+    var main = 'products/add.product.ejs'
+
+    res.render('index', { main, index, types: uniqueTypeNames, status })
+  } catch (error) {
+    res.send({ kq: 0, msg: 'Something went wrong with types or cates!' })
+  }
+}
+
+const renderEditPage = async (req, res) => {
+  try {
+    const { productId } = req.params
+    const product = await productModel
+      .findOne({ _id: productId })
+      .populate('cateId', 'name')
+      .populate('typeId', 'name')
+
+    if (!product) return responseHandler.notfound(res)
+
+    const types = await typeModel.find().select('name')
+    const uniqueTypeNames = [...new Set(types.map(type => type.name))]
+    const status = [
+      'Có sẵn',
+      'Hoạt động',
+      'Ngừng hoạt động',
+      'Ngừng sản xuất',
+      'Đã xóa'
+    ]
+    const producedAt = toStringDate.ymd(product.producedAt)
+    const index = 'products'
+    const main = 'products/edit.product.ejs'
+    res.render('index', {
+      main,
+      index,
+      data: product,
+      types: uniqueTypeNames,
+      producedAt,
+      status
+    })
+  } catch (error) {
+    responseHandler.error(res)
+  }
+}
+
+const renderSearchPage = async (req, res) => {
+  try {
+    const name = req.params.name || ''
+    const pageNumberPayload = parseInt(req.params.pageNumber, 10) || 1
+
+    const { limit, skip, obj_find, sumPage, pageNumber } = await calculateData(
+      pageNumberPayload,
+      productModel,
+      name
+    )
+
+    const products = await productModel
+      .find(obj_find)
+      .populate('cateId', 'name')
+      .populate('typeId', 'name')
+      .limit(limit)
+      .skip(skip)
+      .sort({ _id: 1 })
+
+    if (!products) return responseHandler.notfound(res)
+
+    const index = 'products'
+    const main = 'products/main'
+    const isIndexPage = 0
+    res.render('index', {
+      main,
+      index,
+      data: products,
+      sumPage,
+      pageNumber,
+      name,
+      isIndexPage
+    })
+  } catch (error) {
+    responseHandler.error(res)
+  }
+}
 
 const addProduct = async (req, res) => {
   try {
     const { name, productType, cateType, discount } = req.body
-    // var idUser = ''
-    // jwt.verify(req.cookies.token, secret, function (err, decoded) {
-    //   if (err) throw err
-    //   else {
-    //     idUser = decoded.data
-    //   }
-    // })
 
     const isProduct = await productModel.findOne({ name })
     if (isProduct)
@@ -49,30 +176,7 @@ const addProduct = async (req, res) => {
   }
 }
 
-const addProductPayload = async (req, res) => {
-  try {
-    const types = await typeModel.find().select('name')
-
-    // Lọc ra các type có tên trùng nhau
-    const uniqueTypeNames = [...new Set(types.map(type => type.name))]
-
-    const status = [
-      'Có sẵn',
-      'Hoạt động',
-      'Ngừng hoạt động',
-      'Ngừng sản xuất',
-      'Đã xóa'
-    ]
-    var index = 'products'
-    var main = 'products/add.product.ejs'
-
-    res.render('index', { main, index, types: uniqueTypeNames, status })
-  } catch (error) {
-    res.send({ kq: 0, msg: 'Something went wrong with types or cates!' })
-  }
-}
-
-const editProduct = async (req, res) => {
+const update = async (req, res) => {
   try {
     const { id, cateType, productType, imageName } = req.body
     const cate = await categoryModel.findOne({ name: cateType })
@@ -101,43 +205,6 @@ const editProduct = async (req, res) => {
     res.send({ kq: 1, msg: 'Successfully updated product data' })
   } catch (error) {
     res.send({ kq: 0, msg: 'Failed to edit product' })
-  }
-}
-
-const editProductPayload = async (req, res) => {
-  try {
-    const { productId } = req.params
-    const product = await productModel
-      .findOne({ _id: productId })
-      .populate('cateId', 'name')
-      .populate('typeId', 'name')
-
-    if (!product) return res.send({ kq: 0, msg: 'Product is not exists.' })
-
-    const types = await typeModel.find().select('name')
-    const uniqueTypeNames = [...new Set(types.map(type => type.name))]
-    const status = [
-      'Có sẵn',
-      'Hoạt động',
-      'Ngừng hoạt động',
-      'Ngừng sản xuất',
-      'Đã xóa'
-    ]
-    const producedAt = toStringDate.ymd(product.producedAt)
-    const index = 'products'
-    const main = 'products/edit.product.ejs'
-    res.render('index', {
-      main,
-      index,
-      data: product,
-      types: uniqueTypeNames,
-      producedAt,
-      status
-    })
-  } catch (error) {
-    console.log(error)
-    res.send({ kq: 0, msg: 'Edit product payload failed' })
-    responseHandler.error(res)
   }
 }
 
@@ -185,47 +252,14 @@ const removeProducts = async function (req, res) {
 
 const getList = async (req, res) => {
   try {
-    const response = await productModel.find().exec(async (err, data) => {
-      if (err) {
-        res.send({ kq: 0, msg: 'Connect failed to DB' })
-      } else {
-        typeCate = [
-          'Electronic',
-          'Clothes',
-          'Office Suply',
-          'Books',
-          'Bedding',
-          'Other'
-        ]
+    const products = await productModel
+      .find()
+      .populate('cateId', 'name')
+      .populate('typeId', 'name')
 
-        var dataCate = await categoryModel.find()
+    if (!products) return responseHandler.notfound(res)
 
-        var arr = []
-        for (var i = 0; i < typeCate.length; i++) {
-          var count = 0
-          for (var j = 0; j < dataCate.length; j++) {
-            if (typeCate[i] == dataCate[j].type) {
-              count = 1
-            }
-          }
-
-          if (count == 0) {
-            arr.push({
-              name: typeCate[i],
-              check: 0
-            })
-          } else {
-            arr.push({
-              name: typeCate[i],
-              check: 1
-            })
-          }
-        }
-
-        res.send({ kq: 1, msg: data, msgDouble: arr })
-      }
-    })
-    // return responseHandler.ok(res, response)
+    return responseHandler.ok(res, products)
   } catch (error) {
     responseHandler.error(res)
   }
@@ -269,12 +303,14 @@ const getDetail = async (req, res) => {
 }
 
 module.exports = {
+  renderIndexPage,
+  renderAddPage,
+  renderEditPage,
+  renderSearchPage,
   getList,
   getDetail,
   addProduct,
-  addProductPayload,
-  editProduct,
-  editProductPayload,
+  update,
   removeProduct,
   removeProducts
 }

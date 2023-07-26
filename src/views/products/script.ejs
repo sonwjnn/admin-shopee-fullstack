@@ -381,8 +381,8 @@
             $('#imageShow').val(value);
             var id = $('#id').val();
             $.ajax({
-              url: '/admin/products/edit',
-              type: 'POST',
+              url: '/admin/products/update',
+              type: 'PUT',
               data: {
                 id,
                 name,
@@ -410,8 +410,8 @@
         if (true) {
           var id = $('#id').val();
           $.ajax({
-            url: '/admin/products/edit',
-            type: 'POST',
+            url: '/admin/products/update',
+            type: 'PUT',
             data: {
               id,
               name,
@@ -480,29 +480,26 @@
 
 <script>
   $(document).ready(function() {
-
-    var arr = [];
+    const names = [];
     $.ajax({
-      url: '/admin/products/getAllProduct',
+      url: '/admin/products/list',
       type: 'GET',
       success: function(res) {
-        for (var i = 0; i < res.data.length; i++) {
-          arr[i] = res.data[i].name;
-        }
+        names = res.map((product) => product.name)
       }
     });
 
     $("#searchName").autocomplete({
-      source: arr
+      source: names
     });
 
 
     $('#searchForm').on('submit', function(e) {
       e.preventDefault();
 
-      var name = $('#searchName').val();
+      const name = $('#searchName').val();
 
-      var link = '/admin/products/search/' + name;
+      const link = '/admin/products/search/' + name;
       window.location.href = link;
     })
   })
@@ -560,7 +557,7 @@
 
 <script>
   $('#clickMe').click(function() {
-    var text = $('#storyid').text();
+    const text = $('#storyid').text();
     CKEDITOR.instances['productInfo'].setData(text);
   })
   $(document).ready(function() {
@@ -575,7 +572,7 @@
   }
 
   function deleteProduct() {
-    var id = $('#idDelete').text();
+    const id = $('#idDelete').text();
     $.ajax({
       url: '/admin/products/' + id,
       type: 'DELETE',
@@ -612,8 +609,8 @@
     $('#buttonDeleteGr').click(function() {
 
       $.ajax({
-        url: '/admin/products/deleteGroup',
-        type: 'POST',
+        url: '/admin/products',
+        type: 'DELETE',
         contentType: 'application/json',
         data: JSON.stringify({
           ids
@@ -668,42 +665,67 @@
   $(document).ready(async function() {
     const cates = [];
     const types = [];
+    const currentSelectedType = $("#productType").val()
+    const cateType = document.getElementById('cateType');
 
     $.ajax({
       url: '/admin/categories/list',
       type: 'GET',
       success: function(res) {
-        for (var i = 0; i < res.length; i++) {
-          cates[i] = res[i];
-        }
+        cates.push(...res);
+      },
+      error: function(xhr, status, error) {
+        console.log('Error' + error)
       }
-    });
-    const cateType = document.getElementById('cateType');
-    $("#productType").change(function(event) {
-      const selectedType = event.target.value;
+    })
+    $.ajax({
+      url: '/admin/product-types/by-name/' + currentSelectedType,
+      type: 'GET',
+      success: function(res) {
+        types.push(...res);
+        displayMatchingCategories(currentSelectedType);
+      },
+      error: function(xhr, status, error) {
+        console.log('Error' + error)
+      }
+    })
+
+    $("#productType").change(function(e) {
+      const selectedType = e.target.value;
       cateType.innerHTML = '';
 
       $.ajax({
-        url: '/admin/productTypes/getTypeByName/' + selectedType,
+        url: '/admin/product-types/by-name/' + selectedType,
         type: 'GET',
         success: function(res) {
-          cateType.disabled = false
-          for (var i = 0; i < res.data.length; ++i) {
-            types[i] = res.data[i];
-          }
-          types.forEach(function(type) {
-            cates.forEach(function(cate) {
-              if (type.name === selectedType && type.cateId === cate._id) {
-                const option = document.createElement('option');
-                option.value = cate.name;
-                option.textContent = cate.name;
-                cateType.appendChild(option);
-              };
-            });
-          });
+
+          types.length = 0; // Xóa các phần tử trong mảng types
+          types.push(...res);
+          displayMatchingCategories(selectedType);
+          cateType.disabled = false;
+        },
+        error: function(xhr, status, error) {
+          console.log('Error' + error)
         }
       });
     });
+
+    // Hiển thị danh sách các danh mục phù hợp với loại sản phẩm đã chọn
+    const displayMatchingCategories = (selectedType) => {
+
+      const matchingCategories = cates.filter(cate => {
+        return types.some(type => type.name === selectedType && type.cateId === cate._id);
+      });
+
+      matchingCategories.forEach(cate => {
+        const option = document.createElement('option');
+        option.value = cate.name;
+        option.textContent = cate.name;
+        cateType.appendChild(option);
+      });
+
+
+    }
   });
 </script>
 
