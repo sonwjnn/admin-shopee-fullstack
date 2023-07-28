@@ -33,4 +33,11 @@ productSchema.pre('save', function (next) {
   next()
 })
 
+productSchema.methods.setImage = function (originalImageName) {
+  const [name, type] = originalImageName.split('.')
+  const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9)
+  const imageName = `${name}-${uniqueSuffix}.${type}`.replace(/ /g, '-')
+  this.imageName = imageName
+}
+
 module.exports = mongoose.model('Product', productSchema)

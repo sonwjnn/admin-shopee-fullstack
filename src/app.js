@@ -5,6 +5,7 @@ const { connectDb } = require('./configs/mongodb.js')
 const { corsOptions } = require('./configs/cors')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
+const body = require('body-parser')
 
 connectDb()
   .then(() => boostServer())
@@ -16,6 +17,8 @@ connectDb()
 const boostServer = () => {
   const app = express()
   /*   app.use(express.static('./assets')) */
+  app.use(body.urlencoded({ extended: true }))
+  app.use(body.json())
   app.use(express.static(path.join(__dirname, './assets')))
   app.use(express.static(path.join(__dirname, './utilities')))
   app.set('views', path.join(__dirname, './views'))

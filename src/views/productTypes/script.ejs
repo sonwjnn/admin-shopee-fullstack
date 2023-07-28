@@ -179,7 +179,6 @@
             $('#popupInfo').click();
           },
           error: function(xhr, status, error) {
-            console.log(xhr.responseJSON.message)
             if (xhr.responseJSON && xhr.responseJSON.message) {
               $("#msg").html(xhr.responseJSON.message);
               $("#popupInfo").click();

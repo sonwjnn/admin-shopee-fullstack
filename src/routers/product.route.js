@@ -1,9 +1,10 @@
 const express = require('express')
-const multer = require('multer')
 const tokenMiddleware = require('../middlewares/token.middleware')
 const productController = require('../controllers/product.controller')
 const router = express.Router({ mergeParams: true })
-
+const { body } = require('express-validator')
+const requestHandler = require('../handlers/request.handler')
+const multer = require('multer')
 router.get('/index(/:pageNumber?)', productController.renderIndexPage)
 
 router.get(
@@ -14,7 +15,35 @@ router.get('/edit/:productId', productController.renderEditPage)
 
 router.get('/add', productController.renderAddPage)
 
-router.post('/add', tokenMiddleware.authServer, productController.addProduct)
+router.post(
+  '/add',
+  body('name')
+    .exists()
+    .withMessage('Name is required')
+    .isLength({ min: 8, max: 50 })
+    .withMessage('Name must have a maximum of 50 characters'),
+  body('origin')
+    .exists()
+    .withMessage('Origin is required')
+    .isLength({ min: 2, max: 20 }),
+  body('price')
+    .exists()
+    .withMessage('Price is required')
+    .isInt({ min: 1 })
+    .withMessage('Price must be a positive integer'),
+  body('productType').exists().withMessage('Product type is required'),
+  body('cateType').exists().withMessage('Category type is required'),
+  body('producedAt').exists().withMessage('Produced at is required'),
+  body('info').exists().withMessage('Product info is required'),
+  body('discount')
+    .optional()
+    .isNumeric({ min: 0, max: 100 })
+    .withMessage('Discount must be a number between 0 and 100'),
+  body('status').exists().withMessage('Status is required'),
+  requestHandler.validate,
+
+  productController.addProduct
+)
 
 router.get('/list', productController.getList)
 
@@ -30,51 +59,6 @@ router.delete(
 
 router.delete('/', tokenMiddleware.authServer, productController.removeProducts)
 
-// Declare destination and limit of image size
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'src/assets/img/products')
-  },
-  filename: function (req, file, cb) {
-    if (
-      file.mimetype !== 'image/png' &&
-      file.mimetype !== 'image/jpg' &&
-      file.mimetype !== 'image/jpeg'
-    ) {
-      return cb(new Error('Wrong type file'))
-    }
-
-    // Change image name to be unique and remove whitespace
-    const [name, type] = file.originalname.split('.')
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9)
-    const arrAfter = name + '-' + uniqueSuffix + '.' + type
-    const imageNameSend = arrAfter.replace(/ /g, '-')
-    cb(null, imageNameSend)
-  }
-})
-
-const limits = { fileSize: 3072000 }
-const upload = multer({ storage, limits }).single('productsImage')
-
-// Upload products image
-router.post('/upLoadFile', function (req, res) {
-  upload(req, res, function (err) {
-    if (err instanceof multer.MulterError) {
-      return res.send({ kq: 0, msg: err.message })
-    } else if (err) {
-      return res.send({ kq: 0, msg: err.message })
-    }
-
-    // The image was uploaded successfully
-    const imageNameSend = req.file.filename
-    const imageNameReal = req.file.originalname
-
-    return res.send({
-      kq: 1,
-      imageNameSend,
-      imageNameReal
-    })
-  })
-})
+router.post('/upload-image', productController.uploadImage)
 
 module.exports = router

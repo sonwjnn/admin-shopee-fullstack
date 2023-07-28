@@ -1,3 +1,4 @@
+const multer = require('multer')
 const responseHandler = require('../handlers/response.handler')
 const tokenMiddleware = require('../middlewares/token.middleware')
 const cartModel = require('../models/cart.model')
@@ -147,8 +148,7 @@ const renderSearchPage = async (req, res) => {
 
 const addProduct = async (req, res) => {
   try {
-    const { name, productType, cateType, discount } = req.body
-
+    const { name, productType, cateType, originalImageName } = req.body
     const isProduct = await productModel.findOne({ name })
     if (isProduct)
       return res.send({ kq: 0, msg: 'Product name is already exists!' })
@@ -165,13 +165,16 @@ const addProduct = async (req, res) => {
       typeId: type._id
     })
 
+    product.setImage(originalImageName)
+
     await product.save()
 
-    res.send({ kq: 0, msg: 'Add product successfully!' })
-
-    responseHandler.created(res, product)
+    responseHandler.created(res, {
+      ...product._doc,
+      message: 'Add cate successfully!'
+    })
   } catch (error) {
-    res.send({ kq: 0, msg: 'Connection to database failed' })
+    console.log(error)
     responseHandler.error(res)
   }
 }
@@ -302,6 +305,52 @@ const getDetail = async (req, res) => {
   }
 }
 
+const uploadImage = async (req, res) => {
+  try {
+    const storage = multer.diskStorage({
+      destination: function (req, file, cb) {
+        cb(null, 'src/assets/img/products')
+      },
+      filename: function (req, file, cb) {
+        if (
+          file.mimetype !== 'image/png' &&
+          file.mimetype !== 'image/jpg' &&
+          file.mimetype !== 'image/jpeg'
+        ) {
+          return cb(new Error('Wrong type file'))
+        }
+        console.log(file.originalname)
+        const [name, type] = file.originalname.split('.')
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9)
+        const arrAfter = name + '-' + uniqueSuffix + '.' + type
+        const imageName = arrAfter.replace(/ /g, '-')
+
+        cb(null, imageName)
+      }
+    })
+
+    const limits = { fileSize: 3072000 }
+    const upload = multer({ storage, limits }).single('productsImage')
+
+    upload(req, res, function (err) {
+      if (err instanceof multer.MulterError) {
+        return responseHandler.error(res, err.message)
+      } else if (err) {
+        return responseHandler.error(res, err.message)
+      }
+
+      // The image was uploaded successfully
+      const imageName = req.file.filename
+      const originalImageName = req.file.originalname
+
+      return responseHandler.created(res, { imageName, originalImageName })
+    })
+  } catch (error) {
+    console.log(error)
+    responseHandler.error(res)
+  }
+}
+
 module.exports = {
   renderIndexPage,
   renderAddPage,
@@ -312,5 +361,6 @@ module.exports = {
   addProduct,
   update,
   removeProduct,
-  removeProducts
+  removeProducts,
+  uploadImage
 }

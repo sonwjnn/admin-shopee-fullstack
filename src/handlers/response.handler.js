@@ -6,10 +6,10 @@ const responseWithRenderPage = (res, statusCode) => {
   res.status(statusCode).render('404page')
 }
 
-const error = res =>
+const error = (res, message) =>
   responseWithData(res, 500, {
     status: 500,
-    message: 'Oops! Something wrong!'
+    message: message || 'Oops! Something wrong!'
   })
 
 const badrequest = (res, message) =>
