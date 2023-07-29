@@ -149,28 +149,32 @@ const renderSearchPage = async (req, res) => {
 const addProduct = async (req, res) => {
   try {
     const { name, productType, cateType, originalImageName } = req.body
-    const isProduct = await productModel.findOne({ name })
-    if (isProduct)
-      return res.send({ kq: 0, msg: 'Product name is already exists!' })
 
     const cate = await categoryModel.findOne({ name: cateType })
+    const product = await productModel.findOne({ name, cateId: cate._id })
     const type = await typeModel.findOne({
       name: productType,
       cateId: cate._id
     })
 
-    const product = new productModel({
+    if (product)
+      return responseHandler.badrequest(
+        res,
+        `Exists a product name in category ${cateType}!`
+      )
+
+    const newProduct = new productModel({
       ...req.body,
       cateId: cate._id,
       typeId: type._id
     })
 
-    product.setImage(originalImageName)
+    newProduct.setImage(originalImageName)
 
-    await product.save()
+    await newProduct.save()
 
     responseHandler.created(res, {
-      ...product._doc,
+      ...newProduct._doc,
       message: 'Add cate successfully!'
     })
   } catch (error) {
@@ -181,33 +185,41 @@ const addProduct = async (req, res) => {
 
 const update = async (req, res) => {
   try {
-    const { id, cateType, productType, imageName } = req.body
+    const { id, cateType, productType, originalImageName, name } = req.body
+
     const cate = await categoryModel.findOne({ name: cateType })
     const type = await typeModel.findOne({
       name: productType,
       cateId: cate._id
     })
+    const product = await productModel.findOne({ _id: id })
 
-    const currentProduct = await productModel.findOne({ _id: id })
+    if (product.name !== name) {
+      const isProduct = await productModel.findOne({ name, cateId: cate._id })
+      if (isProduct)
+        return responseHandler.badrequest(
+          res,
+          `Exists a product name in category ${cateType}!`
+        )
+    }
 
-    if (imageName !== '' && imageName !== currentProduct.imageName) {
-      const path = 'src/assets/img/products/' + currentProduct.imageName
+    if (originalImageName && originalImageName !== product.imageName) {
+      const path = 'src/assets/img/products/' + product.imageName
       fs.unlinkSync(path)
+      product.setImage(originalImageName)
     }
 
-    const update = {
-      ...req.body,
-      cateId: cate._id,
-      typeId: type._id
-    }
+    product.setInfo({ ...req.body, cateId: cate._id, typeId: type._id })
 
-    if (imageName === '') delete update.imageName
+    await product.save()
 
-    await productModel.updateOne({ _id: id }, update)
-
-    res.send({ kq: 1, msg: 'Successfully updated product data' })
+    responseHandler.ok(res, {
+      product,
+      message: 'Update product successfully!'
+    })
   } catch (error) {
-    res.send({ kq: 0, msg: 'Failed to edit product' })
+    console.log(error)
+    responseHandler.error(res)
   }
 }
 
@@ -312,6 +324,8 @@ const uploadImage = async (req, res) => {
         cb(null, 'src/assets/img/products')
       },
       filename: function (req, file, cb) {
+        const imageName = req.headers['x-image-name']
+
         if (
           file.mimetype !== 'image/png' &&
           file.mimetype !== 'image/jpg' &&
@@ -319,11 +333,6 @@ const uploadImage = async (req, res) => {
         ) {
           return cb(new Error('Wrong type file'))
         }
-        console.log(file.originalname)
-        const [name, type] = file.originalname.split('.')
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9)
-        const arrAfter = name + '-' + uniqueSuffix + '.' + type
-        const imageName = arrAfter.replace(/ /g, '-')
 
         cb(null, imageName)
       }
@@ -338,7 +347,6 @@ const uploadImage = async (req, res) => {
       } else if (err) {
         return responseHandler.error(res, err.message)
       }
-
       // The image was uploaded successfully
       const imageName = req.file.filename
       const originalImageName = req.file.originalname
@@ -346,7 +354,6 @@ const uploadImage = async (req, res) => {
       return responseHandler.created(res, { imageName, originalImageName })
     })
   } catch (error) {
-    console.log(error)
     responseHandler.error(res)
   }
 }

@@ -40,4 +40,10 @@ productSchema.methods.setImage = function (originalImageName) {
   this.imageName = imageName
 }
 
+productSchema.methods.setInfo = function (props) {
+  Object.assign(this, {
+    ...props
+  })
+}
+
 module.exports = mongoose.model('Product', productSchema)

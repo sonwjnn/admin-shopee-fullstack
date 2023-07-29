@@ -6,6 +6,8 @@ const { corsOptions } = require('./configs/cors')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const body = require('body-parser')
+const multer = require('multer')
+const upload = multer()
 
 connectDb()
   .then(() => boostServer())

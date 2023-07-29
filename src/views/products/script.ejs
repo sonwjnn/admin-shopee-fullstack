@@ -2,6 +2,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 
+<!--add product form-->
 <script>
   $(document).ready(function() {
     $('#formProductsAdd').on('submit', function(e) {
@@ -15,11 +16,8 @@
       const discount = $('#discount').val()
       const status = $('#status').val()
       const info = CKEDITOR.instances['productStory'].getData()
-      const originalImageName = $('#image').prop('files')[0].name
-
+      const originalImageName = $('#image').prop('files')[0] ? $('#image').prop('files')[0].name : ''
       // Upload image
-
-      // Add info field (since CKEditor instance is not included by default)
 
       const data = {
         name,
@@ -27,13 +25,16 @@
         price,
         productType,
         cateType,
-        discount,
         status,
         info,
         producedAt,
         originalImageName
       }
 
+      if (discount)
+        data.discount = discount
+
+      // image name get value from res of add product action and use to upload image after
       let imageName
 
       const imagePromise = new Promise((rs, rj) => {
@@ -60,13 +61,15 @@
 
       imagePromise.then(() => {
         const formData = new FormData(this)
-        formData.append('imageName', imageName)
         $.ajax({
           url: '/admin/products/upload-image',
           type: 'POST',
           data: formData,
           processData: false,
           contentType: false,
+          headers: {
+            'X-Image-Name': imageName
+          },
           success: function(res) {
             console.log(res)
           }
@@ -77,264 +80,94 @@
   });
 </script>
 
+<!--edit product form-->
 <script>
-  // form product edit
   $(document).ready(function() {
     $('#formProductsEdit').on('submit', function(e) {
       e.preventDefault();
-      var flag = 1;
-      var flagSyntax = 1;
       const name = $('#name').val()
       const origin = $('#origin').val()
       const price = $('#price').val()
-      const discount = $('#discount').val()
-      const discountPrice = $('#discountPrice').val()
       const productType = $('#productType').val()
       const cateType = $('#cateType').val()
+      const producedAt = $('#producedAt').val()
+      const discount = $('#discount').val()
       const status = $('#status').val()
-      var producedAt = $('#producedAt').val()
-      var info = CKEDITOR.instances['productInfo'].getData()
-
-
-      if (name == '') {
-        flag = 0
-        $("#nameError").html("(*)")
-        $("#nameErrorText").html("Please fill up the infomation above")
-      } else if (name.length > 50) {
-        flagSyntax = 0
-        $("#nameError").html("(+)")
-        $("#nameErrorText").html("Name has maximum 30 characters")
-
-      } else {
-        $("#nameError").html("")
-        $("#nameErrorText").html("")
+      const info = CKEDITOR.instances['productInfo'].getData()
+      const id = $('#id').val()
+      const newImageName = $('#image').prop('files')[0] ? $('#image').prop('files')[0].name : ''
+      console.log(newImageName)
+      const data = {
+        id,
+        name,
+        origin,
+        price,
+        productType,
+        cateType,
+        status,
+        info,
+        producedAt
       }
 
-
-      if (origin == '') {
-        flag = 0
-        $("#originError").html("(*)")
-        $("#originErrorText").html("Please fill up the infomation above")
-      } else {
-        $("#originError").html("")
-        $("#originErrorText").html("")
+      if (discount)
+        data.discount = discount
+      if (newImageName !== '') {
+        data.originalImageName = newImageName
+        console.log(date)
       }
 
+      // image name get value from res of add product action and use to upload image after
+      let imageName
 
-      var regexPrice = /^([0-9]*)$/
-      var regexPriceZero = /^([0]*)$/
+      const imagePromise = new Promise((rs, rj) => {
+        $.ajax({
+          url: '/admin/products/update',
+          type: 'PUT',
+          data,
+          success: function(res) {
+            $('#msg').text(res.message)
+            $('#popupInfo').click()
+            imageName = res.product.imageName
+            rs()
+          },
+          error: function(xhr, status, error) {
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+              $("#msg").html(xhr.responseJSON.message)
+              $("#popupInfo").click()
+            }
+            rj()
+          }
+        })
+      })
 
-
-      if (price == '') {
-        flag = 0
-        $("#priceError").html("(*)")
-        $("#priceErrorText").html("Please fill up the infomation above")
-      } else if (regexPrice.test(price) != true) {
-        flagSyntax = 0
-        $("#priceError").html("(+)")
-        $("#priceErrorText").html("The price is not valid")
-      } else if (regexPriceZero.test(price)) {
-        flagSyntax = 0
-        $("#priceError").html("(+)")
-        $("#priceErrorText").html("The price must not be zero")
-      } else {
-        $("#priceError").html("")
-        $("#priceErrorText").html("")
-      }
-
-      var flagImageHave = 0
-      var flagSyntaxImage = 1
-
-      var file = $('#image')
-
-
-      var file_length = file[0].files.length
-      var name_file = ''
-      var type_file = ''
-      var size_file = 0
-
-      if (file_length != 0) {
-        name_file = file[0].files[0].name
-        type_file = file[0].files[0].type
-        size_file = file[0].files[0].size
-        flagImageHave = 1
-      }
-
-      if (flagImageHave == 1) {
-        if (file_length == 0) {
-          flagSyntaxImage = 0;
-          $("#imageError").html("(*)");
-          $("#imageErrorText").html("Please fill up the infomation above");
-        } else if (type_file != 'image/jpeg' && type_file != 'image/jpg' && type_file != 'image/png') {
-          flagSyntaxImage = 0;
-          $("#imageError").html("(+)");
-          $("#imageErrorText").html("Wrong type file");
-        } else if (size_file > 3072000) {
-          flagSyntaxImage = 0;
-          $("#imageError").html("(+)");
-          $("#imageErrorText").html("The limit of image size has maximum 3Mb data");
-        } else if (/\s/.test(name_file)) {
-          flagSyntaxImage = 0;
-          $("#imageError").html("(+)");
-          $("#imageErrorText").html("File name must not certain whitespaces");
-        } else {
-          $("#imageError").html("");
-          $("#imageErrorText").html("");
-        }
-
-      }
-
-      if (flagImageHave == 0) {
-        var textError = 'Note:';
-
-        if (flag == 0) {
-          textError = textError + '<br> &emsp;(*): Enter missing information field';
-          $('#noteProducts').html(textError);
-          $('#noteProducts').removeClass('hiden');
-          $('#noteProducts').addClass('unhiden');
-        }
-        if (flagSyntax == 0 || flagSyntaxImage == 0) {
-          textError = textError + '<br> &emsp;(+): Wrong syntax';
-          $('#noteProducts').html(textError);
-          $('#noteProducts').removeClass('hiden');
-          $('#noteProducts').addClass('unhiden');
-        }
-
-        if (flag == 1 && flagSyntax == 1) {
-          $('#noteProducts').removeClass('unhiden');
-          $('#noteProducts').addClass('hiden');
-        }
-
-        if (flag == 0 || flagSyntax == 0) {
-          $('#main').animate({
-            scrollTop: 0
-          }, 300);
-        }
-      }
-
-      if (flagImageHave == 1) {
-        var textError = 'Note:';
-
-        if (flag == 0) {
-          textError = textError + '<br> &emsp;(*): Enter missing information field';
-          $('#noteProducts').html(textError);
-          $('#noteProducts').removeClass('hiden');
-          $('#noteProducts').addClass('unhiden');
-        }
-        if (flagSyntax == 0 || flagSyntaxImage == 0) {
-          textError = textError + '<br> &emsp;(+): Wrong syntax';
-          $('#noteProducts').html(textError);
-          $('#noteProducts').removeClass('hiden');
-          $('#noteProducts').addClass('unhiden');
-        }
-
-        if (flag == 1 && flagSyntax == 1 && flagSyntaxImage == 1) {
-          $('#noteProducts').removeClass('unhiden');
-          $('#noteProducts').addClass('hiden');
-        }
-
-        if (flag == 0 || flagSyntax == 0 || flagSyntaxImage == 0) {
-          $('#main').animate({
-            scrollTop: 0
-          }, 300);
-        }
-      }
-
-      var imageName = '';
-      var imageNameReal = '';
-      if (flagImageHave == 1) {
-        if (flag != 0 && flagSyntax != 0 && flagSyntaxImage != 0) {
-
-          const imagePromise = new Promise((rs, rj) => {
-            $.ajax({
-              url: '/admin/products/upload-image',
-              type: 'POST',
-              data: new FormData(this),
-              processData: false,
-              contentType: false,
-              success: function(r) {
-                if (typeof r.msg != 'string') {
-
-                }
-                imageNameReal = r.imageNameReal;
-                imageName = r.imageNameSend;
-                rs(r.imageNameSend);
-
-              }
-            });
-          });
-
-          imagePromise.then(function(value) {
-            $('#imageShow').val(value);
-            var id = $('#id').val();
-            $.ajax({
-              url: '/admin/products/update',
-              type: 'PUT',
-              data: {
-                id,
-                name,
-                origin,
-                price,
-                imageName: value,
-                discount,
-                discountPrice,
-                productType,
-                cateType,
-                info,
-                producedAt,
-                imageNameReal,
-                status
-              },
-              success: function(res) {
-                console.log(res.msg);
-                $('#msg').text(res.msg);
-                $('#popupInfo').click();
-              }
-            });
-          }).catch();
-        }
-      } else {
-        if (true) {
-          var id = $('#id').val();
+      imagePromise.then(() => {
+        if (imageName) {
+          const formData = new FormData(this)
           $.ajax({
-            url: '/admin/products/update',
-            type: 'PUT',
-            data: {
-              id,
-              name,
-              origin,
-              price,
-              imageName,
-              discount,
-              discountPrice,
-              productType,
-              cateType,
-              info,
-              producedAt,
-              imageNameReal,
-              status
+            url: '/admin/products/upload-image',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+              'X-Image-Name': imageName
             },
             success: function(res) {
-              console.log(res.msg);
-              $('#msg').text(res.msg);
-              $('#popupInfo').click();
+
             }
           });
         }
-      }
-
-
+      })
     })
-  }); <
-  />
+  });
+</script>
 
 
-  <
-  script >
-    $("#firstImage").click(function() {
-      $('#imageSecond').val('Fisrt Image');
-      $('#imageSecond').addClass('showBorder');
-    });
+<script>
+  $("#firstImage").click(function() {
+    $('#imageSecond').val('Fisrt Image');
+    $('#imageSecond').addClass('showBorder');
+  });
   $("#secondImage").click(function() {
     $('#imageSecond').val('Second Image');
     $('#imageSecond').addClass('showBorder');
@@ -346,108 +179,95 @@
   $("#fourthImage").click(function() {
     $('#imageSecond').val('Fourth Image');
     $('#imageSecond').addClass('showBorder');
-  }); <
-  />
-
-
-
-  <
-  script >
-    $("#checkAll").click(function() {
-      var index = $('#checkAll').val();
-
-      if (index == '1') {
-        $('.imgbgchk').prop('checked', true);
-        $('#checkAll').val('2');
-
-      } else {
-        $('.imgbgchk').prop('checked', false);
-        $('#checkAll').val('1');
-      }
-    }) <
-    />
-
-    <
-    script >
-    $(document).ready(function() {
-      const names = [];
-      $.ajax({
-        url: '/admin/products/list',
-        type: 'GET',
-        success: function(res) {
-          names = res.map((product) => product.name)
-        }
-      });
-
-      $("#searchName").autocomplete({
-        source: names
-      });
-
-
-      $('#searchForm').on('submit', function(e) {
-        e.preventDefault();
-
-        const name = $('#searchName').val();
-
-        const link = '/admin/products/search/' + name;
-        window.location.href = link;
-      })
-    }) <
-    />
-
-    <
-    script src = "/toStringDate.js" >
-    <
-    /> <
-  script >
-    function getName(id) {
-      $.ajax({
-        url: `/admin/products/detail/${id}`,
-        type: 'GET',
-        success: function(data) {
-          //key = #{key} is id of element html, value is value
-          const mapping = {
-            idUser: 'id',
-            name: 'name',
-            origin: 'origin',
-            price: 'price',
-            discount: 'discount',
-            discountPrice: 'discountPrice',
-            producedAt: 'producedAt',
-            productType: 'typeId.name',
-            cateType: 'cateId.name',
-            info: 'info',
-            status: 'status'
-          };
-
-          for (const key in mapping) {
-            const value = mapping[key];
-            let fieldValue = data;
-            value.split('.').forEach(prop => {
-              fieldValue = fieldValue[prop];
-            });
-            $('#' + key).val(fieldValue);
-          }
-
-          const formattedProducedAt = toStringDate.dmy(data.producedAt)
-          $('#producedAt').val(formattedProducedAt);
-
-
-          const imageNameShow = `background-image: url('/img/products/${data.imageName}');`;
-          $("#imageName").attr('style', imageNameShow);
-
-          CKEDITOR.instances['info'].setData(data.info);
-          $('#exampleModalCenter2').attr('style', 'overflow: auto !important;')
-          $('#popupDetail').click();
-        }
-      });
-    }
+  });
 </script>
 
+<script>
+  $("#checkAll").click(function() {
+    var index = $('#checkAll').val();
+
+    if (index == '1') {
+      $('.imgbgchk').prop('checked', true);
+      $('#checkAll').val('2');
+
+    } else {
+      $('.imgbgchk').prop('checked', false);
+      $('#checkAll').val('1');
+    }
+  })
+</script>
+
+<script>
+  $(document).ready(function() {
+    const names = [];
+    $.ajax({
+      url: '/admin/products/list',
+      type: 'GET',
+      success: function(res) {
+        names = res.map((product) => product.name)
+      }
+    });
+
+    $("#searchName").autocomplete({
+      source: names
+    });
 
 
+    $('#searchForm').on('submit', function(e) {
+      e.preventDefault();
+
+      const name = $('#searchName').val();
+
+      const link = '/admin/products/search/' + name;
+      window.location.href = link;
+    })
+  })
+</script>/
+<script src="/toStringDate.js"></script>
+<script>
+  function getName(id) {
+    $.ajax({
+      url: `/admin/products/detail/${id}`,
+      type: 'GET',
+      success: function(data) {
+        //key = #{key} is id of element html, value is value
+        const mapping = {
+          idUser: 'id',
+          name: 'name',
+          origin: 'origin',
+          price: 'price',
+          discount: 'discount',
+          discountPrice: 'discountPrice',
+          producedAt: 'producedAt',
+          productType: 'typeId.name',
+          cateType: 'cateId.name',
+          info: 'info',
+          status: 'status'
+        };
+
+        for (const key in mapping) {
+          const value = mapping[key];
+          let fieldValue = data;
+          value.split('.').forEach(prop => {
+            fieldValue = fieldValue[prop];
+          });
+          $('#' + key).val(fieldValue);
+        }
+
+        const formattedProducedAt = toStringDate.dmy(data.producedAt)
+        $('#producedAt').val(formattedProducedAt);
 
 
+        const imageNameShow = `background-image: url('/img/products/${data.imageName}');`;
+        $("#imageName").attr('style', imageNameShow);
+
+        CKEDITOR.instances['info'].setData(data.info);
+        $('#exampleModalCenter2').attr('style', 'overflow: auto !important;')
+        $('#popupDetail').click();
+      }
+    });
+  }
+</script>
 <script>
   $('#clickMe').click(function() {
     const text = $('#storyid').text();
