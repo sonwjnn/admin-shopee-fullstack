@@ -9,105 +9,21 @@ const { body } = require('express-validator')
 const requestHandler = require('../handlers/request.handler')
 const tokenMiddleware = require('../middlewares/token.middleware')
 
-router.get('/index(/:pageNumber?)', async (req, res) => {
-  const limit = 8
-  var sumPage = 0
-  var sumData = await userModel.find()
-  if (sumData.length != 0) {
-    var sumPage = Math.ceil(sumData.length / limit)
-  }
+router.get('/index(/:pageNumber?)', userController.renderIndexPage)
 
-  var pageNumber = req.params.pageNumber
+router.get('/search/(:name?)(/:pageNumber?)', userController.renderSearchPage)
 
-  if (pageNumber == 1 || pageNumber == undefined || pageNumber < 1) {
-    pageNumber = 1
-  }
+router.get('/edit/:username', userController.renderEditPage)
 
-  if (pageNumber > sumPage && sumPage != 0) {
-    pageNumber = sumPage
-  }
+router.get('/password/:username', userController.renderPasswordPage)
 
-  // set up var skip
-  var skip = (pageNumber - 1) * limit
-
-  userModel
-    .find()
-    .limit(limit)
-    .skip(skip)
-    .sort({ name: 1 })
-    .exec((err, data) => {
-      if (err) {
-        throw err
-      } else {
-        var index = 'users'
-        var main = 'users/main'
-        var flag = 0
-        var name = ''
-        res.render('index', {
-          main,
-          index,
-          data,
-          sumPage,
-          pageNumber,
-          name,
-          flag
-        })
-      }
-    })
-})
-
-router.get('/edit/:username', async (req, res) => {
-  try {
-    const username = req.params.username
-    const user = await userModel.findOne({ username })
-
-    if (!user) {
-      return responseHandler.notfound(res)
-    }
-
-    const index = 'users'
-    const main = 'users/edit.user.ejs'
-    res.render('index', { main, index, data: user })
-  } catch (error) {
-    console.log(error)
-    responseHandler.error(res)
-  }
-})
-
-router.get('/password/:username', function (req, res) {
-  var username = req.params.username
-
-  if (username != '') {
-    // check username
-    const check_obj = { $or: [{ username }] }
-    userModel.find(check_obj).exec((err, data) => {
-      if (err) {
-        throw err
-      } else {
-        if (data == '') {
-          res.send({ kq: 0, msg: 'Username is not exists' })
-        } else {
-          var index = 'users'
-          var main = 'users/updatePassword.user.ejs'
-
-          res.render('index', { main, index, data })
-        }
-      }
-    })
-  } else {
-  }
-})
-
-router.get('/add', (req, res) => {
-  var index = 'users'
-  var main = 'users/add.user.ejs'
-  res.render('index', { main, index })
-})
+router.get('/add', userController.renderAddPage)
 
 // add user
 const phoneRegex = /^(0\d{9})$/
 router.post(
   '/add',
+  tokenMiddleware.authServer,
   body('username')
     .exists()
     .withMessage('Username is required')
@@ -161,9 +77,10 @@ router.post(
   userController.add
 )
 
-// update user
+// update profile user
 router.put(
   '/update-profile',
+  tokenMiddleware.authServer,
   body('displayName')
     .exists()
     .withMessage('Display name is required')
@@ -198,6 +115,8 @@ router.get(
   tokenMiddleware.authServer,
   userController.getDetailOfUser
 )
+
+router.get('/list', userController.getList)
 
 router.post('/delete', async function (req, res) {
   try {
@@ -288,72 +207,6 @@ router.post('/updatePassword', function (req, res) {
       }
     })
   }
-})
-
-router.get('/getAllUser', function (req, res) {
-  userModel.find().exec((err, data) => {
-    if (err) {
-      throw err
-    } else {
-      res.send({ kq: 1, data, msg: 'Get all successfully.' })
-    }
-  })
-})
-
-router.get('/search/(:name?)(/:pageNumber?)', async (req, res) => {
-  var name = ''
-  name = req.params.name
-
-  var obj_find = {}
-  if (name != '' && name != undefined) {
-    const regex = new RegExp('(' + name + ')', 'i')
-    obj_find = { name: { $regex: regex } }
-  }
-
-  const limit = 8
-
-  var sumPage = 0
-  var sumData = await userModel.find(obj_find)
-  if (sumData.length != 0) {
-    var sumPage = Math.ceil(sumData.length / limit)
-  }
-
-  var pageNumber = req.params.pageNumber
-
-  if (pageNumber == 1 || pageNumber == undefined || pageNumber < 1) {
-    pageNumber = 1
-  }
-
-  if (pageNumber > sumPage && sumPage != 0) {
-    pageNumber = sumPage
-  }
-
-  // set up var skip
-  var skip = (pageNumber - 1) * limit
-
-  userModel
-    .find(obj_find)
-    .limit(limit)
-    .skip(skip)
-    .sort({ _id: 1 })
-    .exec((err, data) => {
-      if (err) {
-        throw err
-      } else {
-        var index = 'users'
-        var main = 'users/main'
-        var flag = 1
-        res.render('index', {
-          main,
-          index,
-          data,
-          sumPage,
-          pageNumber,
-          name,
-          flag
-        })
-      }
-    })
 })
 
 module.exports = router

@@ -331,7 +331,7 @@
   $(document).ready(function() {
     var arr = [];
     $.ajax({
-      url: '/admin/users/getAllUser',
+      url: '/admin/users/list',
       type: 'GET',
       success: function(res) {
         for (var i = 0; i < res.data.length; i++) {

@@ -3,6 +3,7 @@ const responseHandler = require('../handlers/response.handler')
 const jsonwebtoken = require('jsonwebtoken')
 const { readJsonFile } = require('../utilities/readJsonFile')
 const filePath = 'src/assets/json/archiveToken.json'
+const calculateData = require('../utilities/calculateData')
 
 const signin = async (req, res) => {
   try {
@@ -190,12 +191,142 @@ const add = async (req, res) => {
   }
 }
 
+const renderIndexPage = async (req, res) => {
+  try {
+    const pageNumberPayload = parseInt(req.params.pageNumber, 10) || 1
+    const name = ''
+
+    const { limit, skip, obj_find, sumPage, pageNumber } = await calculateData(
+      pageNumberPayload,
+      userModel,
+      name
+    )
+
+    const users = await userModel
+      .find(obj_find)
+      .limit(limit)
+      .skip(skip)
+      .sort({ _id: 1 })
+
+    if (!users) return responseHandler.notfound(res)
+
+    const index = 'users'
+    const main = 'users/main'
+    const isIndexPage = 1
+    res.render('index', {
+      main,
+      index,
+      data: users,
+      sumPage,
+      pageNumber,
+      name,
+      isIndexPage
+    })
+  } catch (error) {
+    responseHandler.error(res)
+  }
+}
+
+const renderEditPage = async (req, res) => {
+  try {
+    const username = req.params.username
+    const user = await userModel.findOne({ username })
+
+    if (!user) {
+      return responseHandler.notfound(res)
+    }
+
+    const index = 'users'
+    const main = 'users/edit.user.ejs'
+    res.render('index', { main, index, data: user })
+  } catch (error) {
+    responseHandler.error(res)
+  }
+}
+
+const renderPasswordPage = async (req, res) => {
+  try {
+    const username = req.params.username
+
+    const user = await userModel.findOne({ username })
+
+    if (!user) responseHandler.notfound(res)
+
+    const index = 'users'
+    const main = 'users/updatePassword.user.ejs'
+
+    res.render('index', { main, index, data: user })
+  } catch (error) {
+    responseHandler.error(res)
+  }
+}
+
+const renderAddPage = (req, res) => {
+  const index = 'users'
+  const main = 'users/add.user.ejs'
+  res.render('index', { main, index })
+}
+
+const renderSearchPage = async (req, res) => {
+  try {
+    const pageNumberPayload = parseInt(req.params.pageNumber, 10) || 1
+    const name = req.params.name
+
+    const { limit, skip, obj_find, sumPage, pageNumber } = await calculateData(
+      pageNumberPayload,
+      userModel,
+      name
+    )
+
+    const users = await userModel
+      .find(obj_find)
+      .limit(limit)
+      .skip(skip)
+      .sort({ _id: 1 })
+
+    if (!users) return responseHandler.notfound(res)
+
+    const index = 'users'
+    const main = 'users/main'
+    const isIndexPage = 0
+    res.render('index', {
+      main,
+      index,
+      data: users,
+      sumPage,
+      pageNumber,
+      name,
+      isIndexPage
+    })
+  } catch (error) {
+    responseHandler.error(res)
+  }
+}
+
+const getList = async (req, res) => {
+  try {
+    const users = await userModel.find()
+
+    if (!users) return responseHandler.notfound(res)
+
+    return responseHandler.ok(res, users)
+  } catch (error) {
+    responseHandler.error(res)
+  }
+}
+
 module.exports = {
+  renderIndexPage,
+  renderEditPage,
+  renderPasswordPage,
+  renderAddPage,
+  renderSearchPage,
   signin,
   signup,
   updatePassword,
   getInfo,
   updateProfile,
   add,
+  getList,
   getDetailOfUser
 }

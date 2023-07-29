@@ -95,8 +95,8 @@
       const status = $('#status').val()
       const info = CKEDITOR.instances['productInfo'].getData()
       const id = $('#id').val()
-      const newImageName = $('#image').prop('files')[0] ? $('#image').prop('files')[0].name : ''
-      console.log(newImageName)
+      const originalImageName = $('#image').prop('files')[0] ? $('#image').prop('files')[0].name : ''
+
       const data = {
         id,
         name,
@@ -106,14 +106,13 @@
         cateType,
         status,
         info,
-        producedAt
-      }
-
-      if (discount)
-        data.discount = discount
-      if (newImageName !== '') {
-        data.originalImageName = newImageName
-        console.log(date)
+        producedAt,
+        ...(discount && {
+          discount
+        }),
+        ...(originalImageName && {
+          originalImageName
+        }),
       }
 
       // image name get value from res of add product action and use to upload image after
@@ -127,7 +126,8 @@
           success: function(res) {
             $('#msg').text(res.message)
             $('#popupInfo').click()
-            imageName = res.product.imageName
+            if (res.product.imageName !== $('#imageShow').val())
+              imageName = res.product.imageName
             rs()
           },
           error: function(xhr, status, error) {
@@ -199,7 +199,7 @@
 
 <script>
   $(document).ready(function() {
-    const names = [];
+    let names = [];
     $.ajax({
       url: '/admin/products/list',
       type: 'GET',

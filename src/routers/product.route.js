@@ -4,19 +4,22 @@ const productController = require('../controllers/product.controller')
 const router = express.Router({ mergeParams: true })
 const { body } = require('express-validator')
 const requestHandler = require('../handlers/request.handler')
-const productModel = require('../models/product.model')
+
 router.get('/index(/:pageNumber?)', productController.renderIndexPage)
 
 router.get(
   '/search/(:name?)(/:pageNumber?)',
   productController.renderSearchPage
 )
+
 router.get('/edit/:productId', productController.renderEditPage)
 
 router.get('/add', productController.renderAddPage)
 
+// add product
 router.post(
   '/add',
+  tokenMiddleware.authServer,
   body('name')
     .exists()
     .withMessage('Name is required')
@@ -53,8 +56,10 @@ router.get('/list', productController.getList)
 
 router.get('/detail/:productId', productController.getDetail)
 
+// update product
 router.put(
   '/update',
+  tokenMiddleware.authServer,
   body('name')
     .exists()
     .withMessage('Name is required')
@@ -90,6 +95,10 @@ router.delete(
 
 router.delete('/', tokenMiddleware.authServer, productController.removeProducts)
 
-router.post('/upload-image', productController.uploadImage)
+router.post(
+  '/upload-image',
+  tokenMiddleware.authServer,
+  productController.uploadImage
+)
 
 module.exports = router

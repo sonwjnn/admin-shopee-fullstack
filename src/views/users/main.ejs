@@ -126,7 +126,7 @@
 
               <ul class="pagination justify-content-center">
 
-                <% if(flag==0) { %>
+                <% if(isIndexPage) { %>
                 <li class="page-item"><a class="page-link buttonNoAfter" href="/admin/users/index/<%= pageNumber-1 %>"><i class="fa fa-chevron-left" aria-hidden="true"></i></a></li>
                 <% for(var i=1; i <= sumPage; i++) { %>
                 <% if(pageNumber == i) { %>
