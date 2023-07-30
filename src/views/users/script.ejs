@@ -5,20 +5,21 @@
 <!--logic delete users-->
 <script>
   $(document).ready(function() {
-    var arr = [];
 
-    $('.deleteGr').click(function() {
-      var i = 0;
+    function getIdsToDelete() {
+      let ids = [];
       $('#userTable tr').filter(':has(:checkbox:checked)').each(function() {
-        var username = $(this).closest("tr").find("td:nth-child(3)").text();
-        username = username.replace(/ /g, '');
-        username = username.replace(/(\r\n|\n|\r)/gm, "");
-
-        arr[i] = username;
-        i++;
+        const id = $(this).find("td:nth-child(3)").text().replace(/\s+/g, '');
+        ids.push(id);
       });
+      return ids;
+    }
 
-      if (arr.length == 0) {
+    let ids = [];
+    $('.deleteGr').click(function() {
+      ids = getIdsToDelete();
+
+      if (ids.length == 0) {
         $('#popupDeleteGrNoData').click();
       } else {
         $('#popupDeleteGr').click();
@@ -29,11 +30,11 @@
     $('#buttonDeleteGr').click(function() {
 
       $.ajax({
-        url: '/admin/users/deleteGr',
-        type: 'POST',
+        url: '/admin/users/',
+        type: 'DELETE',
         contentType: 'application/json',
         data: JSON.stringify({
-          arr: arr
+          ids
         }),
         success: function(res) {
           location.reload();
@@ -97,7 +98,7 @@
 
       $.ajax({
         url: '/admin/users/delete',
-        type: 'POST',
+        type: 'DELETE',
         data: {
           username
         },
@@ -202,7 +203,6 @@
       if (flag == 1 && flagSyntax == 1) {
         $('#noteMember').removeClass('unhiden');
         $('#noteMember').addClass('hiden');
-        console.log(password)
         $.ajax({
           url: '/admin/users/add',
           type: 'POST',
@@ -303,7 +303,7 @@
 
       $.ajax({
         url: '/admin/password/update-password',
-        type: 'POST',
+        type: 'PUT',
         data: {
           username,
           password,
@@ -326,7 +326,6 @@
   });
 </script>
 
-<!--form update password user-->
 <script>
   $(document).ready(function() {
     var arr = [];

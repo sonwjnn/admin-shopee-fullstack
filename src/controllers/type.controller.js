@@ -217,6 +217,22 @@ const getInfoByName = async (req, res) => {
   }
 }
 
+const getTypesOfCate = async (req, res) => {
+  try {
+    const { cateName } = req.params
+
+    const cate = await cateModel.findOne({ name: cateName })
+
+    if (!cate) responseHandler.notfound(res)
+
+    const types = await typeModel.find({ cateId: cate._id })
+
+    responseHandler.ok(res, types)
+  } catch (error) {
+    responseHandler.error(error)
+  }
+}
+
 module.exports = {
   getList,
   renderIndexPage,
@@ -228,5 +244,6 @@ module.exports = {
   renderEditPage,
   renderSearchPage,
   update,
-  getInfoByName
+  getInfoByName,
+  getTypesOfCate
 }

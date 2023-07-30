@@ -7,48 +7,28 @@
 
     $('#formTypesAdd').on('submit', function(e) {
       e.preventDefault();
-      var flag = 1;
-      var name = $('#name').val();
-      var cateName = $('#cateNames').val();
+      const name = $('#name').val();
+      const cateName = $('#cateNames').val();
 
-
-      if (name == '') {
-        flag = 0;
-        $("#nameError").html("(*)");
-        $("#nameErrorText").html("Please fill up the infomation above");
-      } else if (name.length > 50) {
-        flag = 0;
-        $("#nameError").html("(*)");
-        $("#nameErrorText").html("Name has maximum 30 characters");
-
-      } else {
-        $("#nameError").html("");
-        $("#nameErrorText").html("");
-      }
-
-      if (flag == 1) {
-
-        $.ajax({
-          url: '/admin/product-types/add',
-          type: 'POST',
-          data: {
-            name,
-            cateName
-          },
-          success: function(res) {
-            $('#msg').html(res.msg || res.message);
-            $('#popupInfo').click();
-          },
-          error: function(xhr, status, error) {
-            console.log(xhr.responseJSON.message)
-            if (xhr.responseJSON && xhr.responseJSON.message) {
-              $("#msg").html(xhr.responseJSON.message);
-              $("#popupInfo").click();
-            }
+      $.ajax({
+        url: '/admin/product-types/add',
+        type: 'POST',
+        data: {
+          name,
+          cateName
+        },
+        success: function(res) {
+          $('#msg').html(res.msg || res.message);
+          $('#popupInfo').click();
+        },
+        error: function(xhr, status, error) {
+          console.log(xhr.responseJSON.message)
+          if (xhr.responseJSON && xhr.responseJSON.message) {
+            $("#msg").html(xhr.responseJSON.message);
+            $("#popupInfo").click();
           }
-        });
-
-      }
+        }
+      });
     })
   });
 </script>
@@ -145,48 +125,30 @@
 
     $('#formTypesUpdate').on('submit', function(e) {
       e.preventDefault();
-      var flag = 1;
-      var name = $('#name').val();
-      var cateName = $('#cateNames').val();
-      var id = $('#idCate').text();
 
-      if (name == '') {
-        flag = 0;
-        $("#nameError").html("(*)");
-        $("#nameErrorText").html("Please fill up the infomation above");
-      } else if (name.length > 50) {
-        flag = 0;
-        $("#nameError").html("(*)");
-        $("#nameErrorText").html("Name has maximum 30 characters");
+      const name = $('#name').val();
+      const cateName = $('#cateNames').val();
+      const id = $('#idCate').text();
 
-      } else {
-        $("#nameError").html("");
-        $("#nameErrorText").html("");
-      }
-
-      if (flag == 1) {
-
-        $.ajax({
-          url: '/admin/product-types/update',
-          type: 'PUT',
-          data: {
-            id,
-            name,
-            cateName
-          },
-          success: function(res) {
-            $('#msg').html(res.msg || res.message);
-            $('#popupInfo').click();
-          },
-          error: function(xhr, status, error) {
-            if (xhr.responseJSON && xhr.responseJSON.message) {
-              $("#msg").html(xhr.responseJSON.message);
-              $("#popupInfo").click();
-            }
+      $.ajax({
+        url: '/admin/product-types/update',
+        type: 'PUT',
+        data: {
+          id,
+          name,
+          cateName
+        },
+        success: function(res) {
+          $('#msg').html(res.msg || res.message);
+          $('#popupInfo').click();
+        },
+        error: function(xhr, status, error) {
+          if (xhr.responseJSON && xhr.responseJSON.message) {
+            $("#msg").html(xhr.responseJSON.message);
+            $("#popupInfo").click();
           }
-        });
-
-      }
+        }
+      });
     })
   });
 </script>

@@ -102,10 +102,7 @@
 
 <script>
   $(document).ready(function() {
-    // Sử dụng một mảng rỗng trực tiếp thay vì khai báo biến arr
-    let ids = [];
 
-    // Hàm để lấy danh sách các id cần xóa
     function getIdsToDelete() {
       let ids = [];
       $('#cateTable tr').filter(':has(:checkbox:checked)').each(function() {
@@ -115,6 +112,7 @@
       return ids;
     }
 
+    let ids = [];
     $('.deleteGr').click(function() {
       ids = getIdsToDelete();
 
@@ -125,7 +123,6 @@
       }
     });
     $('#buttonDeleteGr').click(function() {
-
       $.ajax({
         url: '/admin/categories',
         type: 'DELETE',

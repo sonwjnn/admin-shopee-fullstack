@@ -1,18 +1,9 @@
 const express = require('express')
 const router = express.Router()
-const userModel = require('../models/user.model')
 const userController = require('../controllers/user.controller')
-const fs = require('fs')
-const filepath = 'angularShopping/src/assets/json/archiveToken.json'
 const tokenMiddleware = require('../middlewares/token.middleware')
 const requestHandler = require('../handlers/request.handler')
 const { body } = require('express-validator')
-
-var jwt = require('jsonwebtoken')
-
-const bcrypt = require('bcryptjs')
-const e = require('express')
-const salt = bcrypt.genSaltSync(10)
 
 router.get('/index', (req, res) => {
   const index = 'password'
@@ -20,7 +11,7 @@ router.get('/index', (req, res) => {
   res.render('index', { main, index })
 })
 
-router.post(
+router.put(
   '/update-password',
   tokenMiddleware.authServer,
   body('password')

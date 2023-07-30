@@ -1,4 +1,7 @@
 const userModel = require('../models/user.model')
+const cartModel = require('../models/cart.model')
+const favoriteModel = require('../models/favorite.model')
+const reviewModel = require('../models/review.model')
 const responseHandler = require('../handlers/response.handler')
 const jsonwebtoken = require('jsonwebtoken')
 const { readJsonFile } = require('../utilities/readJsonFile')
@@ -315,6 +318,51 @@ const getList = async (req, res) => {
   }
 }
 
+const removeUser = async function (req, res) {
+  try {
+    const { username } = req.body
+    console.log(username)
+    const user = await userModel.findOne({ username })
+    if (!user) {
+      return responseHandler.notfound(res)
+    }
+
+    await favoriteModel.deleteMany({ user: user._id })
+
+    await cartModel.deleteMany({ user: user._id })
+
+    await reviewModel.deleteMany({ user: user._id })
+
+    await userModel.deleteOne({ _id: user._id })
+
+    return responseHandler.ok(res, 'Delete user successfully!')
+  } catch (err) {
+    responseHandler.error(res)
+  }
+}
+
+const removeUsers = async function (req, res) {
+  try {
+    const usersIds = JSON.parse(JSON.stringify(req.body)).ids
+    const check_obj = { username: { $in: usersIds } }
+    const users = await userModel.find(check_obj)
+    const userIds = users.map(item => item._id)
+    const check_other = { user: { $in: userIds } }
+
+    await favoriteModel.deleteMany(check_other)
+
+    await cartModel.deleteMany(check_other)
+
+    await reviewModel.deleteMany(check_other)
+
+    await userModel.deleteMany(check_obj)
+
+    return responseHandler.ok(res, 'Delete users successfully!')
+  } catch (err) {
+    responseHandler.error(res)
+  }
+}
+
 module.exports = {
   renderIndexPage,
   renderEditPage,
@@ -328,5 +376,7 @@ module.exports = {
   updateProfile,
   add,
   getList,
-  getDetailOfUser
+  getDetailOfUser,
+  removeUser,
+  removeUsers
 }

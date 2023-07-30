@@ -5,8 +5,9 @@ router.get('/', (req, res) => {
   res.redirect('/admin/dashboards/index')
 })
 
-// custom
+// client
 router.use('/categories', require('../apis/category.api'))
+router.use('/product-types', require('../apis/type.api'))
 router.use('/products', require('../apis/product.api'))
 router.use('/user', require('../apis/user.api'))
 router.use('/reviews', require('../apis/review.api'))

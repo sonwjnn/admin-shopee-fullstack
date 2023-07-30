@@ -1,9 +1,6 @@
 const express = require('express')
 const router = express.Router()
 const userModel = require('../models/user.model')
-const cartModel = require('../models/cart.model')
-const favoriteModel = require('../models/favorite.model')
-const reviewModel = require('../models/review.model')
 const userController = require('../controllers/user.controller')
 const { body } = require('express-validator')
 const requestHandler = require('../handlers/request.handler')
@@ -18,6 +15,14 @@ router.get('/edit/:username', userController.renderEditPage)
 router.get('/password/:username', userController.renderPasswordPage)
 
 router.get('/add', userController.renderAddPage)
+
+router.get('/list', userController.getList)
+
+router.get(
+  '/detail/:userId',
+  tokenMiddleware.authServer,
+  userController.getDetailOfUser
+)
 
 // add user
 const phoneRegex = /^(0\d{9})$/
@@ -110,103 +115,8 @@ router.put(
   userController.updateProfile
 )
 
-router.get(
-  '/detail/:userId',
-  tokenMiddleware.authServer,
-  userController.getDetailOfUser
-)
+router.delete('/delete', tokenMiddleware.authServer, userController.removeUser)
 
-router.get('/list', userController.getList)
-
-router.post('/delete', async function (req, res) {
-  try {
-    const username = req.body.username
-
-    const check_obj = { username }
-    const user = await userModel.findOne(check_obj).exec()
-    if (!user) {
-      res.send({ kq: 0, msg: 'User does not exist' })
-      return
-    }
-
-    await favoriteModel.deleteMany({ user: user._id })
-
-    await cartModel.deleteMany({ user: user._id })
-
-    await reviewModel.deleteMany({ user: user._id })
-
-    await userModel.deleteOne({ _id: user._id })
-
-    res.send({ kq: 1, msg: 'Delete user successfully!' })
-  } catch (err) {
-    res.send({ kq: 0, msg: 'An error occurred' })
-  }
-})
-
-router.post('/deleteGr', async function (req, res) {
-  try {
-    const arr = req.body
-    const check_obj = { username: { $in: arr.arr } }
-    const users = await userModel.find(check_obj).exec()
-    const userIds = users.map(item => item._id)
-    const check_other = { user: { $in: userIds } }
-
-    await favoriteModel.deleteMany(check_other)
-
-    await cartModel.deleteMany(check_other)
-
-    await reviewModel.deleteMany(check_other)
-
-    const deleteResult = await userModel.deleteMany(check_obj)
-
-    res.json({
-      kq: 1,
-      msg: 'Delete data successfully!',
-      deletedCount: deleteResult.deletedCount
-    })
-  } catch (err) {
-    console.log(err)
-    res.json({ kq: 0, msg: 'An error occurred' })
-  }
-})
-
-router.post('/updatePassword', function (req, res) {
-  var username,
-    oldPass,
-    newPass,
-    flag = 1
-  var password = ''
-
-  username = req.body.username
-  oldPass = req.body.oldPass
-  newPass = req.body.newPass
-
-  newPass = bcrypt.hashSync(newPass, salt)
-  const obj = {
-    password: newPass
-  }
-
-  if (flag == 1) {
-    const check_obj = { $or: [{ username }] }
-    userModel.find(check_obj).exec((err, data) => {
-      if (err) {
-        res.send({ kq: 0, msg: 'Connection to database failed' })
-      } else {
-        password = data[0].password
-        if (bcrypt.compareSync(oldPass, password)) {
-          userModel.updateMany({ username: username }, obj, (err, data) => {
-            if (err) {
-              res.send({ kq: 0, msg: 'Connection to database failed' })
-            } else {
-              res.send({ kq: 1, msg: 'Update password successfully' })
-            }
-          })
-        } else {
-          res.send({ kq: 0, msg: 'The password you entered is not correct!' })
-        }
-      }
-    })
-  }
-})
+router.delete('/', tokenMiddleware.authServer, userController.removeUsers)
 
 module.exports = router
