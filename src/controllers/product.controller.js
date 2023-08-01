@@ -1,4 +1,6 @@
 const multer = require('multer')
+const fs = require('fs')
+const path = require('path')
 const responseHandler = require('../handlers/response.handler')
 const tokenMiddleware = require('../middlewares/token.middleware')
 const cartModel = require('../models/cart.model')
@@ -10,7 +12,6 @@ const favoriteModel = require('../models/favorite.model')
 const typeModel = require('../models/type.model')
 const { toStringDate } = require('../utilities/toStringDate')
 const calculateData = require('../utilities/calculateData')
-const fs = require('fs')
 
 const renderIndexPage = async (req, res) => {
   try {
@@ -317,6 +318,48 @@ const getDetail = async (req, res) => {
   }
 }
 
+const getProductOfCate = async (req, res) => {
+  try {
+    const { cateName } = req.params
+
+    const cate = await categoryModel.findOne({ name: cateName })
+
+    if (!cate) responseHandler.notfound(res)
+
+    const products = await productModel
+      .find({ cateId: cate._id })
+      .populate('cateId', 'name')
+      .populate('typeId', 'name')
+
+    responseHandler.ok(res, products)
+  } catch (error) {
+    responseHandler.error(res)
+  }
+}
+
+const getImage = async (req, res) => {
+  try {
+    const { imageName } = req.params
+    // Đường dẫn tới thư mục chứa ảnh trên server
+    if (!imageName) return responseHandler.notfound(res)
+
+    const imagePath = path.join(
+      __dirname,
+      `../assets/img/products/${imageName}`
+    )
+
+    fs.readFile(imagePath, (err, data) => {
+      // Convert the image data to a base64-encoded string
+      const base64Image = Buffer.from(data).toString('base64')
+
+      // Send the base64-encoded image as a response
+      return responseHandler.ok(res, base64Image)
+    })
+  } catch (error) {
+    responseHandler.error(res)
+  }
+}
+
 const uploadImage = async (req, res) => {
   try {
     const storage = multer.diskStorage({
@@ -369,5 +412,7 @@ module.exports = {
   update,
   removeProduct,
   removeProducts,
-  uploadImage
+  uploadImage,
+  getProductOfCate,
+  getImage
 }
