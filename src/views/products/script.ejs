@@ -14,6 +14,7 @@
       const cateType = $('#cateType').val()
       const producedAt = $('#producedAt').val()
       const discount = $('#discount').val()
+      const discountPrice = $('#discountPrice').val()
       const status = $('#status').val()
       const info = CKEDITOR.instances['productStory'].getData()
       const originalImageName = $('#image').prop('files')[0] ? $('#image').prop('files')[0].name : ''
@@ -28,11 +29,16 @@
         status,
         info,
         producedAt,
-        originalImageName
+        originalImageName,
+        discountPrice,
+        ...(discount ? {
+          discount
+        } : {
+          discount: 0
+        })
       }
 
-      if (discount)
-        data.discount = discount
+
 
       // image name get value from res of add product action and use to upload image after
       let imageName
@@ -91,6 +97,7 @@
       const productType = $('#productType').val()
       const cateType = $('#cateType').val()
       const producedAt = $('#producedAt').val()
+      const discountPrice = $('#discountPrice').val()
       const discount = $('#discount').val()
       const status = $('#status').val()
       const info = CKEDITOR.instances['productInfo'].getData()
@@ -107,8 +114,11 @@
         status,
         info,
         producedAt,
-        ...(discount && {
+        discountPrice,
+        ...(discount ? {
           discount
+        } : {
+          discount: 0
         }),
         ...(originalImageName && {
           originalImageName
@@ -453,9 +463,9 @@
 
       if (priceValue && discountValue) {
         const discountPriceValue = priceValue - (priceValue * discountValue) / 100;
-        $('#discountPrice').val(discountPriceValue.toFixed(2));
+        $('#discountPrice').val(discountPriceValue.toFixed(0));
       } else if (!discountValue && priceValue) {
-        $('#discountPrice').val(priceValue.toFixed(2));
+        $('#discountPrice').val(priceValue.toFixed(0));
       } else if (!priceValue) {
         $('#discountPrice').val('');
       }

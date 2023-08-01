@@ -21,18 +21,6 @@ const productSchema = mongoose.Schema(
   modelOptions
 )
 
-productSchema.pre('save', function (next) {
-  if (this.discount !== '') {
-    const originalPrice = parseFloat(this.price)
-    const discountPercentage = parseFloat(this.discount.replace('%', ''))
-    const discountedPrice = originalPrice * (1 - discountPercentage / 100)
-    this.discountPrice = discountedPrice.toFixed(2).toString()
-  } else {
-    this.discountPrice = this.price
-  }
-  next()
-})
-
 productSchema.methods.setImage = function (originalImageName) {
   const [name, type] = originalImageName.split('.')
   const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9)
