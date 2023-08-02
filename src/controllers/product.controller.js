@@ -312,6 +312,11 @@ const getDetail = async (req, res) => {
       .find({ productId })
       .populate('user')
       .sort('-createdAt')
+
+    product.favorites = await favoriteModel
+      .find({ productId })
+      .populate('user')
+      .sort('-createdAt')
     return responseHandler.ok(res, product)
   } catch (error) {
     responseHandler.error(res)
@@ -356,19 +361,19 @@ const getImage = async (req, res) => {
       return responseHandler.ok(res, base64Image)
     })
   } catch (error) {
+    console.log(error)
     responseHandler.error(res)
   }
 }
 
 const uploadImage = async (req, res) => {
   try {
+    const imageName = req.headers['x-image-name']
     const storage = multer.diskStorage({
       destination: function (req, file, cb) {
         cb(null, 'src/assets/img/products')
       },
       filename: function (req, file, cb) {
-        const imageName = req.headers['x-image-name']
-
         if (
           file.mimetype !== 'image/png' &&
           file.mimetype !== 'image/jpg' &&
@@ -384,7 +389,7 @@ const uploadImage = async (req, res) => {
     const limits = { fileSize: 3072000 }
     const upload = multer({ storage, limits }).single('productsImage')
 
-    upload(req, res, function (err) {
+    upload(req, res, err => {
       if (err instanceof multer.MulterError) {
         return responseHandler.error(res, err.message)
       } else if (err) {
@@ -397,6 +402,7 @@ const uploadImage = async (req, res) => {
       return responseHandler.created(res, { imageName, originalImageName })
     })
   } catch (error) {
+    console.log(error)
     responseHandler.error(res)
   }
 }

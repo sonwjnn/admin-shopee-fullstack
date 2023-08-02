@@ -52,7 +52,6 @@
             $('#msg').text(res.message)
             $('#popupInfo').click()
             imageName = res.imageName
-
             rs()
           },
           error: function(xhr, status, error) {
@@ -74,7 +73,7 @@
           processData: false,
           contentType: false,
           headers: {
-            'X-Image-Name': imageName
+            'X-Image-Name': imageName,
           },
           success: function(res) {
             console.log(res)
