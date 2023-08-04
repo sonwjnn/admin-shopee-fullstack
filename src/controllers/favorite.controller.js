@@ -1,9 +1,6 @@
-const express = require('express')
-const router = express.Router()
 const responseHandler = require('../handlers/response.handler.js')
-
+const productModel = require('../models/product.model.js')
 const favoriteModel = require('../models/favorite.model.js')
-const userModel = require('../models/user.model.js')
 
 const getFavoritesOfUser = async (req, res) => {
   try {
@@ -19,9 +16,10 @@ const getFavoritesOfUser = async (req, res) => {
 
 const addFavorite = async (req, res) => {
   try {
+    const { productId } = req.body
     const isFavorite = await favoriteModel.findOne({
       user: req.user.id,
-      productId: req.body.productId
+      productId: productId
     })
     if (isFavorite) return responseHandler.ok(res, isFavorite)
 
@@ -29,11 +27,15 @@ const addFavorite = async (req, res) => {
       ...req.body,
       user: req.user.id
     })
+
     await favorite.save()
 
-    responseHandler.created(res, favorite)
+    const product = await productModel.findOne({ _id: productId })
+    product.favorites = +product.favorites + 1
 
-    res.send({ kq: 1, data, msg: 'Add favorite successfully.' })
+    await product.save()
+
+    responseHandler.created(res, favorite)
   } catch (error) {
     responseHandler.error(res)
   }
@@ -49,6 +51,10 @@ const removeFavorite = async (req, res) => {
     })
 
     if (!favorite) return responseHandler.notfound(res)
+    const product = await productModel.findOne({ _id: favorite.productId })
+    product.favorites = +product.favorites - 1
+
+    await product.save()
 
     await favorite.deleteOne()
 
