@@ -176,7 +176,7 @@ const addProduct = async (req, res) => {
 
     responseHandler.created(res, {
       ...newProduct._doc,
-      message: 'Add cate successfully!'
+      message: 'Add product successfully!'
     })
   } catch (error) {
     console.log(error)
