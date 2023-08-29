@@ -1,16 +1,13 @@
-const { WHITELIST_DOMAINS } = require("../utilities/constants.js");
+const { WHITELIST_DOMAINS } = require('../utilities/constants.js')
 
 const corsOptions = {
-  // origin: function (origin, callback) {
-  //   if (origin && WHITELIST_DOMAINS.includes(origin)) {
-  //     callback(null, true);
-  //   } else {
-  //     callback(new Error(`${origin} not allowed by CORS.`));
-  //   }
-  // },
   origin: function (origin, callback) {
-    callback(null, true);
-  },
-};
+    if (!origin || WHITELIST_DOMAINS.includes(origin)) {
+      callback(null, true)
+    } else {
+      callback(new Error(`${origin} not allowed by CORS.`))
+    }
+  }
+}
 
-module.exports = { corsOptions };
+module.exports = { corsOptions }
