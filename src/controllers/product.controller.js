@@ -158,11 +158,12 @@ const addProduct = async (req, res) => {
       cateId: cate._id
     })
 
-    if (product)
+    if (product) {
       return responseHandler.badrequest(
         res,
         `Exists a product name in category ${cateType}!`
       )
+    }
 
     const newProduct = new productModel({
       ...req.body,
@@ -197,11 +198,12 @@ const update = async (req, res) => {
 
     if (product.name !== name) {
       const isProduct = await productModel.findOne({ name, cateId: cate._id })
-      if (isProduct)
+      if (isProduct) {
         return responseHandler.badrequest(
           res,
           `Exists a product name in category ${cateType}!`
         )
+      }
     }
 
     if (originalImageName && originalImageName !== product.imageName) {
@@ -241,6 +243,7 @@ const removeProduct = async (req, res) => {
     res.send({ kq: 1, msg: 'Remove product successfully!' })
     responseHandler.ok(res)
   } catch (error) {
+    console.log(error)
     res.send({ kq: 0, msg: 'Failed to remove product' })
   }
 }
@@ -254,7 +257,7 @@ const removeProducts = async function (req, res) {
       return responseHandler.notfound(res)
     }
     for (const product of products) {
-      var path = 'src/assets/img/products/' + product.imageName
+      let path = 'src/assets/img/products/' + product.imageName
       fs.unlinkSync(path)
     }
 
@@ -262,6 +265,7 @@ const removeProducts = async function (req, res) {
 
     return responseHandler.ok(res, 'Products successfully deleted')
   } catch (error) {
+    console.log(error)
     responseHandler.error(res)
   }
 }
@@ -353,15 +357,16 @@ const getImage = async (req, res) => {
       `../assets/img/products/${imageName}`
     )
 
-    fs.readFile(imagePath, (err, data) => {
+    fs.readFile(imagePath, (error, data) => {
       // Convert the image data to a base64-encoded string
-      const base64Image = Buffer.from(data).toString('base64')
+      const base64Image = data ? Buffer.from(data).toString('base64') : ''
+
+      if (!base64Image) return responseHandler.notfound(res)
 
       // Send the base64-encoded image as a response
       return responseHandler.ok(res, base64Image)
     })
   } catch (error) {
-    console.log(error)
     responseHandler.error(res)
   }
 }
