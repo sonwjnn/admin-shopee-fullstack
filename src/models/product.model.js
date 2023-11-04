@@ -6,6 +6,7 @@ const productSchema = mongoose.Schema(
   {
     typeId: { type: Schema.Types.ObjectId, ref: 'ProductType', require: true },
     cateId: { type: Schema.Types.ObjectId, ref: 'Category', require: true },
+    shopId: { type: Schema.Types.ObjectId, ref: 'Shop', require: true },
     name: { type: String, require: true, unique: true },
     origin: { type: String, default: '' },
     price: { type: String, require: true },

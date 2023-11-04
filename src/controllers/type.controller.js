@@ -125,7 +125,11 @@ const add = async (req, res) => {
       )
     }
 
-    const newType = new typeModel({ ...req.body, cateId: cate._id })
+    const newType = new typeModel({
+      ...req.body,
+      cateId: cate._id,
+      user: req.user.id
+    })
 
     await newType.save()
 

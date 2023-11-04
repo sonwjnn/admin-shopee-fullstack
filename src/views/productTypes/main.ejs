@@ -97,7 +97,7 @@
             </table>
 
             <div class="container mt-3">
-              <ul class="pagination justify-content-center">
+              <ul class="pagination justify-content-center position-relative" style="height: 44px;">
               <% if(sumPage > 1) { %>
                 <% if(isIndexPage) { %>
                 <li class="page-item">
@@ -145,13 +145,14 @@
                 </li>
                 <% } %>
                 <% } %>
-                </ul>
-                <ul class="pagination justify-content-end">
-                  <button type="button" class="btn btn-outline-info btn-refresh" onclick="window.location.reload()">
+                <div class="end-0 position-absolute">
+                  <button type="button" class="btn btn-outline-info btn-refresh mb-0" onclick="window.location.reload()">
                     <i class="fas fa-sync mr-1"></i>
                     Refresh
                   </button>
+                </div>
                 </ul>
+
           </div>
         </div>
       </div>

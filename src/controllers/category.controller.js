@@ -115,7 +115,7 @@ const add = async (req, res) => {
     if (cate)
       return responseHandler.badrequest(res, 'Category name is already exists!')
 
-    const newCate = new cateModel({ ...req.body })
+    const newCate = new cateModel({ ...req.body, user: req.user.id })
 
     await newCate.save()
 

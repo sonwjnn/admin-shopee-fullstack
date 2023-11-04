@@ -125,6 +125,7 @@ const updateProfile = async (req, res) => {
 
     responseHandler.ok(res, { message: 'Update user successfully!' })
   } catch (error) {
+    console.log(error)
     responseHandler.error(res)
   }
 }
@@ -321,7 +322,7 @@ const getList = async (req, res) => {
 const removeUser = async function (req, res) {
   try {
     const { username } = req.body
-    console.log(username)
+
     const user = await userModel.findOne({ username })
     if (!user) {
       return responseHandler.notfound(res)

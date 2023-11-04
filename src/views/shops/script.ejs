@@ -1,0 +1,347 @@
+<!-- jquery -->
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+
+<!--add shop form-->
+<script>
+  $(document).ready(function() {
+    $('#formShopsAdd').on('submit', function(e) {
+      e.preventDefault()
+      const name = $('#name').val()
+      const address = $('#address').val()
+      const city = $('#city').val()
+      const district = $('#district').val()
+      const producedAt = $('#producedAt').val()
+      const status = $('#status').val()
+      // Upload image
+
+      const data = {
+        name,
+        address,
+        city,
+        district,
+        status,
+        producedAt,
+      }
+
+
+
+      // image name get value from res of add shop action and use to upload image after
+      let imageName
+
+      const imagePromise = new Promise((rs, rj) => {
+        $.ajax({
+          url: '/admin/shops/add',
+          type: 'POST',
+          data,
+          success: function(res) {
+            $('#msg').text(res.message)
+            $('#popupInfo').click()
+            imageName = res.imageName
+            rs()
+          },
+          error: function(xhr, status, error) {
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+              $("#msg").html(xhr.responseJSON.message)
+              $("#popupInfo").click()
+            }
+            rj()
+          }
+        })
+      })
+
+      imagePromise.then(() => {
+        // const formData = new FormData(this)
+        // $.ajax({
+        //   url: '/admin/shops/upload-image',
+        //   type: 'POST',
+        //   data: formData,
+        //   processData: false,
+        //   contentType: false,
+        //   headers: {
+        //     'X-Image-Name': imageName,
+        //   },
+        //   success: function(res) {
+        //     console.log(res)
+        //   }
+        // });
+      })
+
+    });
+  });
+</script>
+
+<!--edit shop form-->
+<script>
+  $(document).ready(function() {
+    $('#formShopsEdit').on('submit', function(e) {
+      e.preventDefault();
+      const name = $('#name').val()
+      const address = $('#address').val()
+      const city = $('#city').val()
+      const district = $('#district').val()
+      const producedAt = $('#producedAt').val()
+      const status = $('#status').val()
+
+      const data = {
+        name,
+        address,
+        city,
+        district,
+        status,
+        producedAt,
+      }
+
+      // image name get value from res of add shop action and use to upload image after
+      let imageName
+
+      const imagePromise = new Promise((rs, rj) => {
+        $.ajax({
+          url: '/admin/shops/update',
+          type: 'PUT',
+          data,
+          success: function(res) {
+            $('#msg').text(res.message)
+            $('#popupInfo').click()
+            // if (res.shop.imageName !== $('#imageShow').val())
+            //   imageName = res.shop.imageName
+            rs()
+          },
+          error: function(xhr, status, error) {
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+              $("#msg").html(xhr.responseJSON.message)
+              $("#popupInfo").click()
+            }
+            rj()
+          }
+        })
+      })
+
+      imagePromise.then(() => {
+        // if (imageName) {
+        //   const formData = new FormData(this)
+        //   $.ajax({
+        //     url: '/admin/shops/upload-image',
+        //     type: 'POST',
+        //     data: formData,
+        //     processData: false,
+        //     contentType: false,
+        //     headers: {
+        //       'X-Image-Name': imageName
+        //     },
+        //     success: function(res) {
+
+        //     }
+        //   });
+        // }
+      })
+    })
+  });
+</script>
+
+
+<script>
+  $("#firstImage").click(function() {
+    $('#imageSecond').val('Fisrt Image');
+    $('#imageSecond').addClass('showBorder');
+  });
+  $("#secondImage").click(function() {
+    $('#imageSecond').val('Second Image');
+    $('#imageSecond').addClass('showBorder');
+  });
+  $("#thirdImage").click(function() {
+    $('#imageSecond').val('Third Image');
+    $('#imageSecond').addClass('showBorder');
+  });
+  $("#fourthImage").click(function() {
+    $('#imageSecond').val('Fourth Image');
+    $('#imageSecond').addClass('showBorder');
+  });
+</script>
+
+<script>
+  $("#checkAll").click(function() {
+    var index = $('#checkAll').val();
+
+    if (index == '1') {
+      $('.imgbgchk').prop('checked', true);
+      $('#checkAll').val('2');
+
+    } else {
+      $('.imgbgchk').prop('checked', false);
+      $('#checkAll').val('1');
+    }
+  })
+</script>
+
+<script>
+  $(document).ready(function() {
+    let names = [];
+    $.ajax({
+      url: '/admin/shops/list',
+      type: 'GET',
+      success: function(res) {
+        names = res.map((shop) => shop.name)
+      }
+    });
+
+    $("#searchName").autocomplete({
+      source: names
+    });
+
+
+    $('#searchForm').on('submit', function(e) {
+      e.preventDefault();
+
+      const name = $('#searchName').val();
+
+      const link = '/admin/shops/search/' + name;
+      window.location.href = link;
+    })
+  })
+</script>/
+<script src="/toStringDate.js"></script>
+<!-- <script>
+  function getName(id) {
+    $.ajax({
+      url: `/admin/shops/detail/${id}`,
+      type: 'GET',
+      success: function(data) {
+        //key = #{key} is id of element html, value is value
+        const mapping = {
+          idUser: 'id',
+          name: 'name',
+          origin: 'origin',
+          price: 'price',
+          discount: 'discount',
+          discountPrice: 'discountPrice',
+          producedAt: 'producedAt',
+          shopType: 'typeId.name',
+          cateType: 'cateId.name',
+          info: 'info',
+          status: 'status'
+        };
+
+        for (const key in mapping) {
+          const value = mapping[key];
+          let fieldValue = data;
+          value.split('.').forEach(prop => {
+            fieldValue = fieldValue[prop];
+          });
+          $('#' + key).val(fieldValue);
+        }
+
+        const formattedProducedAt = toStringDate.dmy(data.producedAt)
+        $('#producedAt').val(formattedProducedAt);
+
+
+        // const imageNameShow = `background-image: url('/img/shops/${data.imageName}');`;
+        // $("#imageName").attr('style', imageNameShow);
+
+        CKEDITOR.instances['info'].setData(data.info);
+        $('#exampleModalCenter2').attr('style', 'overflow: auto !important;')
+        $('#popupDetail').click();
+      }
+    });
+  }
+</script> -->
+<script>
+  $('#clickMe').click(function() {
+    const text = $('#storyid').text();
+    CKEDITOR.instances['shopInfo'].setData(text);
+  })
+  $(document).ready(function() {
+    $('#clickMe').click();
+  })
+</script>
+
+
+<script>
+  function GetIdToDelete(id) {
+    $('#idDelete').text(id);
+  }
+
+  function deleteShop() {
+    const id = $('#idDelete').text();
+    $.ajax({
+      url: '/admin/shops/' + id,
+      type: 'DELETE',
+      success: function(res) {
+        location.reload();
+      }
+    })
+  }
+</script>
+
+
+<script>
+  $(document).ready(function() {
+    var ids = [];
+
+    $('.deleteGr').click(function() {
+      var i = 0;
+      $('#shopTable tr').filter(':has(:checkbox:checked)').each(function() {
+        var id = $(this).closest("tr").find("td:nth-child(4)").text();
+        id = id.replace(/ /g, '');
+        id = id.replace(/(\r\n|\n|\r)/gm, "");
+        ids[i] = id;
+        i++;
+      });
+
+      if (ids.length == 0) {
+        $('#popupDeleteGrNoData').click();
+      } else {
+        $('#popupDeleteGr').click();
+      }
+
+    })
+
+    $('#buttonDeleteGr').click(function() {
+
+      $.ajax({
+        url: '/admin/shops',
+        type: 'DELETE',
+        contentType: 'application/json',
+        data: JSON.stringify({
+          ids
+        }),
+        success: function(res) {
+          location.reload();
+        },
+        error: function(xhr, status, error) {
+          console.log('Error' + error)
+        }
+      })
+
+    })
+  })
+</script>
+
+<script>
+  $("#newFile").click(function() {
+    $('#labelNewFile').click();
+  });
+</script>
+
+<script>
+  $('#edit').click(function() {
+    var id = $('#idShop').val();
+    var link = '/admin/shops/edit/' + id;
+    window.location.href = link;
+  })
+</script>
+
+
+<script>
+  $(document).ready(function() {
+    $("#image").change(function() {
+
+      var path = $('#image').val();
+      var name = '';
+      for (var i = 12; i < path.length; i++) {
+        name = name + path[i];
+      }
+      $('#imageShow').val(name);
+    });
+  });
+</script>

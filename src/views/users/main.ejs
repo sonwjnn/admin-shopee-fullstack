@@ -124,10 +124,17 @@
             </table>
             <div class="container mt-3">
 
-              <ul class="pagination justify-content-center">
+              <ul class="pagination justify-content-center position-relative" style="height: 44px;">
 
+                <% if(sumPage > 1) { %>
                 <% if(isIndexPage) { %>
-                <li class="page-item"><a class="page-link buttonNoAfter" href="/admin/users/index/<%= pageNumber-1 %>"><i class="fa fa-chevron-left" aria-hidden="true"></i></a></li>
+                <li class="page-item">
+                  <%if(pageNumber !== 1) {%>
+                  <a class="page-link buttonNoAfter" href="/admin/users/index/<%= pageNumber-1 %>">
+                    <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                  </a>
+                  <% } %>
+                </li>
                 <% for(var i=1; i <= sumPage; i++) { %>
                 <% if(pageNumber == i) { %>
                 <li class="page-item"><a class="page-link active active2 buttonNoAfter" href="/admin/users/index/<%= i %>"><%= i %></a></li>
@@ -137,7 +144,12 @@
                 <li class="page-item"><a class="page-link buttonNoAfter" href="/admin/users/index/<%= i %>"><%= i %></a></li>
                 <% } %>
                 <% } %>
-                <li class="page-item"><a class="page-link buttonNoAfter" href="/admin/users/index/<%= pageNumber + 1 %>"><i class="fa fa-chevron-right" aria-hidden="true"></i></a></li>
+                <li class="page-item">
+                  <% if(sumPage > 0 && +sumPage !== +pageNumber) {%>
+                  <a class="page-link buttonNoAfter" href="/admin/users/index/<%= pageNumber + 1 %>"><i class="fa fa-chevron-right" aria-hidden="true"></i>
+                  </a>
+                  <% } %>
+                </li>
                 <% } else {%>
                 <li class="page-item"><a class="page-link buttonNoAfter" href="/admin/users/search/<%=name%>/<%= pageNumber-1 %>"><i class="fa fa-chevron-left" aria-hidden="true"></i></a></li>
                 <% for(var i=1; i <= sumPage; i++) { %>
@@ -151,17 +163,15 @@
                 <% } %>
                 <li class="page-item"><a class="page-link buttonNoAfter" href="/admin/users/search/<%=name%>/<%= pageNumber + 1 %>"><i class="fa fa-chevron-right" aria-hidden="true"></i></a></li>
                 <% } %>
-
-
+                <% } %>
+                <div class="end-0 position-absolute">
+                  <button type="button" class="btn btn-outline-info btn-refresh mb-0" onclick="window.location.reload()">
+                    <i class="fas fa-sync mr-1"></i>
+                    Refresh
+                  </button>
+                </div>
 
               </ul>
-              <ul class="pagination justify-content-end" style="margin:20px 0">
-                <button type="button" class="btn btn-outline-info btn-refresh" onclick="window.location.reload()">
-                  <i class="fas fa-sync mr-1"></i>
-                  Refresh
-                </button>
-              </ul>
-
             </div>
           </div>
         </div>

@@ -12,6 +12,7 @@ const favoriteModel = require('../models/favorite.model')
 const typeModel = require('../models/type.model')
 const { toStringDate } = require('../utilities/toStringDate')
 const calculateData = require('../utilities/calculateData')
+const shopModel = require('../models/shop.model')
 
 const renderIndexPage = async (req, res) => {
   try {
@@ -151,6 +152,9 @@ const addProduct = async (req, res) => {
   try {
     const { name, productType, cateType, originalImageName } = req.body
 
+    const shop = await shopModel.findOne({ user: req.user.id })
+    if (!req.user.role !== 'admin' && !shop) return
+
     const cate = await categoryModel.findOne({ name: cateType })
     const product = await productModel.findOne({ name, cateId: cate._id })
     const type = await typeModel.findOne({
@@ -168,7 +172,8 @@ const addProduct = async (req, res) => {
     const newProduct = new productModel({
       ...req.body,
       cateId: cate._id,
-      typeId: type._id
+      typeId: type._id,
+      shopId: shop._id
     })
 
     newProduct.setImage(originalImageName)
@@ -238,6 +243,10 @@ const removeProduct = async (req, res) => {
     const path = 'src/assets/img/products/' + product.imageName
     fs.unlinkSync(path)
 
+    await favoriteModel.deleteMany({ productId })
+    await cartModel.deleteMany({ productId })
+    await reviewModel.deleteMany({ productId })
+
     await product.deleteOne()
 
     res.send({ kq: 1, msg: 'Remove product successfully!' })
@@ -262,6 +271,9 @@ const removeProducts = async function (req, res) {
     }
 
     await productModel.deleteMany({ _id: { $in: productIds } })
+    await favoriteModel.deleteMany({ productId: { $in: productIds } })
+    await cartModel.deleteMany({ productId: { $in: productIds } })
+    await reviewModel.deleteMany({ productId: { $in: productIds } })
 
     return responseHandler.ok(res, 'Products successfully deleted')
   } catch (error) {

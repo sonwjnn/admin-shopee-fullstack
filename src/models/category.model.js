@@ -1,9 +1,15 @@
 const mongoose = require('mongoose')
 const modelOptions = require('./model.option')
+const { Schema } = require('mongoose')
 
 const cateSchema = mongoose.Schema(
   {
-    name: { type: String, require: true, unique: true }
+    name: { type: String, require: true, unique: true },
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+    }
   },
   modelOptions
 )

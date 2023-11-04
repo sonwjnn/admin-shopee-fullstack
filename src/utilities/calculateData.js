@@ -1,5 +1,5 @@
 const calculateData = async (pageNumber, model, name) => {
-  const limit = 8
+  const limit = 10
   const obj_find = {}
 
   if (name && name !== undefined) {
