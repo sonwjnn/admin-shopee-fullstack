@@ -19,7 +19,7 @@ const readJsonFile = function (filepath, id, token) {
   } else {
     fileObj = JSON.parse(fileString)
 
-    var flag = 1
+    let flag = 1
     for (var i = 0; i < fileObj.length; i++) {
       if (id == fileObj[i].id) {
         fileObj[i].token = token
@@ -41,7 +41,7 @@ const deleteToken = function (filepath, id) {
   var fileString = fs.readFileSync(filepath).toString()
   var fileObj = [{}]
   var index = 0
-  var flag = 0
+  let flag = 0
   if (fileString == '') {
   } else {
     fileObj = JSON.parse(fileString)
@@ -63,7 +63,7 @@ const deleteToken = function (filepath, id) {
 const isExists = function (filepath, token) {
   var fileString = fs.readFileSync(filepath).toString()
   var fileObj = [{}]
-  var flag = 0
+  let flag = 0
   if (fileString == '') {
     return false
   } else {
@@ -82,7 +82,7 @@ const isExists = function (filepath, token) {
 
 router.post('/processLogin', function (req, res) {
   var username = (password = '')
-  var flag = 1
+  let flag = 1
 
   username = req.body.username
   password = req.body.password
@@ -148,7 +148,7 @@ router.post('/logout', function (req, res) {
 router.post('/getMaintainUser', function (req, res) {
   var token = req.body.token
 
-  var flag = isExists(filepath, token)
+  let flag = isExists(filepath, token)
 
   if (flag == false) {
     res.send({ kq: 0, msg: 'none token' })
@@ -185,7 +185,7 @@ router.post('/getMaintainUser', function (req, res) {
 
 router.post('/add', function (req, res) {
   var name = (username = password = email = phone = address = '')
-  var flag = 1
+  let flag = 1
 
   name = req.body.name
   username = req.body.username
@@ -226,7 +226,7 @@ router.post('/add', function (req, res) {
 
 router.post('/*', (req, res, next) => {
   var token = req.body.token
-  var flag = isExists(filepath, token)
+  let flag = isExists(filepath, token)
 
   if (flag == false) {
     res.send({ kq: 0, msg: 'none token' })

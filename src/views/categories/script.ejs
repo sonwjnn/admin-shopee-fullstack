@@ -7,9 +7,9 @@
 
     $('#formCategoriesAdd').on('submit', function(e) {
       e.preventDefault();
-      var flag = 1;
-      var name = $('#name').val();
-      var type = $('#type').val();
+      let flag = 1;
+      const name = $('#name').val();
+      const type = $('#type').val();
 
 
       if (name == '') {
@@ -55,12 +55,12 @@
 <script>
   $(document).ready(function() {
 
-    var arr = [];
+    const arr = [];
     $.ajax({
       url: '/admin/categories/list',
       type: 'GET',
       success: function(res) {
-        for (var i = 0; i < res.data.length; i++) {
+        for (const i = 0; i < res.data.length; i++) {
           arr[i] = res.data[i].name;
         }
       }
@@ -74,9 +74,9 @@
     $('#searchForm').on('submit', function(e) {
       e.preventDefault();
 
-      var name = $('#searchName').val();
+      const name = $('#searchName').val();
 
-      var link = '/admin/categories/search/' + name;
+      const link = '/admin/categories/search/' + name;
       window.location.href = link;
     })
   })
@@ -88,7 +88,7 @@
   }
 
   function deleteCate() {
-    var id = $('#idDelete').text();
+    const id = $('#idDelete').text();
     $.ajax({
       url: `/admin/categories/${id}`,
       type: 'DELETE',
@@ -148,9 +148,9 @@
 
     $('#formCategoriesUpdate').on('submit', function(e) {
       e.preventDefault();
-      var flag = 1;
-      var name = $('#name').val();
-      var id = $('#idCate').text();
+      let flag = 1;
+      const name = $('#name').val();
+      const id = $('#idCate').text();
 
       if (name == '') {
         flag = 0;

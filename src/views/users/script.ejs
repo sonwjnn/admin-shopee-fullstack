@@ -47,23 +47,18 @@
 
 <script>
   $(document).ready(function() {
-    var arr = [];
 
     $('.passChange').click(function() {
-      var i = 0;
-      var username = $(this).closest("tr").find("td:nth-child(3)").text();
-      username = username.replace(/ /g, '');
-      username = username.replace(/(\r\n|\n|\r)/gm, "");
-      var link = '/admin/users/password/' + username;
+      const username = $(this).closest("tr").find("td:nth-child(3)").text().replace(/\s+/g, '');
+      const link = '/admin/users/password/' + username;
       window.location.href = link;
-
-    })
-  })
+    });
+  });
 </script>
 
 <script>
   $('#clickMe').click(function() {
-    var text = $('#storyid').text();
+    const text = $('#storyid').text();
     CKEDITOR.instances['story'].setData(text);
   })
   $(document).ready(function() {
@@ -74,8 +69,8 @@
 
 <script>
   $('#edit').click(function() {
-    var username = $('#username').val();
-    var link = '/admin/users/edit/' + username;
+    const username = $('#username').val();
+    const link = '/admin/users/edit/' + username;
     window.location.href = link;
   })
 </script>
@@ -84,7 +79,7 @@
 <script>
   $(document).ready(function() {
     $(".delete").click(function() {
-      var username = $(this).closest("tr").find("td:nth-child(3)").text();
+      let username = $(this).closest("tr").find("td:nth-child(3)").text();
       username = username.replace(/ /g, '');
       username = username.replace(/(\r\n|\n|\r)/gm, "");
       $('#delete').text(username);
@@ -94,7 +89,7 @@
 
   $(document).ready(function() {
     $("#buttonDelete").click(function() {
-      var username = $('#delete').text();
+      const username = $('#delete').text();
 
       $.ajax({
         url: '/admin/users/delete',
@@ -248,7 +243,7 @@
       const phone = $('#phoneMem').val();
       const address = $('#addressMem').val();
       const email = $('#emailMem').val();
-      const city = localStorage.getItem('address_1_saved')
+      const city = localStorage.getItem('address_1_saved');
       const district = $('.district').val();
       const sex = $('#sexMem').val();
       const birthday = $('#birthdayMem').val();
@@ -257,24 +252,27 @@
 
       $('#noteMember').removeClass('unhiden');
       $('#noteMember').addClass('hiden');
-      var id = $('#idUser').val();
+      const id = $('#idUser').val();
+
+      const requestData = {
+        id,
+        displayName,
+        username,
+        phone,
+        email,
+        address,
+        city,
+        district,
+        sex,
+        birthday,
+        role,
+        story
+      };
+
       $.ajax({
         url: '/admin/users/update-profile',
         type: 'PUT',
-        data: {
-          id,
-          displayName,
-          username,
-          phone,
-          email,
-          address,
-          city,
-          district,
-          sex,
-          birthday,
-          role,
-          story
-        },
+        data: requestData,
         success: function(res) {
           $('#msg').html(res.msg || res.message);
           $('#popupInfo').click();
@@ -287,7 +285,7 @@
         }
       });
       return false;
-    })
+    });
   });
 </script>
 
@@ -328,7 +326,7 @@
 
 <script>
   $(document).ready(function() {
-    var arr = [];
+    let arr = [];
     $.ajax({
       url: '/admin/users/list',
       type: 'GET',
@@ -347,9 +345,9 @@
     $('#searchForm').on('submit', function(e) {
       e.preventDefault();
 
-      var name = $('#searchName').val();
+      const name = $('#searchName').val();
 
-      var link = '/admin/users/search/' + name;
+      const link = '/admin/users/search/' + name;
       window.location.href = link;
     })
   })

@@ -12,7 +12,7 @@ const productSchema = mongoose.Schema(
     price: { type: String, require: true },
     discount: { type: String, default: '' },
     discountPrice: { type: String, default: '' },
-    rating: { type: String, default: '' },
+    rating: { type: String, default: '0' },
     imageName: { type: String, default: '' },
     favorites: { type: String, default: '' },
     views: { type: String, default: '' },

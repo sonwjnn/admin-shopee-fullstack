@@ -2,6 +2,7 @@ const responseHandler = require('../handlers/response.handler')
 const shopModel = require('../models/shop.model')
 const { toStringDate } = require('../utilities/toStringDate')
 const calculateData = require('../utilities/calculateData')
+const userModel = require('../models/user.model')
 
 const renderIndexPage = async (req, res) => {
   try {
@@ -121,6 +122,8 @@ const add = async (req, res) => {
 
     await newShop.save()
 
+    await userModel.updateOne({ _id: req.user.id }, { role: 'sale' })
+
     responseHandler.created(res, {
       ...newShop._doc,
       message: 'Add shop successfully!'
@@ -174,6 +177,8 @@ const removeShop = async (req, res) => {
 
     await shop.deleteOne()
 
+    await userModel.updateOne({ _id: req.user.id }, { role: 'user' })
+
     return responseHandler.ok(res, 'Remove shop succcessfully')
   } catch (error) {
     responseHandler.error(res)
@@ -187,14 +192,25 @@ const removeShops = async (req, res) => {
       _id: { $in: shopIds }
     })
 
-    if (!shops) {
+    if (!shops || shops.length === 0) {
       return responseHandler.notfound(res)
     }
+
+    // Lấy danh sách các người dùng có liên quan đến các cửa hàng bị xóa
+    const userIds = shops.map(shop => shop.user_id)
+
+    // Cập nhật vai trò của người dùng từ 'sale' thành 'user'
+    await userModel.updateMany(
+      { _id: { $in: userIds }, role: 'sale' },
+      { $set: { role: 'user' } }
+    )
+
+    // Xóa các cửa hàng
     await shopModel.deleteMany({
       _id: { $in: shopIds }
     })
 
-    return responseHandler.ok(res, 'Shops successfully deleted')
+    return responseHandler.ok(res, 'Shops successfully deleted!')
   } catch (error) {
     console.log(error)
     responseHandler.error(res)

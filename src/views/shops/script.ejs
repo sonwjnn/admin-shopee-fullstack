@@ -161,7 +161,7 @@
 
 <script>
   $("#checkAll").click(function() {
-    var index = $('#checkAll').val();
+    const index = $('#checkAll').val();
 
     if (index == '1') {
       $('.imgbgchk').prop('checked', true);
@@ -276,45 +276,41 @@
 
 <script>
   $(document).ready(function() {
-    var ids = [];
-
     $('.deleteGr').click(function() {
-      var i = 0;
-      $('#shopTable tr').filter(':has(:checkbox:checked)').each(function() {
-        var id = $(this).closest("tr").find("td:nth-child(4)").text();
-        id = id.replace(/ /g, '');
-        id = id.replace(/(\r\n|\n|\r)/gm, "");
-        ids[i] = id;
-        i++;
-      });
+      const ids = $('#shopTable tr:has(:checkbox:checked)').map(function() {
+        return $(this).find("td:nth-child(4)").text().replace(/\s+/g, '').replace(/(\r\n|\n|\r)/gm, '');
+      }).get();
 
-      if (ids.length == 0) {
+      if (ids.length === 0) {
         $('#popupDeleteGrNoData').click();
       } else {
         $('#popupDeleteGr').click();
       }
-
-    })
+    });
 
     $('#buttonDeleteGr').click(function() {
+      const ids = $('#shopTable tr:has(:checkbox:checked)').map(function() {
+        return $(this).find("td:nth-child(4)").text().replace(/\s+/g, '').replace(/(\r\n|\n|\r)/gm, '');
+      }).get();
 
-      $.ajax({
-        url: '/admin/shops',
-        type: 'DELETE',
-        contentType: 'application/json',
-        data: JSON.stringify({
-          ids
-        }),
-        success: function(res) {
-          location.reload();
-        },
-        error: function(xhr, status, error) {
-          console.log('Error' + error)
-        }
-      })
-
-    })
-  })
+      if (ids.length > 0) {
+        $.ajax({
+          url: '/admin/shops',
+          type: 'DELETE',
+          contentType: 'application/json',
+          data: JSON.stringify({
+            ids
+          }),
+          success: function(res) {
+            location.reload();
+          },
+          error: function(xhr, status, error) {
+            console.log('Error' + error);
+          }
+        });
+      }
+    });
+  });
 </script>
 
 <script>

@@ -121,7 +121,7 @@
         e.preventDefault();
 
         var username = (password = "");
-        var flag = 1;
+        let flag = 1;
 
         username = $("#username").val();
         password = $("#password").val();
@@ -149,7 +149,6 @@
             data: {
               username,
               password,
-              admin: true
             },
             success: function(res) {
               $('#msg').html(res.msg || res.message);

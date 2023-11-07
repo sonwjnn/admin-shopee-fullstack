@@ -10,7 +10,7 @@ const calculateData = require('../utilities/calculateData')
 
 const signin = async (req, res) => {
   try {
-    const { username, password, admin } = req.body
+    const { username, password } = req.body
 
     const user = await userModel
       .findOne({ username })
@@ -24,7 +24,7 @@ const signin = async (req, res) => {
     if (!user.validPassword(password))
       return responseHandler.badrequest(res, 'Wrong password')
 
-    if (admin && !user.role === 'admin')
+    if (!user.role === 'admin' && !user.role === 'sale')
       return responseHandler.unauthorized(res)
 
     const token = jsonwebtoken.sign(

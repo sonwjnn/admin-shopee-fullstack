@@ -11,31 +11,20 @@ const bcrypt = require('bcryptjs')
 const salt = bcrypt.genSaltSync(10)
 
 router.post('/update', function (req, res) {
-  var id,
-    name,
-    username,
-    phone,
-    email,
-    address,
-    city,
-    district,
-    sex,
-    birthday,
-    story,
-    error = '',
-    flag = 1
+  const id = req.body.id
+  const username = req.body.username
+  const name = req.body.name
+  const email = req.body.email
+  const phone = req.body.phone
+  const address = req.body.address
+  const city = req.body.city
+  const district = req.body.district
+  const sex = req.body.sex
+  const birthday = req.body.birthday
+  const story = req.body.story
 
-  id = req.body.id
-  username = req.body.username
-  name = req.body.name
-  email = req.body.email
-  phone = req.body.phone
-  address = req.body.address
-  city = req.body.city
-  district = req.body.district
-  sex = req.body.sex
-  birthday = req.body.birthday
-  story = req.body.story
+  let error = ''
+  let flag = 1
 
   if (flag == 1) {
     const obj = {
@@ -93,22 +82,19 @@ router.post('/update', function (req, res) {
 })
 
 router.post('/updatePassword', function (req, res) {
-  var username,
-    oldPass,
-    newPass,
-    flag = 1
-  var password = ''
+  const username = req.body.username
+  const oldPass = req.body.oldPass
 
-  username = req.body.username
-  oldPass = req.body.oldPass
-  newPass = req.body.newPass
+  let newPass = req.body.newPass
+  let flag = 1
+  let password = ''
 
   newPass = bcrypt.hashSync(newPass, salt)
   const obj = {
     password: newPass
   }
 
-  if (flag == 1) {
+  if (flag === 1) {
     const check_obj = { $or: [{ username }] }
     userModel.find(check_obj).exec((err, data) => {
       if (err) {
