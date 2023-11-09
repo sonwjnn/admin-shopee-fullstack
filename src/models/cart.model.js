@@ -10,18 +10,16 @@ const cartSchema = mongoose.Schema(
       required: true
     },
     productId: { type: Schema.Types.ObjectId, ref: 'Product', require: true },
-    typeId: { type: Schema.Types.ObjectId, ref: 'ProductTypes', require: true },
-    cateId: { type: Schema.Types.ObjectId, ref: 'Category', require: true },
-    productName: { type: String, default: '' },
-    productImage: { type: String, default: '' },
-    productPrice: { type: String, default: '' },
-    phone: { type: String, default: '' },
-    address: { type: String, default: '' },
-    quantity: { type: String, default: '' },
-    status: { type: String, default: '' }
+    quantity: { type: String, default: '' }
   },
   modelOptions
 )
+
+cartSchema.methods.setInfo = function (props) {
+  Object.assign(this, {
+    ...props
+  })
+}
 
 // create model
 module.exports = mongoose.model('cart', cartSchema)

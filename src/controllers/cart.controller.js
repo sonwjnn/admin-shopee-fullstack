@@ -4,9 +4,25 @@ const cartModel = require('../models/cart.model.js')
 
 const getCartsOfUser = async (req, res) => {
   try {
-    const cart = await cartModel.find({ user: req.user.id }).sort('-createdAt')
+    const cart = await cartModel
+      .find({ user: req.user.id })
+      .populate('productId')
+      .sort('-createdAt')
 
     return responseHandler.ok(res, cart)
+  } catch (error) {
+    responseHandler.error(res)
+  }
+}
+
+const updateCart = async (req, res) => {
+  try {
+    const { cartId } = req.body
+    const cart = await cartModel.findOne({ _id: cartId })
+    if (!cart) return responseHandler.notfound(res)
+    cart.setInfo({ ...req.body })
+    await cart.save()
+    return responseHandler.ok(res, { message: 'Update cart successfully!' })
   } catch (error) {
     responseHandler.error(res)
   }
@@ -19,7 +35,7 @@ const addCart = async (req, res) => {
       productId: req.body.productId
     })
     if (isCart) {
-      isCart.quantity = (+isCart.quantity + +req.body.quantity).toString()
+      isCart.quantity = req.body.quantity
       await isCart.save()
       return responseHandler.ok(res, isCart)
     }
@@ -76,4 +92,10 @@ const removeCarts = async (req, res) => {
   }
 }
 
-module.exports = { getCartsOfUser, addCart, removeCart, removeCarts }
+module.exports = {
+  getCartsOfUser,
+  addCart,
+  removeCart,
+  removeCarts,
+  updateCart
+}

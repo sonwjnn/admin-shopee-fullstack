@@ -9,12 +9,7 @@ const favoriteSchema = mongoose.Schema(
       ref: 'User',
       required: true
     },
-    productId: { type: Schema.Types.ObjectId, ref: 'Product', require: true },
-    productTitle: { type: String, default: '' },
-    productImage: { type: String, default: '' },
-    productPrice: { type: String, default: '' },
-    productType: { type: String, default: '' },
-    status: { type: String, default: '' }
+    productId: { type: Schema.Types.ObjectId, ref: 'Product', require: true }
   },
   modelOptions
 )

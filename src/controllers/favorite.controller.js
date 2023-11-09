@@ -6,6 +6,7 @@ const getFavoritesOfUser = async (req, res) => {
   try {
     const favorite = await favoriteModel
       .find({ user: req.user.id })
+      .populate('productId')
       .sort('-createdAt')
 
     return responseHandler.ok(res, favorite)

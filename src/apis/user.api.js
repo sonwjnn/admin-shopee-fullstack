@@ -232,6 +232,7 @@ router.get('/carts', tokenMiddleware.auth, cartController.getCartsOfUser)
 router.post('/carts', tokenMiddleware.auth, cartController.addCart)
 router.delete('/carts/:cartId', tokenMiddleware.auth, cartController.removeCart)
 router.delete('/carts', tokenMiddleware.auth, cartController.removeCarts)
+router.put('/carts', tokenMiddleware.auth, cartController.updateCart)
 
 router.get(
   '/favorites',
