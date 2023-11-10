@@ -21,7 +21,7 @@ router.get('/index', async (req, res) => {
 
     const index = 'profile'
     const main = 'profile/main'
-    res.render('index', { main, index, data: user })
+    res.render('index', { main, index, data: user, role: req.user.role })
   } catch (error) {
     responseHandler.error(res)
   }

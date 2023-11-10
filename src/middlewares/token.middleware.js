@@ -1,8 +1,6 @@
 const jsonwebtoken = require('jsonwebtoken')
 const responseHandler = require('../handlers/response.handler.js')
 const userModel = require('../models/user.model.js')
-const fs = require('fs')
-const filepath = 'src/assets/json/archiveToken.json'
 
 const tokenDecode = req => {
   try {

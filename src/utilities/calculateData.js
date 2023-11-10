@@ -1,4 +1,4 @@
-const calculateData = async (pageNumber, model, name) => {
+const calculateData = async (pageNumber, model, name, user) => {
   const limit = 10
   const obj_find = {}
 
@@ -6,6 +6,8 @@ const calculateData = async (pageNumber, model, name) => {
     const regex = new RegExp(`(${name})`, 'i')
     obj_find.name = { $regex: regex }
   }
+
+  if (user && user.role !== 'admin') obj_find.user = user.id
 
   const sumData = await model.find(obj_find)
   const sumPage = Math.ceil(sumData.length / limit)

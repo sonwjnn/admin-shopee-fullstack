@@ -3,18 +3,21 @@ const typeModel = require('../models/type.model')
 const cateModel = require('../models/category.model')
 const { toStringDate } = require('../utilities/toStringDate')
 const calculateData = require('../utilities/calculateData')
+const productModel = require('../models/product.model')
 
 const renderIndexPage = async (req, res) => {
   try {
     const pageNumberPayload = parseInt(req.params.pageNumber, 10) || 1
 
-    const { limit, skip, sumPage, pageNumber } = await calculateData(
+    const { limit, skip, obj_find, sumPage, pageNumber } = await calculateData(
       pageNumberPayload,
-      typeModel
+      typeModel,
+      '',
+      req.user
     )
 
     const types = await typeModel
-      .find()
+      .find(obj_find)
       .populate('cateId', 'name')
       .limit(limit)
       .skip(skip)
@@ -34,7 +37,8 @@ const renderIndexPage = async (req, res) => {
       pageNumber,
       name,
       isIndexPage,
-      dateOfC
+      dateOfC,
+      role: req.user.role
     })
   } catch (error) {
     responseHandler.notfoundpage(res)
@@ -49,7 +53,8 @@ const renderSearchPage = async (req, res) => {
     const { limit, skip, obj_find, sumPage, pageNumber } = await calculateData(
       pageNumberPayload,
       typeModel,
-      name
+      name,
+      req.user
     )
 
     const types = await typeModel
@@ -73,7 +78,8 @@ const renderSearchPage = async (req, res) => {
       pageNumber,
       name,
       isIndexPage,
-      dateOfC
+      dateOfC,
+      role: req.user.role
     })
   } catch (error) {
     responseHandler.notfoundpage(res)
@@ -93,7 +99,7 @@ const renderEditPage = async (req, res) => {
     }
     const index = 'product types'
     const main = 'productTypes/edit.type.ejs'
-    res.render('index', { main, index, data: type, cates })
+    res.render('index', { main, index, data: type, cates, role: req.user.role })
   } catch (error) {
     responseHandler.notfoundpage(res)
   }
@@ -105,7 +111,7 @@ const renderAddPage = async (req, res) => {
     var main = 'productTypes/add.type.ejs'
 
     const cates = await cateModel.find()
-    res.render('index', { main, index, cates })
+    res.render('index', { main, index, cates, role: req.user.role })
   } catch (error) {
     responseHandler.error(res)
   }
@@ -166,6 +172,17 @@ const removeType = async (req, res) => {
       return responseHandler.notfound(res)
     }
 
+    const product = await productModel.findOne({
+      typeId: typeId
+    })
+
+    if (product) {
+      return responseHandler.error(
+        res,
+        'Cannot delete this type, have product used this type'
+      )
+    }
+
     await type.deleteOne()
 
     return responseHandler.ok(res, 'Remove type succcessfully')
@@ -183,6 +200,17 @@ const removeTypes = async (req, res) => {
 
     if (!types) {
       return responseHandler.notfound(res)
+    }
+
+    const product = await productModel.findOne({
+      typeId: typeId
+    })
+
+    if (product) {
+      return responseHandler.error(
+        res,
+        'Cannot delete this type, have product used this type'
+      )
     }
     await typeModel.deleteMany({
       _id: { $in: typeIds }

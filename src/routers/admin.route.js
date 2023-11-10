@@ -5,6 +5,7 @@ const userController = require('../controllers/user.controller')
 const tokenMiddleware = require('../middlewares/token.middleware')
 const { body } = require('express-validator')
 const requestHandler = require('../handlers/request.handler')
+const { checkAdmin } = require('../middlewares/role.middleware')
 
 router.get('/signin', (req, res) => {
   if (req.cookies.token) return res.clearCookie('token').render('login')

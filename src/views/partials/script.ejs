@@ -255,3 +255,20 @@
     some_id.removeAttr('autocomplete');
   });
 </script>
+
+<script>
+  $(document).ready(function() {
+    let arr = [];
+    $.ajax({
+      url: '/admin/users/list',
+      type: 'GET',
+      success: function(res) {
+        for (var i = 0; i < res.data.length; i++) {
+          arr[i] = res.data[i].name;
+        }
+      }
+    });
+
+
+  })
+</script>

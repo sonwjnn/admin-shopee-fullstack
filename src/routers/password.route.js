@@ -8,7 +8,7 @@ const { body } = require('express-validator')
 router.get('/index', (req, res) => {
   const index = 'password'
   const main = 'password/main'
-  res.render('index', { main, index })
+  res.render('index', { main, index, role: req.user.role })
 })
 
 router.put(

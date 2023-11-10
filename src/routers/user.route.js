@@ -5,10 +5,15 @@ const userController = require('../controllers/user.controller')
 const { body } = require('express-validator')
 const requestHandler = require('../handlers/request.handler')
 const tokenMiddleware = require('../middlewares/token.middleware')
+const { checkAdmin } = require('../middlewares/role.middleware')
 
-router.get('/index(/:pageNumber?)', userController.renderIndexPage)
+router.get('/index(/:pageNumber?)', checkAdmin, userController.renderIndexPage)
 
-router.get('/search/(:name?)(/:pageNumber?)', userController.renderSearchPage)
+router.get(
+  '/search/(:name?)(/:pageNumber?)',
+  checkAdmin,
+  userController.renderSearchPage
+)
 
 router.get('/edit/:username', userController.renderEditPage)
 

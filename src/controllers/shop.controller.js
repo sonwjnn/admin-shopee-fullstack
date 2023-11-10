@@ -11,7 +11,9 @@ const renderIndexPage = async (req, res) => {
 
     const { limit, skip, sumPage, pageNumber } = await calculateData(
       pageNumberPayload,
-      shopModel
+      shopModel,
+      name,
+      req.user
     )
 
     const shops = await shopModel
@@ -34,7 +36,8 @@ const renderIndexPage = async (req, res) => {
       pageNumber,
       name,
       isIndexPage,
-      dateOfC
+      dateOfC,
+      role: req.user.role
     })
   } catch (error) {
     responseHandler.error(res)
@@ -49,7 +52,8 @@ const renderSearchPage = async (req, res) => {
     const { limit, skip, obj_find, sumPage, pageNumber } = await calculateData(
       pageNumberPayload,
       shopModel,
-      name
+      name,
+      req.user
     )
 
     const shops = await shopModel
@@ -73,7 +77,8 @@ const renderSearchPage = async (req, res) => {
       pageNumber,
       name,
       isIndexPage,
-      dateOfC
+      dateOfC,
+      role: req.user.role
     })
   } catch (error) {
     responseHandler.notfoundpage(res)
@@ -91,7 +96,7 @@ const renderEditPage = async (req, res) => {
     }
     const index = 'shops'
     const main = 'shops/edit.shop.ejs'
-    res.render('index', { main, index, data: shop })
+    res.render('index', { main, index, data: shop, role: req.user.role })
   } catch (error) {
     responseHandler.notfoundpage(res)
   }
@@ -101,7 +106,7 @@ const renderAddPage = async (req, res) => {
   try {
     const index = 'shops'
     const main = 'shops/add.shop.ejs'
-    res.render('index', { main, index })
+    res.render('index', { main, index, role: req.user.role })
   } catch (error) {
     responseHandler.notfoundpage(res)
   }
@@ -212,7 +217,6 @@ const removeShops = async (req, res) => {
 
     return responseHandler.ok(res, 'Shops successfully deleted!')
   } catch (error) {
-    console.log(error)
     responseHandler.error(res)
   }
 }

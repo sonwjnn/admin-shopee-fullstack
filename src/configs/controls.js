@@ -1,4 +1,5 @@
 const express = require('express')
+const { checkAdmin } = require('../middlewares/role.middleware')
 const router = express.Router()
 
 router.get('/', (req, res) => {

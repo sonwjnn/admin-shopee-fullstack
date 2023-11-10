@@ -2,6 +2,8 @@ const responseHandler = require('../handlers/response.handler')
 const cateModel = require('../models/category.model')
 const { toStringDate } = require('../utilities/toStringDate')
 const calculateData = require('../utilities/calculateData')
+const productModel = require('../models/product.model')
+const typeModel = require('../models/type.model')
 
 const renderIndexPage = async (req, res) => {
   try {
@@ -10,7 +12,9 @@ const renderIndexPage = async (req, res) => {
 
     const { limit, skip, sumPage, pageNumber } = await calculateData(
       pageNumberPayload,
-      cateModel
+      cateModel,
+      name,
+      req.user
     )
 
     const cates = await cateModel
@@ -33,7 +37,8 @@ const renderIndexPage = async (req, res) => {
       pageNumber,
       name,
       isIndexPage,
-      dateOfC
+      dateOfC,
+      role: req.user.role
     })
   } catch (error) {
     responseHandler.error(res)
@@ -48,7 +53,8 @@ const renderSearchPage = async (req, res) => {
     const { limit, skip, obj_find, sumPage, pageNumber } = await calculateData(
       pageNumberPayload,
       cateModel,
-      name
+      name,
+      req.user
     )
 
     const cates = await cateModel
@@ -72,7 +78,8 @@ const renderSearchPage = async (req, res) => {
       pageNumber,
       name,
       isIndexPage,
-      dateOfC
+      dateOfC,
+      role: req.user.role
     })
   } catch (error) {
     responseHandler.notfoundpage(res)
@@ -90,7 +97,7 @@ const renderEditPage = async (req, res) => {
     }
     const index = 'categories'
     const main = 'categories/edit.category.ejs'
-    res.render('index', { main, index, data: cate })
+    res.render('index', { main, index, data: cate, role: req.user.role })
   } catch (error) {
     responseHandler.notfoundpage(res)
   }
@@ -100,7 +107,7 @@ const renderAddPage = async (req, res) => {
   try {
     const index = 'categories'
     const main = 'categories/add.category.ejs'
-    res.render('index', { main, index })
+    res.render('index', { main, index, role: req.user.role })
   } catch (error) {
     responseHandler.notfoundpage(res)
   }
@@ -144,12 +151,21 @@ const removeCate = async (req, res) => {
   try {
     const { cateId } = req.params
 
-    const cate = await cateModel.findOne({
-      _id: cateId
-    })
+    const [cate, product, type] = await Promise.all([
+      cateModel.findOne({ _id: cateId }),
+      productModel.findOne({ cateId }),
+      typeModel.findOne({ cateId })
+    ])
 
     if (!cate) {
       return responseHandler.notfound(res)
+    }
+
+    if (product || type) {
+      return responseHandler.error(
+        res,
+        'Cannot delete this type, have product used this type'
+      )
     }
 
     await cate.deleteOne()
@@ -163,13 +179,24 @@ const removeCate = async (req, res) => {
 const removeCates = async (req, res) => {
   try {
     const cateIds = JSON.parse(JSON.stringify(req.body)).ids
-    const cates = await cateModel.find({
-      _id: { $in: cateIds }
-    })
 
-    if (!cates) {
+    const [cates, product, type] = await Promise.all([
+      cateModel.find({ _id: { $in: cateIds } }),
+      productModel.findOne({ cateId: { $in: cateIds } }),
+      typeModel.findOne({ cateId: { $in: cateIds } })
+    ])
+
+    if (!cates.length) {
       return responseHandler.notfound(res)
     }
+
+    if (product || type) {
+      return responseHandler.error(
+        res,
+        'Cannot delete this type, have product used this type'
+      )
+    }
+
     await cateModel.deleteMany({
       _id: { $in: cateIds }
     })

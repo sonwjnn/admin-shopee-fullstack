@@ -22,7 +22,8 @@ const renderIndexPage = async (req, res) => {
     const { limit, skip, obj_find, sumPage, pageNumber } = await calculateData(
       pageNumberPayload,
       productModel,
-      name
+      name,
+      req.user
     )
 
     const products = await productModel
@@ -45,7 +46,8 @@ const renderIndexPage = async (req, res) => {
       sumPage,
       pageNumber,
       name,
-      isIndexPage
+      isIndexPage,
+      role: req.user.role
     })
   } catch (error) {
     responseHandler.error(res)
@@ -69,7 +71,13 @@ const renderAddPage = async (req, res) => {
     var index = 'products'
     var main = 'products/add.product.ejs'
 
-    res.render('index', { main, index, types: uniqueTypeNames, status })
+    res.render('index', {
+      main,
+      index,
+      types: uniqueTypeNames,
+      status,
+      role: req.user.role
+    })
   } catch (error) {
     res.send({ kq: 0, msg: 'Something went wrong with types or cates!' })
   }
@@ -103,7 +111,8 @@ const renderEditPage = async (req, res) => {
       data: product,
       types: uniqueTypeNames,
       producedAt,
-      status
+      status,
+      role: req.user.role
     })
   } catch (error) {
     responseHandler.error(res)
@@ -118,7 +127,8 @@ const renderSearchPage = async (req, res) => {
     const { limit, skip, obj_find, sumPage, pageNumber } = await calculateData(
       pageNumberPayload,
       productModel,
-      name
+      name,
+      req.user
     )
 
     const products = await productModel
@@ -141,7 +151,8 @@ const renderSearchPage = async (req, res) => {
       sumPage,
       pageNumber,
       name,
-      isIndexPage
+      isIndexPage,
+      role: req.user.role
     })
   } catch (error) {
     responseHandler.error(res)

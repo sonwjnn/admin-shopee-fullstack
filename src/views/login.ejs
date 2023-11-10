@@ -24,15 +24,11 @@
   <main class="main-content mt-0">
     <section class="min-vh-100 mb-8">
       <div class="page-header align-items-start min-vh-50 pt-5 pb-11 m-3 border-radius-lg" style="background-image: url('/img/curved-images/curvedCity.jpg')">
-        <span class="mask bg-gradient-dark opacity-1"></span>
+        <span class=" opacity-1"></span>
         <div class="container">
           <div class="row justify-content-center">
             <div class="col-lg-5 text-center mx-auto">
-              <h1 class="text-white mb-2 mt-5">Welcome Back!</h1>
-              <p class="text-lead text-white">
-                Please log in to use the account's features and attractive
-                services.
-              </p>
+
             </div>
           </div>
         </div>
@@ -48,11 +44,11 @@
               <div class="card-body">
                 <form id="LoginForm" role="form text-left">
                   <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="Username" aria-label="username" aria-describedby="email-addon" id="username" />
+                    <input type="text" class="form-control bg-white" placeholder="Username" aria-label="username" aria-describedby="email-addon" id="username" />
                   </div>
 
                   <div class="mb-3">
-                    <input type="password" class="form-control" placeholder="Password" aria-label="password" aria-describedby="email-addon" id="password" />
+                    <input type="password" class="form-control bg-white" placeholder="Password" aria-label="password" aria-describedby="email-addon" id="password" />
                   </div>
                   <!-- <p class="text-sm mt-3 mb-0">
                     Username: adminorigin | password: adminA1!
@@ -149,6 +145,7 @@
             data: {
               username,
               password,
+              isAdminPage: true
             },
             success: function(res) {
               $('#msg').html(res.msg || res.message);

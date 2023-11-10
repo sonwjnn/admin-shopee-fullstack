@@ -9,30 +9,13 @@ const reviewSchema = mongoose.Schema(
       ref: 'User',
       required: true
     },
-    productId: {
-      type: Schema.Types.ObjectId,
-      ref: 'ProductType',
-      required: true
-    },
-    cateId: {
-      type: Schema.Types.ObjectId,
-      ref: 'Category',
-      required: true
-    },
+    productId: { type: Schema.Types.ObjectId, ref: 'Product', require: true },
+
     content: {
       type: String,
       require: true
     },
     rating: {
-      type: String,
-      require: true
-    },
-    productId: { type: Schema.Types.ObjectId, ref: 'Product', require: true },
-    productName: {
-      type: String,
-      require: true
-    },
-    productImage: {
       type: String,
       require: true
     }

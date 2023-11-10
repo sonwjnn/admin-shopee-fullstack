@@ -10,12 +10,12 @@ const calculateData = require('../utilities/calculateData')
 
 const signin = async (req, res) => {
   try {
-    const { username, password } = req.body
+    const { username, password, isAdminPage } = req.body
 
     const user = await userModel
       .findOne({ username })
       .select(
-        'username password salt id name email phone address city district sex birthday'
+        'username password salt id name email phone address city district sex birthday role'
       )
     if (!user) {
       return responseHandler.badrequest(res, 'User not exist')
@@ -24,7 +24,7 @@ const signin = async (req, res) => {
     if (!user.validPassword(password))
       return responseHandler.badrequest(res, 'Wrong password')
 
-    if (!user.role === 'admin' && !user.role === 'sale')
+    if (isAdminPage && user.role === 'user')
       return responseHandler.unauthorized(res)
 
     const token = jsonwebtoken.sign(
@@ -224,7 +224,8 @@ const renderIndexPage = async (req, res) => {
       sumPage,
       pageNumber,
       name,
-      isIndexPage
+      isIndexPage,
+      role: req.user.role
     })
   } catch (error) {
     responseHandler.error(res)
@@ -242,7 +243,7 @@ const renderEditPage = async (req, res) => {
 
     const index = 'users'
     const main = 'users/edit.user.ejs'
-    res.render('index', { main, index, data: user })
+    res.render('index', { main, index, data: user, role: req.user.role })
   } catch (error) {
     responseHandler.error(res)
   }
@@ -259,7 +260,7 @@ const renderPasswordPage = async (req, res) => {
     const index = 'users'
     const main = 'users/updatePassword.user.ejs'
 
-    res.render('index', { main, index, data: user })
+    res.render('index', { main, index, data: user, role: req.user.role })
   } catch (error) {
     responseHandler.error(res)
   }
@@ -268,7 +269,7 @@ const renderPasswordPage = async (req, res) => {
 const renderAddPage = (req, res) => {
   const index = 'users'
   const main = 'users/add.user.ejs'
-  res.render('index', { main, index })
+  res.render('index', { main, index, role: req.user.role })
 }
 
 const renderSearchPage = async (req, res) => {
@@ -300,7 +301,8 @@ const renderSearchPage = async (req, res) => {
       sumPage,
       pageNumber,
       name,
-      isIndexPage
+      isIndexPage,
+      role: req.user.role
     })
   } catch (error) {
     responseHandler.error(res)

@@ -81,7 +81,7 @@
 
               <div class="form-group col-md-6">
                 <label class="form-label display-inline" for="role">Role</label>
-                <select id="role" class="form-select">
+                <select id="role" class="form-select" <% if (data.role !== 'admin') { %> disabled <% } %>>
                   <option value=<%=data.role%> hidden> <%=data.role%></option>
                   <option value="user">user</option>
                   <option value="admin">admin</option>
