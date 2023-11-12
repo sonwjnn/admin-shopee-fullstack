@@ -31,4 +31,4 @@ shopSchema.methods.setData = function (props) {
 }
 
 // create model
-module.exports = mongoose.model('shop', shopSchema)
+module.exports = mongoose.model('Shop', shopSchema)

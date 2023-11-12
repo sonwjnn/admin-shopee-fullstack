@@ -315,6 +315,7 @@ const getDetail = async (req, res) => {
       .findById(productId)
       .populate('cateId', 'name')
       .populate('typeId', 'name')
+      .populate('shopId')
       .lean()
     const tokenDecoded = tokenMiddleware.tokenDecode(req)
     if (tokenDecoded) {
@@ -346,6 +347,7 @@ const getDetail = async (req, res) => {
       .sort('-createdAt')
     return responseHandler.ok(res, product)
   } catch (error) {
+    console.log(error)
     responseHandler.error(res)
   }
 }

@@ -2,15 +2,15 @@ const calculateData = async (pageNumber, model, name, user) => {
   const limit = 10
   const obj_find = {}
 
-  if (name && name !== undefined) {
+  if (name) {
     const regex = new RegExp(`(${name})`, 'i')
     obj_find.name = { $regex: regex }
   }
 
   if (user && user.role !== 'admin') obj_find.user = user.id
 
-  const sumData = await model.find(obj_find)
-  const sumPage = Math.ceil(sumData.length / limit)
+  const count = await model.countDocuments(obj_find)
+  const sumPage = Math.ceil(count / limit)
 
   if (!pageNumber || pageNumber < 1) {
     pageNumber = 1
