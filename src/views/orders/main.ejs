@@ -1,0 +1,341 @@
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="card mb-4">
+
+        <div class="card-body pt-5 pb-0">
+          <button <% if (data.role !== 'sale') { %> disabled <% } %> type="button" class="btn btn-outline-info pt-2 pb-2 me-2" onclick="location.href='/admin/products/add'">
+            <i class="fa fa-plus-square-o me-1" aria-hidden="true"></i> Add New
+          </button>
+
+          <button type="button" class="btn btn-outline-danger pt-2 pb-2 deleteGr"><i class="fa fa-trash-o me-1" aria-hidden="true"></i> Delete Selected</button>
+          <form id="searchForm" class="display-inline">
+            <button type="submit" class="btn btn-outline-dark pt-2 pb-2 display-inline floatRight ml-2"><i class="fas fa-search" aria-hidden="true"></i></button>
+            <input type="text" class="form-control form-control-new col-md-3 floatRight" id="searchName" placeholder="Product name..." value="<%=name%>">
+
+            <span id="usernameMemErrorText" class="spanError"></span>
+          </form>
+
+        </div>
+        <div class="card-body px-0 pt-0 pb-2">
+          <div class="table-responsive px-2">
+            <table class="table align-items-center mb-0" id="productTable">
+              <thead>
+                <tr class="text-uppercase">
+                  <th class="text-center table-w-10 text-secondary text-sm ">Choose</th>
+                  <th class="text-center table-w-10 text-secondary text-sm">Ordinal</th>
+
+                  <th class="text-center table-w-100 text-secondary text-sm">Name</th>
+                  <th class="text-center table-w-100 text-secondary text-sm">Product Type</th>
+                  <th class="text-center table-w-100 text-sm text-secondary">Price</th>
+                  <th class="text-center table-w-100 text-secondary text-sm">Cate Type</th>
+
+                  <th class="text-center table-w-10 text-secondary text-sm ">Detail
+                  </th>
+                  <th class="text-center table-w-10 text-secondary text-sm ">Edit
+                  </th>
+                  <th class="text-center table-w-10 text-secondary text-sm ">Delete
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+
+                <% for(var i=0; i < data.length; i++) { %>
+                <tr>
+                  <td class="align-middle text-center">
+                    <input type="checkbox" class="radio-cate">
+                  </td>
+                  <td class="align-middle text-center">
+                    <p class="text-center text-xs font-weight-bold mb-0">
+                      <%= i+1 %>
+                    </p>
+                  </td>
+                  <td class="align-middle text-center">
+                    <span class="text-center text-sm mb-0">
+                      <%=data[i].name%>
+                    </span>
+                  </td>
+
+                  <td class="align-middle text-center hiden">
+                    <p class="text-center text-xs font-weight-bold mb-0">
+                      <%=data[i]._id%>
+                    </p>
+                  </td>
+                  <td class="align-middle text-center text-sm">
+                    <span class=" text-sm ">
+                      <%= data[i]?.typeId?.name %>
+                    </span>
+                  </td>
+
+                  <td class="align-middle text-center">
+                    <span class="text-sm">
+                      <%=data[i].price%>
+                    </span>
+                  </td>
+
+                  <td class=" align-middle text-center text-sm">
+                    <span class=" text-sm ">
+                      <%=data[i]?.cateId?.name%>
+                    </span>
+                  </td>
+
+
+                  <td class="align-middle text-center">
+                    <button type="button" class="btn btn-outline-successBeauty mb-0 mt-0 pt-2 pb-2 pl-3 pr-3 detail" onclick="getName('<%=data[i]._id%>')"><i class="fa fa-eye"></i></button>
+
+
+                  </td>
+                  <td class="align-middle text-center">
+                    <button type="button" class="btn btn-outline-successBeauty mb-0 mt-0 pt-2 pb-2 pl-3 pr-3" onclick="location.href='/admin/products/edit/<%=data[i]._id%>'"><i class="fa fa-pencil-square-o"></i></button>
+
+                  </td>
+                  <td class="align-middle text-center">
+                    <button type="button" class="btn btn-outline-successBeauty mb-0 mt-0 pt-2 pb-2 pl-3 pr-3 delete" onclick="GetIdToDelete('<%=data[i]._id%>')" data-toggle="modal" data-target="#exampleModalCenter3"><i class="fa fa-trash-o"></i></button>
+
+                  </td>
+                </tr>
+                <% } %>
+
+
+
+
+              </tbody>
+            </table>
+            <div class="container mt-3">
+
+              <ul class="pagination justify-content-center position-relative" style="height: 44px;">
+                <% if(sumPage > 1) { %>
+                <% if(isIndexPage) { %>
+                <li class="page-item">
+                  <%if(pageNumber !== 1) {%>
+                  <a class="page-link buttonNoAfter" href="/admin/products/index/<%= pageNumber-1 %>"><i class="fa fa-chevron-left" aria-hidden="true"></i>
+                  </a>
+                  <% } %>
+                </li>
+                <% for(var i=1; i <=sumPage; i++) { %>
+                <% if(pageNumber==i) { %>
+                <li class="page-item"><a class="page-link active active2 buttonNoAfter" href="/admin/products/index/<%= i %>">
+                    <%= i %>
+                  </a></li>
+                <% } %>
+
+                <% if(pageNumber !=i){ %>
+                <li class="page-item"><a class="page-link buttonNoAfter" href="/admin/products/index/<%= i %>">
+                    <%= i %>
+                  </a></li>
+                <% } %>
+                <% } %>
+                <li class="page-item">
+                  <% if(sumPage > 0 && +sumPage !== +pageNumber) {%>
+                  <a class="page-link buttonNoAfter" href="/admin/products/index/<%= +pageNumber + 1 %>"><i class="fa fa-chevron-right" aria-hidden="true"></i>
+                  </a>
+                  <% } %>
+                </li>
+                <% } else {%>
+                <li class="page-item"><a class="page-link buttonNoAfter" href="/admin/products/search/<%=name%>/<%= pageNumber-1 %>"><i class="fa fa-chevron-left" aria-hidden="true"></i></a></li>
+                <% for(var i=1; i <=sumPage; i++) { %>
+                <% if(pageNumber==i) { %>
+                <li class="page-item"><a class="page-link active active2 buttonNoAfter" href="/admin/products/search/<%=name%>/<%= i %>">
+                    <%= i %>
+                  </a></li>
+                <% } %>
+
+                <% if(pageNumber !=i){ %>
+                <li class="page-item"><a class="page-link buttonNoAfter" href="/admin/products/search/<%=name%>/<%= i %>">
+                    <%= i %>
+                  </a></li>
+                <% } %>
+                <% } %>
+                <li class="page-item"><a class="page-link buttonNoAfter" href="/admin/products/search/<%=name%>/<%= pageNumber + 1 %>"><i class="fa fa-chevron-right" aria-hidden="true"></i></a>
+                </li>
+                <% } %>
+                <% } %>
+                <div class="end-0 position-absolute">
+                  <button type="button" class="btn btn-outline-info btn-refresh mb-0" onclick="window.location.reload()">
+                    <i class="fas fa-sync mr-1"></i>
+                    Refresh
+                  </button>
+                </div>
+              </ul>
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+<button type="button" id="popupDeleteGr" class="btn btn-outline-danger pt-2 pb-2 hiden" data-toggle="modal" data-target="#exampleModalCenter"></button>
+<button type="button" id="popupDetail" class="btn btn-outline-danger pt-2 pb-2 hiden" data-toggle="modal" data-target="#exampleModalCenter2"></button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content border-none">
+      <div class="modal-header alert-info mt-0 mb-0 noti">
+        <h5 class="modal-title text-white" id="exampleModalLongTitle"><i class="fa fa-flag" aria-hidden="true"></i> Notification</h5>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-black" id="msgDelete">
+        Are you sure you want to delete them?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark mb-0 mt-0" data-dismiss="modal">No</button>
+        <button type="button" class="btn btn-outline-danger mb-0 mt-0" id="buttonDeleteGr">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalCenterTitle">Detail Product</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mt-0 pt-0">
+        <div class="container-fluid py-4">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-body">
+                  <form autocomplete="off">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <input type="text" class="form-control form-control-none hiden" id="idProduct" value="" disabled>
+
+                        <div class="form-group">
+                          <label class="form-label" for="name">Product Name</label>
+                          <input type="text" class="form-control form-control-none" id="name" placeholder="" value="Iphone 14" disabled>
+                        </div>
+
+                        <div class="form-group">
+                          <label class="form-label" for="cateType">Cate Type</label>
+                          <input type="text" class="form-control form-control-none" id="cateType" value="" disabled>
+                        </div>
+
+                        <div class="form-group">
+                          <label class="form-label" for="productType">Product Type</label>
+                          <input type="text" class="form-control form-control-none" id="productType" value="" disabled>
+                        </div>
+
+                        <div class="form-group">
+                          <label class="form-label" for="origin">Origin</label>
+                          <input type="text" class="form-control form-control-none" id="origin" placeholder="" value="Made in China" disabled>
+                        </div>
+
+                        <div class="form-group">
+
+                          <div class="row">
+                            <div class="col-md-4">
+                              <label class="form-label display-inline" for="price">Price <span id="priceError" class="spanError"></span></label>
+                              <input type="text" class="form-control form-control-none" id="price" placeholder="Ex: 2000" value="" disabled>
+
+                            </div>
+                            <div class="col-md-4">
+                              <label class="form-label display-inline" for="discount">Discount (%)<span id="discountError" class="spanError"></span></label>
+                              <input type="text" class="form-control form-control-none" id="discount" placeholder="Ex: 50" value="" disabled>
+                            </div>
+                            <div class="col-md-4">
+                              <label class="form-label display-inline" for="discountPrice">Discount Price<span id="discountPriceError" class="spanError"></span></label>
+                              <input type="text" class="form-control form-control-none" id="discountPrice" readonly value="" disabled>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label class="form-label" for="producedAt">Date of manufacture</label>
+                          <input type="text" class="form-control form-control-none" id="producedAt" value="" disabled>
+                        </div>
+
+                        <div class="form-group">
+                          <label class="form-label" for="status">Status</label>
+                          <input type="text" class="form-control form-control-none" id="status" value="" disabled>
+                        </div>
+                      </div>
+
+                      <div class="col-md-6">
+                        <div class="card h-100 p-3">
+                          <div class="products-img" id="imageName"></div>
+                        </div>
+                      </div>
+
+                    </div>
+                    <div class="row">
+                      <div class="form-group">
+                        <label class="form-label" for="info">Product Description</label>
+                        <textarea class="form-control" id="info" cols="30" rows="10" name="contentStory" disabled></textarea>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" id="edit">Edit</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="idDelete" style="opacity: 0;"></div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter3" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content border-none">
+      <div class="modal-header alert-info mt-0 mb-0 noti">
+        <h5 class="modal-title text-white" id="exampleModalLongTitle"><i class="fa fa-flag" aria-hidden="true"></i> Notification</h5>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-black">
+        Are you sure you want to delete them?
+      </div>
+      <div id="delete" class="hiden"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark mb-0 mt-0" data-dismiss="modal">No</button>
+        <button type="button" class="btn btn-outline-danger mb-0 mt-0" onclick="deleteProduct()">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button type="button" id="popupDeleteGrNoData" class="btn btn-outline-danger pt-2 pb-2 hiden" data-toggle="modal" data-target="#exampleModalCenter4"></button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter4" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content border-none">
+      <div class="modal-header alert-info mt-0 mb-0 noti">
+        <h5 class="modal-title text-white" id="exampleModalLongTitle"><i class="fa fa-flag" aria-hidden="true"></i> Notification</h5>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-black" id="msg">
+        Please tick the data you want to delete
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark mb-0 mt-0" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%-include('script')%>

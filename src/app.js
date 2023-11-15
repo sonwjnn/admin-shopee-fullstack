@@ -5,7 +5,6 @@ const { connectDb } = require('./configs/mongodb.js')
 const { corsOptions } = require('./configs/cors')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
-const body = require('body-parser')
 
 connectDb()
   .then(() => boostServer())
@@ -16,9 +15,16 @@ connectDb()
 
 const boostServer = () => {
   const app = express()
-  /*   app.use(express.static('./assets')) */
-  app.use(body.urlencoded({ extended: true }))
-  app.use(body.json())
+  app.use(express.urlencoded({ extended: true }))
+
+  app.use((req, res, next) => {
+    if (req.originalUrl === '/api/webhook') {
+      next() // Do nothing with the body because I need it in a raw state.
+    } else {
+      express.json()(req, res, next) // ONLY do express.json() if the received request is NOT a WebHook from Stripe.
+    }
+  })
+
   app.use(express.static(path.join(__dirname, './assets')))
   app.use(express.static(path.join(__dirname, './utilities')))
   app.set('views', path.join(__dirname, './views'))
@@ -27,10 +33,6 @@ const boostServer = () => {
   app.use(cors(corsOptions))
 
   app.use(cookieParser())
-
-  var bodyParser = require('body-parser')
-  app.use(bodyParser.urlencoded({ extended: false }))
-  app.use(bodyParser.json())
 
   app.use('/', require('./configs/controls'))
 

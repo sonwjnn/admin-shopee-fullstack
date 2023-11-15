@@ -13,6 +13,10 @@ router.use('/products', require('../apis/product.api'))
 router.use('/user', require('../apis/user.api'))
 router.use('/reviews', require('../apis/review.api'))
 router.use('/shops', require('../apis/shop.api'))
+router.use('/user/orders', require('../routers/order.route'))
+
+// api
+router.use('/api', require('../routers/stripe.route'))
 
 // admin
 router.use('/admin', require('../routers/admin.route'))

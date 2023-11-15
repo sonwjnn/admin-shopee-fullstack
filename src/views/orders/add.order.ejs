@@ -1,0 +1,326 @@
+<div class="container-fluid py-4">
+  <div class="row">
+
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body">
+          <form id="formProductsAdd" action="/upload" method="post" enctype="multipart/form-data">
+            <div class="alert-warning text-white text-min text-space-xl hiden" id="noteProducts"></div>
+            <div class="row">
+              <div class="form-group col-md-6">
+                <label class="form-label display-inline" for="name">Product Name <span id="nameError" class="spanError"></span></label>
+                <input type="text" class="form-control form-control-new" id="name" placeholder="Ex: Iphone 14" name="name">
+                <span id="nameErrorText" class="spanError"></span>
+              </div>
+
+              <div class="form-group col-md-6">
+                <label class="form-label display-inline" for="origin">Origin <span id="originError" class="spanError"></span></label>
+                <input type="text" class="form-control form-control-new" id="origin" placeholder="Ex: Made in China">
+                <span id="originErrorText" class="spanError"></span>
+              </div>
+
+              <div class="form-group col-md-6">
+                <div class="row">
+                  <div class="col-md-4">
+                    <label class="form-label display-inline" for="price">Price <span id="priceError" class="spanError"></span></label>
+                    <input type="text" class="form-control form-control-new" id="price" placeholder="Ex: 2000">
+                    <span id="priceErrorText" class="spanError"></span>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label display-inline" for="discount">Discount (%)<span id="discountError" class="spanError"></span></label>
+                    <input type="text" class="form-control form-control-new" id="discount" placeholder="Ex: 50">
+                    <span id="discountErrorText" class="spanError"></span>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label display-inline" for="discountPrice">Discount Price<span id="discountPriceError" class="spanError"></span></label>
+                    <input type="text" class="form-control form-control-none" id="discountPrice" readonly>
+                    <span id="discountPriceErrorText" class="spanError"></span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group col-md-6">
+
+                <label class="form-label display-inline" for="image">Image <span id="imageError" class="spanError"></span></label>
+                <div class="row">
+                  <div class="col-md-10dot5 paddingRightNone">
+                    <input type="file" class="form-control form-control-new" id="image" name="productsImage">
+                  </div>
+                  <div class="col-md-1 paddingLeftNone">
+                    <button type="button" class="btn btn-outline-info btn-products-new" data-toggle="modal" data-target="#exampleModalCenter">
+                      <i class="fa fa-database" aria-hidden="true"></i></button>
+                  </div>
+
+                </div>
+
+                <span id="imageErrorText" class="spanError"></span>
+              </div>
+
+
+              <div class="form-group col-md-6">
+                <label class="form-label display-inline" for="productType">Product Type</label>
+                <select id="productType" class="form-select">
+                  <option value="" hidden> Choose product type </option>
+                  <% for(var i=0; i < types.length; i++) { %>
+                  <option value="<%=types[i]%>"><%=types[i]%></option>
+                  <% } %>
+                </select>
+              </div>
+
+              <div class="form-group col-md-6">
+                <label class="form-label display-inline" for="cateType">Cate Type</label>
+                <select id="cateType" class="form-select" disabled>
+                  <option value="" hidden> Choose cate type </option>
+                </select>
+              </div>
+
+              <div class="form-group col-md-6">
+                <label class="form-label" for="producedAt">Date of manufacture</label>
+                <input type="date" class="form-control form-control-new" id="producedAt">
+              </div>
+
+              <div class="form-group col-md-6">
+                <label class="form-label display-inline" for="status">Status</label>
+                <select id="status" class="form-select">
+                  <option value="" hidden> Choose status </option>
+                  <% for(var i=0; i < status.length; i++) { %>
+                  <option value="<%=status[i]%>"><%=status[i]%></option>
+                  <% } %>
+                </select>
+              </div>
+
+
+              <div class="form-group col-md-12">
+                <label class="form-label" for="productstory">Product Description</label>
+                <textarea class="form-control" id="productStory" cols="30" rows="10" name="contentStory"></textarea>
+              </div>
+
+
+            </div>
+            <!--  <div class="form-group">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="gridCheck">
+                                <label class="form-check-label" for="gridCheck">
+                                    Send confirmation to email
+                                </label>
+                            </div>
+                        </div> -->
+            <button type="button" class="btn btn-outline-info me-2" onclick="window.history.back()"> Back </button>
+            <button type="submit" class="btn bg-gradient-info text-white"> Save </button>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content border-none">
+      <div class="modal-header alert-info mt-0 mb-0 noti">
+        <h5 class="modal-title text-white" id="exampleModalLongTitle">Image Archive</h5>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-black">
+        <div class="row">
+          <div class="form-group">
+
+            <label class="form-label display-inline" for="imageSecond">Image <span id="imageError" class="spanError"></span></label>
+            <div class="row">
+              <div class="col-md-6">
+                <input type="text" class="form-control form-control-new" id="imageSecond" name="productsImage" value="" disabled>
+              </div>
+              <div class="col-md-2">
+                <button type="button" class="btn btn-outline-info mb-0 mt-0">Agree</button>
+              </div>
+
+            </div>
+
+            <span id="imageErrorText" class="spanError"></span>
+          </div>
+        </div>
+        <div class="row">
+
+          <div class="card col-md-3 pb-3">
+            <div class='col text-center card-body paddingNone'>
+              <input type="checkbox" name="imgbackground" id="img1" class="d-none imgbgchk" value="">
+              <label for="img1">
+                <img class="card-img-top" src="/img/home-decor-2.jpg" alt="Image 1">
+                <div class="tick_container">
+                  <div class="tick"><i class="fa fa-check"></i></div>
+                </div>
+              </label>
+
+              <button type="button" class="btn btn-outline-info mb-0 mt-0 pt-2 pb-2" data-toggle="modal" data-target="#exampleModalCenter2">Zoom</button>
+              <button type="button" class="btn btn-outline-info mb-0 mt-0 pt-2 pb-2" id="firstImage">Choose</button>
+
+            </div>
+          </div>
+
+          <div class="card col-md-3">
+            <div class='col text-center card-body paddingNone'>
+              <input type="checkbox" name="imgbackground" id="img2" class="d-none imgbgchk" value="">
+              <label for="img2">
+                <img class="card-img-top" src="/img/home-decor-2.jpg" alt="Image 1">
+                <div class="tick_container">
+                  <div class="tick"><i class="fa fa-check"></i></div>
+                </div>
+              </label>
+
+              <button type="button" class="btn btn-outline-info mb-0 mt-0 pt-2 pb-2 fancybox" data-toggle="modal" data-target="#exampleModalCenter2">Zoom</button>
+              <button type="button" class="btn btn-outline-info mb-0 mt-0 pt-2 pb-2" id="secondImage">Choose</button>
+
+            </div>
+          </div>
+
+          <div class="card col-md-3">
+            <div class='col text-center card-body paddingNone'>
+              <input type="checkbox" name="imgbackground" id="img3" class="d-none imgbgchk" value="">
+              <label for="img3">
+                <img class="card-img-top" src="/img/home-decor-2.jpg" alt="Image 1">
+                <div class="tick_container">
+                  <div class="tick"><i class="fa fa-check"></i></div>
+                </div>
+              </label>
+
+              <button type="button" class="btn btn-outline-info mb-0 mt-0 pt-2 pb-2 fancybox" data-toggle="modal" data-target="#exampleModalCenter2">Zoom</button>
+              <button type="button" class="btn btn-outline-info mb-0 mt-0 pt-2 pb-2" id="thirdImage">Choose</button>
+
+            </div>
+          </div>
+
+          <div class="card col-md-3">
+            <div class='col text-center card-body paddingNone'>
+              <input type="checkbox" name="imgbackground" id="img4" class="d-none imgbgchk" value="">
+              <label for="img4">
+                <img class="card-img-top" src="/img/home-decor-2.jpg" alt="Image 1">
+                <div class="tick_container">
+                  <div class="tick"><i class="fa fa-check"></i></div>
+                </div>
+              </label>
+
+              <button type="button" class="btn btn-outline-info mb-0 mt-0 pt-2 pb-2 fancybox" data-toggle="modal" data-target="#exampleModalCenter2">Zoom</button>
+              <button type="button" class="btn btn-outline-info mb-0 mt-0 pt-2 pb-2" id="fourthImage">Choose</button>
+
+            </div>
+          </div>
+
+          <div class="card col-md-3 pb-3">
+            <div class='col text-center card-body paddingNone'>
+              <input type="checkbox" name="imgbackground" id="img5" class="d-none imgbgchk" value="">
+              <label for="img5">
+                <img class="card-img-top" src="/img/home-decor-2.jpg" alt="Image 1">
+                <div class="tick_container">
+                  <div class="tick"><i class="fa fa-check"></i></div>
+                </div>
+              </label>
+
+              <button type="button" class="btn btn-outline-info mb-0 mt-0 pt-2 pb-2" data-toggle="modal" data-target="#exampleModalCenter2">Zoom</button>
+              <button type="button" class="btn btn-outline-info mb-0 mt-0 pt-2 pb-2">Choose</button>
+
+            </div>
+          </div>
+
+          <div class="card col-md-3">
+            <div class='col text-center card-body paddingNone'>
+              <input type="checkbox" name="imgbackground" id="img6" class="d-none imgbgchk" value="">
+              <label for="img6">
+                <img class="card-img-top" src="/img/home-decor-2.jpg" alt="Image 1">
+                <div class="tick_container">
+                  <div class="tick"><i class="fa fa-check"></i></div>
+                </div>
+              </label>
+
+              <button type="button" class="btn btn-outline-info mb-0 mt-0 pt-2 pb-2 fancybox" data-toggle="modal" data-target="#exampleModalCenter2">Zoom</button>
+              <button type="button" class="btn btn-outline-info mb-0 mt-0 pt-2 pb-2">Choose</button>
+
+            </div>
+          </div>
+
+          <div class="card col-md-3">
+            <div class='col text-center card-body paddingNone'>
+              <input type="checkbox" name="imgbackground" id="img7" class="d-none imgbgchk" value="">
+              <label for="img7">
+                <img class="card-img-top" src="/img/home-decor-2.jpg" alt="Image 1">
+                <div class="tick_container">
+                  <div class="tick"><i class="fa fa-check"></i></div>
+                </div>
+              </label>
+
+              <button type="button" class="btn btn-outline-info mb-0 mt-0 pt-2 pb-2 fancybox" data-toggle="modal" data-target="#exampleModalCenter2">Zoom</button>
+              <button type="button" class="btn btn-outline-info mb-0 mt-0 pt-2 pb-2">Choose</button>
+
+            </div>
+          </div>
+
+          <div class="card col-md-3">
+            <div class='col text-center card-body paddingNone'>
+              <input type="checkbox" name="imgbackground" id="img8" class="d-none imgbgchk" value="">
+              <label for="img8">
+                <img class="card-img-top" src="/img/home-decor-2.jpg" alt="Image 1">
+                <div class="tick_container">
+                  <div class="tick"><i class="fa fa-check"></i></div>
+                </div>
+              </label>
+
+              <button type="button" class="btn btn-outline-info mb-0 mt-0 pt-2 pb-2 fancybox" data-toggle="modal" data-target="#exampleModalCenter2">Zoom</button>
+              <button type="button" class="btn btn-outline-info mb-0 mt-0 pt-2 pb-2">Choose</button>
+
+            </div>
+          </div>
+
+
+
+
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-dark mb-0 mt-0" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-outline-dark mb-0 mt-0" id="checkAll" value="1">Check/UnCheck
+            All</button>
+          <button type="button" class="btn btn-outline-danger mb-0 mt-0">Remove</button>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<button type="button" class="btn btn-outline-info pt-2 pb-2 hiden" id="popupInfo" data-toggle="modal" data-target="#exampleModalCenter3">popup</button>
+
+
+<div class="modal fade" id="exampleModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg-zoom" role="document">
+    <label for="">
+      <img class="imageZoom" src="/img/home-decor-2.jpg">
+      <div class="tick_container">
+        <div class="tick"><i class="fa fa-check"></i></div>
+      </div>
+    </label>
+  </div>
+</div>
+
+<div class="modal fade" id="exampleModalCenter3" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content border-none">
+      <div class="modal-header alert-info mt-0 mb-0 noti">
+        <h5 class="modal-title text-white" id="exampleModalLongTitle"><i class="fa fa-flag" aria-hidden="true"></i> Notification</h5>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-black" id="msg">
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark mb-0 mt-0" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%-include('script')%>

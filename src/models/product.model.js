@@ -15,7 +15,6 @@ const productSchema = mongoose.Schema(
     rating: { type: String, default: '0' },
     imageName: { type: String, default: '' },
     favorites: { type: String, default: '' },
-    views: { type: String, default: '' },
     info: { type: String, default: '' },
     producedAt: { type: Date, default: Date() },
     status: { type: String, default: '', require: true }
