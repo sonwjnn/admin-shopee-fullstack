@@ -29,7 +29,7 @@ const createOrder = async (req, res) => {
       isPaid: false,
       orderItems: products.map(product => ({
         shopId: product.shopId,
-        productId: product.id,
+        productId: product.productId,
         quantity: product.quantity
       }))
     })
@@ -38,7 +38,7 @@ const createOrder = async (req, res) => {
     const orderItems = products.map(product => ({
       orderId: order._id,
       shopId: product.shopId,
-      productId: product.id,
+      productId: product.productId,
       quantity: product.quantity
     }))
     await OrderItem.create(orderItems)
@@ -81,10 +81,24 @@ const updateOrder = async (req, res) => {
 }
 
 //DELETE
+//DELETE
 const removeOrder = async (req, res) => {
   try {
-    await Order.findByIdAndDelete(req.params.id)
-    responseHandler.ok(res, 'Order has been deleted...')
+    const order = await Order.findById(req.params.orderId)
+    if (!order) {
+      return responseHandler.notfound(res, 'Order not found')
+    }
+
+    // Delete order items
+    await OrderItem.deleteMany({ orderId: order._id })
+
+    // Delete order
+    await Order.deleteOne({ _id: req.params.orderId })
+
+    responseHandler.ok(
+      res,
+      'Order and related order items deleted successfully'
+    )
   } catch (error) {
     responseHandler.error(res)
   }
@@ -93,7 +107,9 @@ const removeOrder = async (req, res) => {
 //GET USER ORDERS
 const getOrdersByUserId = async (req, res) => {
   try {
-    const orders = await Order.find({ userId: req.params.userId })
+    const orders = await Order.find({ user: req.user.id })
+      .populate('orderItems.productId')
+      .exec()
     responseHandler.ok(res, orders)
   } catch (error) {
     responseHandler.error(res)

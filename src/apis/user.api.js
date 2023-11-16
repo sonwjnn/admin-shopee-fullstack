@@ -5,7 +5,7 @@ const router = express.Router()
 const cartController = require('../controllers/cart.controller.js')
 const favoriteController = require('../controllers/favorite.controller.js')
 const userController = require('../controllers/user.controller.js')
-const requestHandler = require('../handlers/request.handler.js')
+const orderController = require('../controllers/order.controller.js')
 
 const bcrypt = require('bcryptjs')
 const salt = bcrypt.genSaltSync(10)
@@ -250,5 +250,15 @@ router.delete(
   tokenMiddleware.auth,
   favoriteController.removeFavorites
 )
+
+router.get('/orders', tokenMiddleware.auth, orderController.getOrdersByUserId)
+// router.post('/orders', tokenMiddleware.auth, orderController.addCart)
+router.delete(
+  '/orders/:orderId',
+  tokenMiddleware.auth,
+  orderController.removeOrder
+)
+// router.delete('/orders', tokenMiddleware.auth, orderController.removeCarts)
+// router.put('/orders', tokenMiddleware.auth, orderController.updateCart)
 
 module.exports = router
