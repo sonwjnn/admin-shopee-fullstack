@@ -4,20 +4,32 @@ const cateModel = require('../models/category.model')
 const { toStringDate } = require('../utilities/toStringDate')
 const calculateData = require('../utilities/calculateData')
 const productModel = require('../models/product.model')
+const shopModel = require('../models/shop.model')
 
 const renderIndexPage = async (req, res) => {
   try {
-    const pageNumberPayload = parseInt(req.params.pageNumber, 10) || 1
+    const pageNumber = parseInt(req.params.pageNumber, 10) || 1
 
-    const { limit, skip, obj_find, sumPage, pageNumber } = await calculateData(
-      pageNumberPayload,
-      typeModel,
-      '',
-      req.user
-    )
+    const limit = 10
+
+    // if (user && user.role !== 'admin') obj_find.user = user.id
+
+    const shop = await shopModel.findOne({ user: req.user.id })
+    const count = await typeModel.countDocuments({ shopId: shop._id })
+    const sumPage = Math.ceil(count / limit)
+
+    if (!pageNumber || pageNumber < 1) {
+      pageNumber = 1
+    }
+
+    if (pageNumber > sumPage && sumPage !== 0) {
+      pageNumber = sumPage
+    }
+
+    const skip = (pageNumber - 1) * limit
 
     const types = await typeModel
-      .find(obj_find)
+      .find({ shopId: shop._id })
       .populate('cateId', 'name')
       .limit(limit)
       .skip(skip)
@@ -121,6 +133,7 @@ const add = async (req, res) => {
   try {
     const { name, cateName } = req.body
 
+    const shop = await shopModel.findOne({ user: req.user.id })
     const cate = await cateModel.findOne({ name: cateName })
     const type = await typeModel.findOne({ name, cateId: cate._id })
 
@@ -134,7 +147,7 @@ const add = async (req, res) => {
     const newType = new typeModel({
       ...req.body,
       cateId: cate._id,
-      user: req.user.id
+      shopId: shop._id
     })
 
     await newType.save()

@@ -8,6 +8,10 @@ const tokenMiddleware = require('../middlewares/token.middleware')
 // router.get('/add', orderController.renderAddPage)
 // router.get('/search/(:name?)(/:pageNumber?)', orderController.renderSearchPage)
 
+router.get('/index(/:pageNumber?)', orderController.renderIndexPage)
+
+router.get('/search/(:name?)(/:pageNumber?)', orderController.renderSearchPage)
+
 router.get('/', tokenMiddleware.auth, orderController.getList)
 
 router.get(
@@ -28,5 +32,7 @@ router.put('/:id', tokenMiddleware.authServer, orderController.updateOrder)
 
 router.delete('/:id', tokenMiddleware.authServer, orderController.removeOrder)
 // router.delete('/', tokenMiddleware.authServer, orderController.removeOrders)
+
+router.get('/detail/:orderId', orderController.getDetail)
 
 module.exports = router

@@ -73,7 +73,8 @@ const removeCart = async (req, res) => {
 
 const removeCarts = async (req, res) => {
   try {
-    const cartIds = req.body
+    const { cartIds } = req.body
+    console.log(cartIds)
     const carts = await cartModel.find({
       user: req.user.id,
       _id: { $in: cartIds }

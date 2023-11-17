@@ -1,6 +1,112 @@
 const { Order, OrderItem } = require('../models/order.model')
 const responseHandler = require('../handlers/response.handler')
 const { stripe } = require('../lib/stripe')
+const calculateData = require('../utilities/calculateData')
+const { toStringDate } = require('../utilities/toStringDate')
+const shopModel = require('../models/shop.model')
+const { formatPriceToVND } = require('../utilities/formatter')
+
+const renderIndexPage = async (req, res) => {
+  try {
+    const pageNumber = parseInt(req.params.pageNumber, 10) || 1
+
+    const limit = 10
+
+    const shop = await shopModel.findOne({ user: req.user.id })
+    const count = await OrderItem.countDocuments({ shopId: shop._id })
+    const sumPage = Math.ceil(count / limit)
+
+    if (!pageNumber || pageNumber < 1) {
+      pageNumber = 1
+    }
+
+    if (pageNumber > sumPage && sumPage !== 0) {
+      pageNumber = sumPage
+    }
+
+    const skip = (pageNumber - 1) * limit
+
+    const orders = await OrderItem.find({ shopId: shop._id })
+      .populate('productId')
+      .limit(limit)
+      .skip(skip)
+      .sort({ _id: 1 })
+    const dateOfC = orders.map(order => toStringDate.dmy(order.createdAt))
+
+    const name = ''
+    const isIndexPage = 1
+    const index = 'orders of your shop'
+    const main = 'orders/main'
+
+    const formattedOrders = orders.map(item => ({
+      id: item._id,
+      // phone: item.phone,
+      // address: item.address,
+      name: item.productId.name,
+      price: formatPriceToVND(Number(item.productId.discountPrice)),
+      quantity: item.quantity,
+      totalPrice: formatPriceToVND(
+        Number(item.productId.discountPrice) * +item.quantity
+      )
+      // isPaid: item.isPaid
+    }))
+
+    res.render('index', {
+      main,
+      index,
+      data: formattedOrders,
+      sumPage,
+      pageNumber,
+      name,
+      isIndexPage,
+      dateOfC,
+      role: req.user.role
+    })
+  } catch (error) {
+    console.log(error)
+    responseHandler.notfoundpage(res)
+  }
+}
+
+const renderSearchPage = async (req, res) => {
+  try {
+    const name = req.params.name || ''
+    const pageNumberPayload = parseInt(req.params.pageNumber, 10) || 1
+
+    const { limit, skip, obj_find, sumPage, pageNumber } = await calculateData(
+      pageNumberPayload,
+      OrderItem,
+      name,
+      req.user
+    )
+
+    const orders = await OrderItem.find(obj_find)
+      .populate('productId')
+      .limit(limit)
+      .skip(skip)
+      .sort({ _id: 1 })
+
+    const dateOfC = orders.map(order => toStringDate.dmy(order.createdAt))
+
+    const index = 'orders of products'
+    const main = 'orders/main'
+    const isIndexPage = 0
+
+    res.render('index', {
+      main,
+      index,
+      data: orders,
+      sumPage,
+      pageNumber,
+      name,
+      isIndexPage,
+      dateOfC,
+      role: req.user.role
+    })
+  } catch (error) {
+    responseHandler.notfoundpage(res)
+  }
+}
 
 //CREATE
 
@@ -115,6 +221,21 @@ const getOrdersByUserId = async (req, res) => {
     responseHandler.error(res)
   }
 }
+const getOrdersItemByShopId = async (req, res) => {
+  try {
+    const shopId = req.body.shopId
+    const orders = await OrderItem.find({ shopId: shopId }).populate(
+      'productId'
+    )
+    if (orders.length === 0) {
+      return responseHandler.notfound(res, 'No orders found for this shop')
+    }
+
+    responseHandler.ok(res, orderItems)
+  } catch (error) {
+    responseHandler.error(res)
+  }
+}
 
 // //GET ALL
 
@@ -123,6 +244,41 @@ const getList = async (req, res) => {
     const orders = await Order.find()
     responseHandler.ok(res, orders)
   } catch (error) {
+    responseHandler.error(res)
+  }
+}
+
+const getDetail = async (req, res) => {
+  try {
+    const { orderId } = req.params
+    const order = await OrderItem.findOne({ _id: orderId })
+      .populate('productId')
+      .populate('shopId')
+      .lean()
+
+    const orderBill = await Order.findOne({ _id: order.orderId }).populate(
+      'user'
+    )
+
+    const formattedOrders = {
+      id: order._id,
+      // phone: item.phone,
+      address:
+        orderBill.address ||
+        `${orderBill.user.address},${orderBill.user.district}, ${orderBill.user.city}`,
+      name: order.productId.name,
+      imageName: order.productId.imageName,
+      price: formatPriceToVND(Number(order.productId.discountPrice)),
+      quantity: order.quantity,
+      totalPrice: formatPriceToVND(
+        Number(order.productId.discountPrice) * +order.quantity
+      )
+      // isPaid: item.isPaid
+    }
+
+    return responseHandler.ok(res, formattedOrders)
+  } catch (error) {
+    console.log(error)
     responseHandler.error(res)
   }
 }
@@ -157,10 +313,14 @@ const getMonthlyIncomeOrder = async (req, res) => {
 }
 
 module.exports = {
+  renderIndexPage,
+  renderSearchPage,
   createOrder,
   updateOrder,
   removeOrder,
   getOrdersByUserId,
   getList,
+  getDetail,
+  getOrdersItemByShopId,
   getMonthlyIncomeOrder
 }

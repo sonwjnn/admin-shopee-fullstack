@@ -6,9 +6,9 @@ const typeSchema = mongoose.Schema(
   {
     name: { type: String, require: true },
     cateId: { type: Schema.Types.ObjectId, ref: 'Category', require: true },
-    user: {
+    shopId: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
+      ref: 'Shop',
       required: true
     }
   },

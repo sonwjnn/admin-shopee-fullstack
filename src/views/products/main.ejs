@@ -4,7 +4,7 @@
       <div class="card mb-4">
 
         <div class="card-body pt-5 pb-0">
-          <button <% if (data.role !== 'sale') { %> disabled <% } %> type="button" class="btn btn-outline-info pt-2 pb-2 me-2" onclick="location.href='/admin/products/add'">
+          <button <% if (role !== 'sale') { %> disabled <% } %> type="button" class="btn btn-outline-info pt-2 pb-2 me-2" onclick="location.href='/admin/products/add'">
             <i class="fa fa-plus-square-o me-1" aria-hidden="true"></i> Add New
           </button>
 
@@ -63,7 +63,7 @@
                   </td>
                   <td class="align-middle text-center text-sm">
                     <span class=" text-sm ">
-                      <%= data[i]?.typeId?.name %>
+                      <%= data[i]?.typeName %>
                     </span>
                   </td>
 
@@ -75,7 +75,7 @@
 
                   <td class=" align-middle text-center text-sm">
                     <span class=" text-sm ">
-                      <%=data[i]?.cateId?.name%>
+                      <%=data[i]?.cateName%>
                     </span>
                   </td>
 
@@ -235,12 +235,10 @@
                         </div>
 
                         <div class="form-group">
-
                           <div class="row">
                             <div class="col-md-4">
                               <label class="form-label display-inline" for="price">Price <span id="priceError" class="spanError"></span></label>
                               <input type="text" class="form-control form-control-none" id="price" placeholder="Ex: 2000" value="" disabled>
-
                             </div>
                             <div class="col-md-4">
                               <label class="form-label display-inline" for="discount">Discount (%)<span id="discountError" class="spanError"></span></label>
@@ -258,15 +256,28 @@
                           <input type="text" class="form-control form-control-none" id="producedAt" value="" disabled>
                         </div>
 
+
                         <div class="form-group">
-                          <label class="form-label" for="status">Status</label>
-                          <input type="text" class="form-control form-control-none" id="status" value="" disabled>
+                          <div class="row">
+                            <div class="col-md-4">
+                              <label class="form-label" for="status">Status</label>
+                              <input type="text" class="form-control form-control-none" id="status" value="" disabled>
+                            </div>
+                            <div class="col-md-4">
+                              <label class="form-label display-inline" for="quantity">Quantity<span id="quantityError" class="spanError"></span></label>
+                              <input type="text" class="form-control form-control-none" id="quantity" placeholder="Ex: 50" value="" disabled>
+                            </div>
+                            <div class="col-md-4">
+                              <label class="form-label display-inline" for="sold">Sold<span id="soldError" class="spanError"></span></label>
+                              <input type="text" class="form-control form-control-none" id="sold" readonly value="" disabled>
+                            </div>
+                          </div>
                         </div>
                       </div>
 
                       <div class="col-md-6">
                         <div class="card h-100 p-3">
-                          <div class="products-img" id="imageName"></div>
+                          <div class="products-img h-100 w-100" style="width:100%;" id="imageName"></div>
                         </div>
                       </div>
 

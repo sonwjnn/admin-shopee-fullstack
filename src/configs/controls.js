@@ -26,6 +26,7 @@ router.use('/admin/products', require('../routers/product.route'))
 router.use('/admin/users', require('../routers/user.route'))
 router.use('/admin/profile', require('../routers/profile.route'))
 router.use('/admin/shops', require('../routers/shop.route'))
+router.use('/admin/orders', require('../routers/order.route'))
 router.use('/admin/password', require('../routers/password.route'))
 router.use('/admin/product-types', require('../routers/type.route'))
 

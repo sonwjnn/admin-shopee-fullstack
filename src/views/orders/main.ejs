@@ -4,14 +4,14 @@
       <div class="card mb-4">
 
         <div class="card-body pt-5 pb-0">
-          <button <% if (data.role !== 'sale') { %> disabled <% } %> type="button" class="btn btn-outline-info pt-2 pb-2 me-2" onclick="location.href='/admin/products/add'">
+          <button <% if (data.role !== 'sale') { %> disabled <% } %> type="button" class="btn btn-outline-info pt-2 pb-2 me-2" onclick="location.href='/admin/orders/add'">
             <i class="fa fa-plus-square-o me-1" aria-hidden="true"></i> Add New
           </button>
 
           <button type="button" class="btn btn-outline-danger pt-2 pb-2 deleteGr"><i class="fa fa-trash-o me-1" aria-hidden="true"></i> Delete Selected</button>
           <form id="searchForm" class="display-inline">
             <button type="submit" class="btn btn-outline-dark pt-2 pb-2 display-inline floatRight ml-2"><i class="fas fa-search" aria-hidden="true"></i></button>
-            <input type="text" class="form-control form-control-new col-md-3 floatRight" id="searchName" placeholder="Product name..." value="<%=name%>">
+            <input type="text" class="form-control form-control-new col-md-3 floatRight" id="searchName" placeholder="Order name..." value="<%=name%>">
 
             <span id="usernameMemErrorText" class="spanError"></span>
           </form>
@@ -19,16 +19,16 @@
         </div>
         <div class="card-body px-0 pt-0 pb-2">
           <div class="table-responsive px-2">
-            <table class="table align-items-center mb-0" id="productTable">
+            <table class="table align-items-center mb-0" id="orderTable">
               <thead>
                 <tr class="text-uppercase">
                   <th class="text-center table-w-10 text-secondary text-sm ">Choose</th>
                   <th class="text-center table-w-10 text-secondary text-sm">Ordinal</th>
 
                   <th class="text-center table-w-100 text-secondary text-sm">Name</th>
-                  <th class="text-center table-w-100 text-secondary text-sm">Product Type</th>
-                  <th class="text-center table-w-100 text-sm text-secondary">Price</th>
-                  <th class="text-center table-w-100 text-secondary text-sm">Cate Type</th>
+                  <th class="text-center table-w-100 text-secondary text-sm">Price</th>
+                  <th class="text-center table-w-100 text-sm text-secondary">Quantity</th>
+                  <th class="text-center table-w-100 text-secondary text-sm">Total Price</th>
 
                   <th class="text-center table-w-10 text-secondary text-sm ">Detail
                   </th>
@@ -52,7 +52,7 @@
                   </td>
                   <td class="align-middle text-center">
                     <span class="text-center text-sm mb-0">
-                      <%=data[i].name%>
+                      <%=data[i]?.name%>
                     </span>
                   </td>
 
@@ -63,30 +63,30 @@
                   </td>
                   <td class="align-middle text-center text-sm">
                     <span class=" text-sm ">
-                      <%= data[i]?.typeId?.name %>
+                      <%= data[i]?.price %>
                     </span>
                   </td>
 
                   <td class="align-middle text-center">
                     <span class="text-sm">
-                      <%=data[i].price%>
+                      <%=data[i]?.quantity%>
                     </span>
                   </td>
 
                   <td class=" align-middle text-center text-sm">
                     <span class=" text-sm ">
-                      <%=data[i]?.cateId?.name%>
+                      <%=data[i]?.totalPrice%>
                     </span>
                   </td>
 
 
                   <td class="align-middle text-center">
-                    <button type="button" class="btn btn-outline-successBeauty mb-0 mt-0 pt-2 pb-2 pl-3 pr-3 detail" onclick="getName('<%=data[i]._id%>')"><i class="fa fa-eye"></i></button>
+                    <button type="button" class="btn btn-outline-successBeauty mb-0 mt-0 pt-2 pb-2 pl-3 pr-3 detail" onclick="getName('<%=data[i]?.id%>')"><i class="fa fa-eye"></i></button>
 
 
                   </td>
                   <td class="align-middle text-center">
-                    <button type="button" class="btn btn-outline-successBeauty mb-0 mt-0 pt-2 pb-2 pl-3 pr-3" onclick="location.href='/admin/products/edit/<%=data[i]._id%>'"><i class="fa fa-pencil-square-o"></i></button>
+                    <button type="button" class="btn btn-outline-successBeauty mb-0 mt-0 pt-2 pb-2 pl-3 pr-3" onclick="location.href='/admin/orders/edit/<%=data[i]?.id%>'"><i class="fa fa-pencil-square-o"></i></button>
 
                   </td>
                   <td class="align-middle text-center">
@@ -108,45 +108,45 @@
                 <% if(isIndexPage) { %>
                 <li class="page-item">
                   <%if(pageNumber !== 1) {%>
-                  <a class="page-link buttonNoAfter" href="/admin/products/index/<%= pageNumber-1 %>"><i class="fa fa-chevron-left" aria-hidden="true"></i>
+                  <a class="page-link buttonNoAfter" href="/admin/orders/index/<%= pageNumber-1 %>"><i class="fa fa-chevron-left" aria-hidden="true"></i>
                   </a>
                   <% } %>
                 </li>
                 <% for(var i=1; i <=sumPage; i++) { %>
                 <% if(pageNumber==i) { %>
-                <li class="page-item"><a class="page-link active active2 buttonNoAfter" href="/admin/products/index/<%= i %>">
+                <li class="page-item"><a class="page-link active active2 buttonNoAfter" href="/admin/orders/index/<%= i %>">
                     <%= i %>
                   </a></li>
                 <% } %>
 
                 <% if(pageNumber !=i){ %>
-                <li class="page-item"><a class="page-link buttonNoAfter" href="/admin/products/index/<%= i %>">
+                <li class="page-item"><a class="page-link buttonNoAfter" href="/admin/orders/index/<%= i %>">
                     <%= i %>
                   </a></li>
                 <% } %>
                 <% } %>
                 <li class="page-item">
                   <% if(sumPage > 0 && +sumPage !== +pageNumber) {%>
-                  <a class="page-link buttonNoAfter" href="/admin/products/index/<%= +pageNumber + 1 %>"><i class="fa fa-chevron-right" aria-hidden="true"></i>
+                  <a class="page-link buttonNoAfter" href="/admin/orders/index/<%= +pageNumber + 1 %>"><i class="fa fa-chevron-right" aria-hidden="true"></i>
                   </a>
                   <% } %>
                 </li>
                 <% } else {%>
-                <li class="page-item"><a class="page-link buttonNoAfter" href="/admin/products/search/<%=name%>/<%= pageNumber-1 %>"><i class="fa fa-chevron-left" aria-hidden="true"></i></a></li>
+                <li class="page-item"><a class="page-link buttonNoAfter" href="/admin/orders/search/<%=name%>/<%= pageNumber-1 %>"><i class="fa fa-chevron-left" aria-hidden="true"></i></a></li>
                 <% for(var i=1; i <=sumPage; i++) { %>
                 <% if(pageNumber==i) { %>
-                <li class="page-item"><a class="page-link active active2 buttonNoAfter" href="/admin/products/search/<%=name%>/<%= i %>">
+                <li class="page-item"><a class="page-link active active2 buttonNoAfter" href="/admin/orders/search/<%=name%>/<%= i %>">
                     <%= i %>
                   </a></li>
                 <% } %>
 
                 <% if(pageNumber !=i){ %>
-                <li class="page-item"><a class="page-link buttonNoAfter" href="/admin/products/search/<%=name%>/<%= i %>">
+                <li class="page-item"><a class="page-link buttonNoAfter" href="/admin/orders/search/<%=name%>/<%= i %>">
                     <%= i %>
                   </a></li>
                 <% } %>
                 <% } %>
-                <li class="page-item"><a class="page-link buttonNoAfter" href="/admin/products/search/<%=name%>/<%= pageNumber + 1 %>"><i class="fa fa-chevron-right" aria-hidden="true"></i></a>
+                <li class="page-item"><a class="page-link buttonNoAfter" href="/admin/orders/search/<%=name%>/<%= pageNumber + 1 %>"><i class="fa fa-chevron-right" aria-hidden="true"></i></a>
                 </li>
                 <% } %>
                 <% } %>
@@ -198,7 +198,7 @@
   <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalCenterTitle">Detail Product</h5>
+        <h5 class="modal-title" id="exampleModalCenterTitle">Detail Order</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -212,71 +212,44 @@
                   <form autocomplete="off">
                     <div class="row">
                       <div class="col-md-6">
-                        <input type="text" class="form-control form-control-none hiden" id="idProduct" value="" disabled>
+                        <input type="text" class="form-control form-control-none hiden" id="idOrder" value="" disabled>
 
                         <div class="form-group">
-                          <label class="form-label" for="name">Product Name</label>
+                          <label class="form-label" for="name">Order Name</label>
                           <input type="text" class="form-control form-control-none" id="name" placeholder="" value="Iphone 14" disabled>
                         </div>
 
                         <div class="form-group">
-                          <label class="form-label" for="cateType">Cate Type</label>
-                          <input type="text" class="form-control form-control-none" id="cateType" value="" disabled>
+                          <label class="form-label" for="price">Price</label>
+                          <input type="text" class="form-control form-control-none" id="price" value="" disabled>
                         </div>
 
                         <div class="form-group">
-                          <label class="form-label" for="productType">Product Type</label>
-                          <input type="text" class="form-control form-control-none" id="productType" value="" disabled>
+                          <label class="form-label" for="quantity">Quantity</label>
+                          <input type="text" class="form-control form-control-none" id="quantity" value="" disabled>
                         </div>
 
                         <div class="form-group">
-                          <label class="form-label" for="origin">Origin</label>
-                          <input type="text" class="form-control form-control-none" id="origin" placeholder="" value="Made in China" disabled>
+                          <label class="form-label" for="totalPrice">Total Price</label>
+                          <input type="text" class="form-control form-control-none" id="totalPrice" placeholder="" value="Made in China" disabled>
                         </div>
 
                         <div class="form-group">
-
-                          <div class="row">
-                            <div class="col-md-4">
-                              <label class="form-label display-inline" for="price">Price <span id="priceError" class="spanError"></span></label>
-                              <input type="text" class="form-control form-control-none" id="price" placeholder="Ex: 2000" value="" disabled>
-
-                            </div>
-                            <div class="col-md-4">
-                              <label class="form-label display-inline" for="discount">Discount (%)<span id="discountError" class="spanError"></span></label>
-                              <input type="text" class="form-control form-control-none" id="discount" placeholder="Ex: 50" value="" disabled>
-                            </div>
-                            <div class="col-md-4">
-                              <label class="form-label display-inline" for="discountPrice">Discount Price<span id="discountPriceError" class="spanError"></span></label>
-                              <input type="text" class="form-control form-control-none" id="discountPrice" readonly value="" disabled>
-                            </div>
-                          </div>
+                          <label class="form-label" for="address">Address</label>
+                          <input type="text" class="form-control form-control-none" id="address" value="" disabled>
                         </div>
 
-                        <div class="form-group">
-                          <label class="form-label" for="producedAt">Date of manufacture</label>
-                          <input type="text" class="form-control form-control-none" id="producedAt" value="" disabled>
-                        </div>
 
-                        <div class="form-group">
-                          <label class="form-label" for="status">Status</label>
-                          <input type="text" class="form-control form-control-none" id="status" value="" disabled>
-                        </div>
                       </div>
 
                       <div class="col-md-6">
                         <div class="card h-100 p-3">
-                          <div class="products-img" id="imageName"></div>
+                          <div class="orders-img h-100 w-100" id="imageName"></div>
                         </div>
                       </div>
 
                     </div>
-                    <div class="row">
-                      <div class="form-group">
-                        <label class="form-label" for="info">Product Description</label>
-                        <textarea class="form-control" id="info" cols="30" rows="10" name="contentStory" disabled></textarea>
-                      </div>
-                    </div>
+
                   </form>
                 </div>
               </div>
@@ -310,7 +283,7 @@
       <div id="delete" class="hiden"></div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline-dark mb-0 mt-0" data-dismiss="modal">No</button>
-        <button type="button" class="btn btn-outline-danger mb-0 mt-0" onclick="deleteProduct()">Yes</button>
+        <button type="button" class="btn btn-outline-danger mb-0 mt-0" onclick="deleteOrder()">Yes</button>
       </div>
     </div>
   </div>

@@ -1,6 +1,7 @@
 const reviewModel = require('../models/review.model')
 const responseHandler = require('../handlers/response.handler')
 const productModel = require('../models/product.model')
+const shopModel = require('../models/shop.model')
 
 const create = async (req, res) => {
   try {
@@ -24,6 +25,8 @@ const create = async (req, res) => {
 
     const product = await productModel.findOne({ _id: productId })
 
+    const shop = await shopModel.findOne({ _id: product.shopId })
+
     const productRating = (
       ratings.reduce((acc, rating) => acc + +rating.rating, 0) / ratings.length
     ).toFixed(1)
@@ -31,6 +34,9 @@ const create = async (req, res) => {
     product.rating = productRating
 
     await product.save()
+
+    shop.reviewCount += 1
+    await shop.save()
   } catch (error) {
     console.log(error)
     responseHandler.error(res)
@@ -58,6 +64,8 @@ const remove = async (req, res) => {
 
     const product = await productModel.findOne({ _id: productId })
 
+    const shop = await shopModel.findOne({ _id: product.shopId })
+
     const productRating = (
       ratings.reduce((acc, rating) => acc + +rating.rating, 0) / ratings.length
     ).toFixed(1)
@@ -65,6 +73,12 @@ const remove = async (req, res) => {
     product.rating = productRating
 
     await product.save()
+
+    // update review count for shop
+    const updateReviewCount =
+      shop.reviewCount - 1 < 0 ? 0 : shop.reviewCount - 1
+    shop.reviewCount = updateReviewCount
+    await shop.save()
   } catch (error) {
     responseHandler.error(res)
   }

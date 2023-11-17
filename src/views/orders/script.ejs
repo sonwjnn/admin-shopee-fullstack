@@ -236,22 +236,15 @@
 <script>
   function getName(id) {
     $.ajax({
-      url: `/admin/products/detail/${id}`,
+      url: `/admin/orders/detail/${id}`,
       type: 'GET',
       success: function(data) {
-        //key = #{key} is id of element html, value is value
         const mapping = {
-          idUser: 'id',
           name: 'name',
-          origin: 'origin',
           price: 'price',
-          discount: 'discount',
-          discountPrice: 'discountPrice',
-          producedAt: 'producedAt',
-          productType: 'typeId.name',
-          cateType: 'cateId.name',
-          info: 'info',
-          status: 'status'
+          totalPrice: 'totalPrice',
+          quantity: 'quantity',
+          address: 'address'
         };
 
         for (const key in mapping) {
@@ -268,9 +261,8 @@
 
 
         const imageNameShow = `background-image: url('/img/products/${data.imageName}');`;
-        $("#imageName").attr('style', imageNameShow);
+        $("#imageName").attr('style', `${imageNameShow} background-size: cover;  background-position:no-repeat;`);
 
-        CKEDITOR.instances['info'].setData(data.info);
         $('#exampleModalCenter2').attr('style', 'overflow: auto !important;')
         $('#popupDetail').click();
       }

@@ -15,6 +15,7 @@
       const producedAt = $('#producedAt').val()
       const discount = $('#discount').val()
       const discountPrice = $('#discountPrice').val()
+      const quantity = $('#quantity').val()
       const status = $('#status').val()
       const info = CKEDITOR.instances['productStory'].getData()
       const originalImageName = $('#image').prop('files')[0] ? $('#image').prop('files')[0].name : ''
@@ -31,6 +32,7 @@
         producedAt,
         originalImageName,
         discountPrice,
+        quantity,
         ...(discount ? {
           discount
         } : {
@@ -97,6 +99,7 @@
       const cateType = $('#cateType').val()
       const producedAt = $('#producedAt').val()
       const discountPrice = $('#discountPrice').val()
+      const quantity = $('#quantity').val()
       const discount = $('#discount').val()
       const status = $('#status').val()
       const info = CKEDITOR.instances['productInfo'].getData()
@@ -112,6 +115,7 @@
         cateType,
         status,
         info,
+        quantity,
         producedAt,
         discountPrice,
         ...(discount ? {
@@ -233,20 +237,18 @@
   })
 </script>/
 <script src="/toStringDate.js"></script>
+<script src="/formatter.js"></script>
 <script>
   function getName(id) {
     $.ajax({
       url: `/admin/products/detail/${id}`,
       type: 'GET',
       success: function(data) {
-        //key = #{key} is id of element html, value is value
         const mapping = {
           idUser: 'id',
           name: 'name',
           origin: 'origin',
-          price: 'price',
           discount: 'discount',
-          discountPrice: 'discountPrice',
           producedAt: 'producedAt',
           productType: 'typeId.name',
           cateType: 'cateId.name',
@@ -262,6 +264,11 @@
           });
           $('#' + key).val(fieldValue);
         }
+
+        $('#discountPrice').val(formatPriceToVND(data.discountPrice));
+        $('#price').val(formatPriceToVND(data.price));
+        $('#quantity').val(data.quantity)
+        $('#sold').val(data.sold)
 
         const formattedProducedAt = toStringDate.dmy(data.producedAt)
         $('#producedAt').val(formattedProducedAt);

@@ -13,21 +13,30 @@ const typeModel = require('../models/type.model')
 const { toStringDate } = require('../utilities/toStringDate')
 const calculateData = require('../utilities/calculateData')
 const shopModel = require('../models/shop.model')
+const { formatPriceToVND } = require('../utilities/formatter')
 
 const renderIndexPage = async (req, res) => {
   try {
-    const pageNumberPayload = parseInt(req.params.pageNumber, 10) || 1
-    const name = ''
+    const pageNumber = parseInt(req.params.pageNumber, 10) || 1
 
-    const { limit, skip, obj_find, sumPage, pageNumber } = await calculateData(
-      pageNumberPayload,
-      productModel,
-      name,
-      req.user
-    )
+    const limit = 10
+
+    const shop = await shopModel.findOne({ user: req.user.id })
+    const count = await productModel.countDocuments({ shopId: shop._id })
+    const sumPage = Math.ceil(count / limit)
+
+    if (!pageNumber || pageNumber < 1) {
+      pageNumber = 1
+    }
+
+    if (pageNumber > sumPage && sumPage !== 0) {
+      pageNumber = sumPage
+    }
+
+    const skip = (pageNumber - 1) * limit
 
     const products = await productModel
-      .find(obj_find)
+      .find({ shopId: shop._id })
       .populate('cateId', 'name')
       .populate('typeId', 'name')
       .limit(limit)
@@ -39,24 +48,37 @@ const renderIndexPage = async (req, res) => {
     const index = 'products'
     const main = 'products/main'
     const isIndexPage = 1
+
+    const formattedProducts = products.map(product => ({
+      _id: product._id,
+      name: product.name,
+      origin: product.origin,
+      typeName: product.typeId.name,
+      imageName: product.imageName,
+      cateName: product.cateId.name,
+      imageName: product.imageName,
+      price: formatPriceToVND(Number(product.discountPrice))
+    }))
     res.render('index', {
       main,
       index,
-      data: products,
+      data: formattedProducts,
       sumPage,
       pageNumber,
-      name,
+      name: '',
       isIndexPage,
       role: req.user.role
     })
   } catch (error) {
+    console.log(error)
     responseHandler.error(res)
   }
 }
 
 const renderAddPage = async (req, res) => {
   try {
-    const types = await typeModel.find().select('name')
+    const shop = await shopModel.findOne({ user: req.user.id })
+    const types = await typeModel.find({ shopId: shop._id }).select('name')
 
     // Lọc ra các type có tên trùng nhau
     const uniqueTypeNames = [...new Set(types.map(type => type.name))]
@@ -191,6 +213,9 @@ const addProduct = async (req, res) => {
 
     await newProduct.save()
 
+    shop.productCount += 1
+    await shop.save()
+
     responseHandler.created(res, {
       ...newProduct._doc,
       message: 'Add product successfully!'
@@ -245,6 +270,8 @@ const update = async (req, res) => {
 const removeProduct = async (req, res) => {
   try {
     const { productId } = req.params
+
+    const shop = await shopModel.findOne({ user: req.user.id })
     const product = await productModel.findOne({ _id: productId })
     if (!product) {
       res.send({ kq: 0, msg: 'Data id not exists' })
@@ -260,6 +287,11 @@ const removeProduct = async (req, res) => {
 
     await product.deleteOne()
 
+    const updateProductCount =
+      shop.productCount - 1 < 0 ? 0 : shop.productCount - 1
+    shop.productCount = updateProductCount
+    await shop.save()
+
     res.send({ kq: 1, msg: 'Remove product successfully!' })
     responseHandler.ok(res)
   } catch (error) {
@@ -270,6 +302,7 @@ const removeProduct = async (req, res) => {
 
 const removeProducts = async function (req, res) {
   try {
+    const shop = await shopModel.findOne({ user: req.user.id })
     const productIds = JSON.parse(JSON.stringify(req.body)).ids
     const products = await productModel.find({ _id: { $in: productIds } })
     if (!products) {
@@ -285,6 +318,12 @@ const removeProducts = async function (req, res) {
     await favoriteModel.deleteMany({ productId: { $in: productIds } })
     await cartModel.deleteMany({ productId: { $in: productIds } })
     await reviewModel.deleteMany({ productId: { $in: productIds } })
+
+    const len = productIds.length
+    const updateProductCount =
+      shop.productCount - len < 0 ? 0 : shop.productCount - len
+    shop.productCount = updateProductCount
+    await shop.save()
 
     return responseHandler.ok(res, 'Products successfully deleted')
   } catch (error) {
