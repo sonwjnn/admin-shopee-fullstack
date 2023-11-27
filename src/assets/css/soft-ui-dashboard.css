@@ -22812,11 +22812,6 @@ hr.horizontal.gray-light {
   transition: 0.3s ease;
 }
 
-.navbar-vertical.navbar-expand-xs .navbar-nav .nav-link:not(.active):hover {
-  background-color: #f5f5f5 !important;
-  border-radius: 0.5rem;
-}
-
 .navbar-vertical.navbar-expand-xs .navbar-nav .nav-link .nav-link-text {
   letter-spacing: 0.2px;
 }

@@ -265,7 +265,7 @@ const getDetail = async (req, res) => {
       // phone: item.phone,
       address:
         orderBill.address ||
-        `${orderBill.user.address},${orderBill.user.district}, ${orderBill.user.city}`,
+        `${orderBill.user.address}, ${orderBill.user.district}, ${orderBill.user.city}`,
       name: order.productId.name,
       imageName: order.productId.imageName,
       price: formatPriceToVND(Number(order.productId.discountPrice)),

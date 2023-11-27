@@ -3,7 +3,7 @@
   <div class="sidenav-header">
     <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
     <a class="navbar-brand m-0" href="/admin/dashboards/index" target="_self">
-      <img src="/img/logo-ct-dark.png" class="navbar-brand-img h-100" alt="main_logo">
+      <img src="/img/logo-ct.png" class="navbar-brand-img h-100" alt="main_logo">
       <span class="ms-1 font-weight-bold text-md">
         <% if (role === 'admin') { %>
         Admin
@@ -137,6 +137,7 @@
       </li>
       <% } %>
 
+      <% if (role === 'sale') { %>
       <li class="nav-item">
         <a id="orders" class="nav-link" href="/admin/orders/index">
           <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -158,9 +159,10 @@
           <span class="nav-link-text ms-1">Orders</span>
         </a>
       </li>
+      <% } %>
 
       <li class="nav-item mt-3">
-        <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Account pages</h6>
+        <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6 text-white">Account pages</h6>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="/admin/profile/index" id="profile">

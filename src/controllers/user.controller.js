@@ -118,8 +118,9 @@ const updateProfile = async (req, res) => {
         res,
         'Data already exists! Please check again your username, phone, and email!'
       )
+
     const user = await userModel.findOne({ username })
-    user.setProfile(req.body)
+    user.setProfile({ ...req.body, role: req.user.role })
     //save to database
     await user.save()
 
