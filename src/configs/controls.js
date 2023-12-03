@@ -1,5 +1,5 @@
 const express = require('express')
-const { checkAdmin } = require('../middlewares/role.middleware')
+const { isAdmin } = require('../middlewares/role.middleware')
 const router = express.Router()
 
 router.get('/', (req, res) => {
@@ -29,6 +29,7 @@ router.use('/admin/shops', require('../routers/shop.route'))
 router.use('/admin/orders', require('../routers/order.route'))
 router.use('/admin/password', require('../routers/password.route'))
 router.use('/admin/product-types', require('../routers/type.route'))
+router.use('/admin/upload', require('../routers/upload.route'))
 
 // user
 router.use('/user', require('../routers/ui_user.route'))

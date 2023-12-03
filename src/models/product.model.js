@@ -7,7 +7,8 @@ const productSchema = mongoose.Schema(
     typeId: { type: Schema.Types.ObjectId, ref: 'ProductType', require: true },
     cateId: { type: Schema.Types.ObjectId, ref: 'Category', require: true },
     shopId: { type: Schema.Types.ObjectId, ref: 'Shop', require: true },
-    name: { type: String, require: true, unique: true },
+    name: { type: String, require: true, trim: true },
+    slug: { type: String, required: true, lowercase: true },
     origin: { type: String, default: '' },
     price: { type: Number, require: true },
     discount: { type: Number, default: 0 },
@@ -15,7 +16,7 @@ const productSchema = mongoose.Schema(
     rating: { type: Number, default: 0 },
     quantity: { type: Number, required: true },
     sold: { type: Number, default: 0 },
-    imageName: { type: String, default: '' },
+    images: [{ public_id: String, url: String }],
     favorites: { type: Number, default: 0 },
     info: { type: String, default: '' },
     producedAt: { type: Date, default: Date() },
@@ -23,14 +24,6 @@ const productSchema = mongoose.Schema(
   },
   modelOptions
 )
-
-productSchema.methods.setImage = function (originalImageName) {
-  const [name, type] = originalImageName.split('.')
-  const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9)
-  const imageName = `${name}-${uniqueSuffix}.${type}`.replace(/ /g, '-')
-
-  this.imageName = imageName
-}
 
 productSchema.methods.setInfo = function (props) {
   Object.assign(this, {

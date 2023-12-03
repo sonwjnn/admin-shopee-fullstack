@@ -274,7 +274,19 @@ const getTypesOfCate = async (req, res) => {
 
     responseHandler.ok(res, types)
   } catch (error) {
-    responseHandler.error(error)
+    responseHandler.error(res)
+  }
+}
+
+const getTypesByShopId = async (req, res) => {
+  try {
+    const { shopId } = req.params
+
+    const types = await typeModel.find({ shopId })
+
+    responseHandler.ok(res, types)
+  } catch (error) {
+    responseHandler.error(res)
   }
 }
 
@@ -290,5 +302,6 @@ module.exports = {
   renderSearchPage,
   update,
   getInfoByName,
-  getTypesOfCate
+  getTypesOfCate,
+  getTypesByShopId
 }

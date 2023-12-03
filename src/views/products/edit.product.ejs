@@ -46,13 +46,9 @@
                 <label class="form-label display-inline" id="labelNewFile" for="image">Image <span id="imageError" class="spanError"></span></label>
                 <div class="row">
                   <div class="col-md-9 paddingRightNone">
-                    <input type="file" class="form-control form-control-new hiden" id="image" name="productsImage">
-                    <input type="text" class="form-control form-control-new" id="imageShow" value="<%=data.imageName%>" disabled>
-
+                    <input type="file" class="form-control form-control-new " id="product-images" name="product-images" multiple>
                   </div>
                   <div class="col-md-3 paddingLeftNone display-inline">
-
-                    <button id="newFile" type="button" class="btn btn-outline-info btn-products-new display-inline">New file</button>
                     <button type="button" class="btn btn-outline-info btn-products-new display-inline" data-toggle="modal" data-target="#exampleModalCenter">
                       <i class="fa fa-database" aria-hidden="true"></i></button>
                   </div>
@@ -85,7 +81,7 @@
               </div>
 
               <div class="form-group col-md-6">
-                <label class="form-label display-inline" for="status">Status</label>
+                <label class="form-label" for="status">Status</label>
                 <select id="status" class="form-select">
                   <option value="<%=data.status%>" hidden><%=data.status%></option>
                   <% for(var i=0; i < status.length; i++) { %>
@@ -99,6 +95,15 @@
                 <input type="number" value="<%=data.quantity%>" class="form-control form-control-new" id="quantity">
               </div>
 
+              <div class="form-group col-md-6">
+                <label class="form-label" for="quantity">Image Preview</label>
+                <div style="display:flex; gap: 4px; overflow-y: auto;" id="image-preview">
+                  <% for(var i=0; i < data.images.length; i++) { %>
+                  <div style="background-image: url('<%=data.images[i].url%>'); width:100px; height:100px;background-size: contain; background-position: center; background-repeat: no-repeat;"></div>
+                  <% } %>
+                </div>
+              </div>
+
               <div class="form-group col-md-12">
                 <label class="form-label" for="productInfo">Product Description</label>
                 <textarea class="form-control" id="productInfo" cols="30" rows="10" name="contentStory"></textarea>
@@ -110,14 +115,6 @@
                 <%=data.info%>
               </div>
             </div>
-            <!--  <div class="form-group">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="gridCheck">
-                                <label class="form-check-label" for="gridCheck">
-                                    Send confirmation to email
-                                </label>
-                            </div>
-                        </div> -->
 
             <div class="d-flex justify-content-between">
               <div>

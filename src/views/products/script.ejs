@@ -18,7 +18,9 @@
       const quantity = $('#quantity').val()
       const status = $('#status').val()
       const info = CKEDITOR.instances['productStory'].getData()
-      const originalImageName = $('#image').prop('files')[0] ? $('#image').prop('files')[0].name : ''
+      const files = $('#product-images').prop('files')[0] ? $('#product-images').prop('files') : [];
+
+
       // Upload image
 
       const data = {
@@ -30,7 +32,6 @@
         status,
         info,
         producedAt,
-        originalImageName,
         discountPrice,
         quantity,
         ...(discount ? {
@@ -40,20 +41,41 @@
         })
       }
 
-
-
-      // image name get value from res of add product action and use to upload image after
-      let imageName
+      let images = []
 
       const imagePromise = new Promise((rs, rj) => {
+        const formData = new FormData(this)
+        $.ajax({
+          url: '/admin/upload',
+          type: 'POST',
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function(res) {
+            images = [...res]
+            rs()
+          },
+          error: function(xhr, status, error) {
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+              $("#msg").html(xhr.responseJSON.message)
+              $("#popupInfo").click()
+            }
+            rj()
+          }
+        });
+      })
+
+      imagePromise.then(() => {
         $.ajax({
           url: '/admin/products/add',
           type: 'POST',
-          data,
+          data: {
+            ...data,
+            images
+          },
           success: function(res) {
             $('#msg').text(res.message)
             $('#popupInfo').click()
-            imageName = res.imageName
             rs()
           },
           error: function(xhr, status, error) {
@@ -65,24 +87,6 @@
           }
         })
       })
-
-      imagePromise.then(() => {
-        const formData = new FormData(this)
-        $.ajax({
-          url: '/admin/products/upload-image',
-          type: 'POST',
-          data: formData,
-          processData: false,
-          contentType: false,
-          headers: {
-            'X-Image-Name': imageName,
-          },
-          success: function(res) {
-            console.log(res)
-          }
-        });
-      })
-
     });
   });
 </script>
@@ -104,7 +108,7 @@
       const status = $('#status').val()
       const info = CKEDITOR.instances['productInfo'].getData()
       const id = $('#id').val()
-      const originalImageName = $('#image').prop('files')[0] ? $('#image').prop('files')[0].name : ''
+      const files = $('#product-images').prop('files')[0] ? $('#product-images').prop('files') : [];
 
       const data = {
         id,
@@ -123,24 +127,50 @@
         } : {
           discount: 0
         }),
-        ...(originalImageName && {
-          originalImageName
-        }),
       }
 
-      // image name get value from res of add product action and use to upload image after
-      let imageName
+      let images = []
 
       const imagePromise = new Promise((rs, rj) => {
+        const formData = new FormData(this)
+
+        if (files.length) {
+          $.ajax({
+            url: '/admin/upload',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(res) {
+              images = [...res]
+              rs()
+            },
+            error: function(xhr, status, error) {
+              if (xhr.responseJSON && xhr.responseJSON.message) {
+                $("#msg").html(xhr.responseJSON.message)
+                $("#popupInfo").click()
+              }
+              rj()
+            }
+          });
+        } else {
+          rs();
+        }
+      })
+
+      imagePromise.then(() => {
         $.ajax({
           url: '/admin/products/update',
           type: 'PUT',
-          data,
+          data: {
+            ...data,
+            ...(images.length > 0 ? {
+              images
+            } : {})
+          },
           success: function(res) {
             $('#msg').text(res.message)
             $('#popupInfo').click()
-            if (res.product.imageName !== $('#imageShow').val())
-              imageName = res.product.imageName
             rs()
           },
           error: function(xhr, status, error) {
@@ -151,25 +181,6 @@
             rj()
           }
         })
-      })
-
-      imagePromise.then(() => {
-        if (imageName) {
-          const formData = new FormData(this)
-          $.ajax({
-            url: '/admin/products/upload-image',
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            headers: {
-              'X-Image-Name': imageName
-            },
-            success: function(res) {
-
-            }
-          });
-        }
       })
     })
   });
@@ -253,7 +264,8 @@
           productType: 'typeId.name',
           cateType: 'cateId.name',
           info: 'info',
-          status: 'status'
+          status: 'status',
+          images: 'images'
         };
 
         for (const key in mapping) {
@@ -274,8 +286,22 @@
         $('#producedAt').val(formattedProducedAt);
 
 
-        const imageNameShow = `background-image: url('/img/products/${data.imageName}');`;
+        const imageNameShow = `background-image: url('${data.images[0]?.url}'); aspect-ratio: 1/1;padding-top: 100% ;background-size: contain; background-position: center; background-repeat: no-repeat`;
+
         $("#imageName").attr('style', imageNameShow);
+
+        var imagePreview = document.getElementById('image-preview-main');
+        imagePreview.innerHTML = '';
+        for (var i = 1; i < data.images.length; i++) {
+          var img = document.createElement('div');
+          img.style.backgroundImage = 'url(' + data.images[i].url + ')';
+          img.style.height = '100px';
+          img.style.width = '100px';
+          img.style.backgroundSize = 'contain';
+          img.style.backgroundPosition = 'center';
+          img.style.backgroundRepeat = 'no-repeat';
+          imagePreview.appendChild(img);
+        }
 
         CKEDITOR.instances['info'].setData(data.info);
         $('#exampleModalCenter2').attr('style', 'overflow: auto !important;')
@@ -303,7 +329,7 @@
   function deleteProduct() {
     const id = $('#idDelete').text();
     $.ajax({
-      url: '/admin/products/' + id,
+      url: `/admin/products/${id}`,
       type: 'DELETE',
       success: function(res) {
         location.reload();
@@ -456,6 +482,28 @@
 
     }
   });
+</script>
+
+<script>
+  $(document).ready(() => {
+    document.getElementById('product-images').addEventListener('change', function(e) {
+      var imagePreview = document.getElementById('image-preview');
+      imagePreview.innerHTML = '';
+      for (var i = 0; i < this.files.length; i++) {
+        var img = document.createElement('div');
+        img.style.backgroundImage = 'url(' + URL.createObjectURL(this.files[i]) + ')';
+        img.style.height = '100px';
+        img.style.width = '100px';
+        img.style.backgroundSize = 'contain';
+        img.style.backgroundPosition = 'center';
+        img.style.backgroundRepeat = 'no-repeat';
+        img.onload = function() {
+          URL.revokeObjectURL(this.src);
+        }
+        imagePreview.appendChild(img);
+      }
+    });
+  })
 </script>
 
 <script>

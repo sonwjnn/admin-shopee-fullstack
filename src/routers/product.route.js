@@ -34,11 +34,7 @@ router.post(
     .withMessage('Price is required')
     .isInt({ min: 1 })
     .withMessage('Price must be a positive integer'),
-  body('originalImageName')
-    .exists()
-    .withMessage('Image is required')
-    .isLength({ min: 10, max: 100 })
-    .withMessage('Image name must have a minmum of 10 characters'),
+  body('images').exists().withMessage('Image is required'),
   body('productType').exists().withMessage('Product type is required'),
   body('cateType').exists().withMessage('Category type is required'),
   body('producedAt').exists().withMessage('Produced at is required'),

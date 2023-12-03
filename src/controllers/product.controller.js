@@ -1,6 +1,7 @@
 const multer = require('multer')
 const fs = require('fs')
 const path = require('path')
+const slugify = require('slugify')
 const responseHandler = require('../handlers/response.handler')
 const tokenMiddleware = require('../middlewares/token.middleware')
 const cartModel = require('../models/cart.model')
@@ -14,6 +15,7 @@ const { toStringDate } = require('../utilities/toStringDate')
 const calculateData = require('../utilities/calculateData')
 const shopModel = require('../models/shop.model')
 const { formatPriceToVND } = require('../utilities/formatter')
+const { cloudinaryDeleteImg } = require('../utilities/cloudinary')
 
 const renderIndexPage = async (req, res) => {
   try {
@@ -183,23 +185,19 @@ const renderSearchPage = async (req, res) => {
 
 const addProduct = async (req, res) => {
   try {
-    const { name, productType, cateType, originalImageName } = req.body
+    const { productType, cateType } = req.body
 
     const shop = await shopModel.findOne({ user: req.user.id })
     if (!req.user.role !== 'admin' && !shop) return
 
     const cate = await categoryModel.findOne({ name: cateType })
-    const product = await productModel.findOne({ name, cateId: cate._id })
     const type = await typeModel.findOne({
       name: productType,
       cateId: cate._id
     })
 
-    if (product) {
-      return responseHandler.badrequest(
-        res,
-        `Exists a product name in category ${cateType}!`
-      )
+    if (req.body.name) {
+      req.body.slug = slugify(req.body.name)
     }
 
     const newProduct = new productModel({
@@ -208,8 +206,6 @@ const addProduct = async (req, res) => {
       typeId: type._id,
       shopId: shop._id
     })
-
-    newProduct.setImage(originalImageName)
 
     await newProduct.save()
 
@@ -228,7 +224,7 @@ const addProduct = async (req, res) => {
 
 const update = async (req, res) => {
   try {
-    const { id, cateType, productType, originalImageName, name } = req.body
+    const { id, cateType, productType } = req.body
 
     const cate = await categoryModel.findOne({ name: cateType })
     const type = await typeModel.findOne({
@@ -237,22 +233,15 @@ const update = async (req, res) => {
     })
     const product = await productModel.findOne({ _id: id })
 
-    if (product.name !== name) {
-      const isProduct = await productModel.findOne({ name, cateId: cate._id })
-      if (isProduct) {
-        return responseHandler.badrequest(
-          res,
-          `Exists a product name in category ${cateType}!`
-        )
-      }
-    }
+    // delete old image
+    const oldImages = product.images.map(image => image.public_id)
 
-    if (originalImageName && originalImageName !== product.imageName) {
-      const path = 'src/assets/img/products/' + product.imageName
-      fs.unlinkSync(path)
-      product.setImage(originalImageName)
-    }
+    await cloudinaryDeleteImg(oldImages, 'product-images')
 
+    // update product
+    if (req.body.name) {
+      req.body.slug = slugify(req.body.name)
+    }
     product.setInfo({ ...req.body, cateId: cate._id, typeId: type._id })
 
     await product.save()
@@ -262,7 +251,6 @@ const update = async (req, res) => {
       message: 'Update product successfully!'
     })
   } catch (error) {
-    console.log(error)
     responseHandler.error(res)
   }
 }
@@ -278,12 +266,13 @@ const removeProduct = async (req, res) => {
       return responseHandler.notfound(res)
     }
 
-    const path = 'src/assets/img/products/' + product.imageName
-    fs.unlinkSync(path)
-
     await favoriteModel.deleteMany({ productId })
     await cartModel.deleteMany({ productId })
     await reviewModel.deleteMany({ productId })
+
+    // delete old image
+    const oldImages = product.images.map(image => image.public_id)
+    await cloudinaryDeleteImg(oldImages, 'product-images')
 
     await product.deleteOne()
 
@@ -292,11 +281,11 @@ const removeProduct = async (req, res) => {
     shop.productCount = updateProductCount
     await shop.save()
 
-    res.send({ kq: 1, msg: 'Remove product successfully!' })
-    responseHandler.ok(res)
+    responseHandler.ok(res, {
+      message: 'Delete product successfully!'
+    })
   } catch (error) {
-    console.log(error)
-    res.send({ kq: 0, msg: 'Failed to remove product' })
+    responseHandler.error(res)
   }
 }
 
@@ -309,9 +298,11 @@ const removeProducts = async function (req, res) {
       res.send({ kq: 0, msg: 'Data id not exists' })
       return responseHandler.notfound(res)
     }
+
+    // delete old image
     for (const product of products) {
-      let path = 'src/assets/img/products/' + product.imageName
-      fs.unlinkSync(path)
+      const oldImages = product.images.map(image => image.public_id)
+      await cloudinaryDeleteImg(oldImages, 'product-images')
     }
 
     await productModel.deleteMany({ _id: { $in: productIds } })
@@ -319,15 +310,15 @@ const removeProducts = async function (req, res) {
     await cartModel.deleteMany({ productId: { $in: productIds } })
     await reviewModel.deleteMany({ productId: { $in: productIds } })
 
+    // update shop data
     const len = productIds.length
     const updateProductCount =
       shop.productCount - len < 0 ? 0 : shop.productCount - len
     shop.productCount = updateProductCount
     await shop.save()
 
-    return responseHandler.ok(res, 'Products successfully deleted')
+    responseHandler.ok(res, { message: 'Delete products successfully!' })
   } catch (error) {
-    console.log(error)
     responseHandler.error(res)
   }
 }
@@ -401,6 +392,22 @@ const getProductOfCate = async (req, res) => {
 
     const products = await productModel
       .find({ cateId: cate._id })
+      .populate('cateId', 'name')
+      .populate('typeId', 'name')
+
+    responseHandler.ok(res, products)
+  } catch (error) {
+    responseHandler.error(res)
+  }
+}
+
+const getProductByShopId = async (req, res) => {
+  try {
+    const { shopId } = req.params
+
+    const products = await productModel
+      .find({ shopId })
+      .populate('shopId')
       .populate('cateId', 'name')
       .populate('typeId', 'name')
 
@@ -489,5 +496,6 @@ module.exports = {
   removeProducts,
   uploadImage,
   getProductOfCate,
+  getProductByShopId,
   getImage
 }

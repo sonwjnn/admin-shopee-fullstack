@@ -21,6 +21,4 @@ cartSchema.methods.setInfo = function (props) {
   })
 }
 
-// create model
 module.exports = mongoose.model('cart', cartSchema)
-/* db.users.createIndex( { "email": 1, "friends_email": 1 }, { unique: true } ) */

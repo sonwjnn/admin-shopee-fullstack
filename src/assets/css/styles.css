@@ -141,17 +141,6 @@ input[type='number'] {
   box-shadow: none !important;
 }
 
-.products-img {
-  width: 80%;
-  height: 400px;
-  left: 0;
-  right: 0;
-  margin: auto;
-  background-position: 50% 50%;
-  background-size: 100% 100% !important;
-  background-repeat: no-repeat;
-}
-
 .spanError {
   color: red;
   font-size: 12px;
