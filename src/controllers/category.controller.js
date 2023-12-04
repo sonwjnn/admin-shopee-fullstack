@@ -4,6 +4,7 @@ const { toStringDate } = require('../utilities/toStringDate')
 const calculateData = require('../utilities/calculateData')
 const productModel = require('../models/product.model')
 const typeModel = require('../models/type.model')
+const slugify = require('slugify')
 
 const renderIndexPage = async (req, res) => {
   try {
@@ -122,6 +123,10 @@ const add = async (req, res) => {
     if (cate)
       return responseHandler.badrequest(res, 'Category name is already exists!')
 
+    if (req.body.name) {
+      req.body.slug = slugify(req.body.name)
+    }
+
     const newCate = new cateModel({ ...req.body, user: req.user.id })
 
     await newCate.save()
@@ -216,7 +221,12 @@ const update = async (req, res) => {
       return responseHandler.badrequest(res, {
         message: 'Cate name is already exists!'
       })
-    await cateModel.updateOne({ _id: id }, { name })
+
+    if (req.body.name) {
+      req.body.slug = slugify(req.body.name)
+    }
+
+    await cateModel.updateOne({ _id: id }, { ...req.body })
     return responseHandler.ok(res, { message: 'Update category successfully!' })
   } catch (error) {
     responseHandler.error(res)

@@ -10,6 +10,7 @@ const WHITELIST_DOMAINS = [
   'http://127.0.0.1:3000',
   'http://localhost:8017',
   'http://localhost:3000',
+  'https://client-shopee-clone-7cde5.web.app',
   'https://client-shopee-clone.web.app',
   'https://admin-shopee-clone.onrender.com'
 ]

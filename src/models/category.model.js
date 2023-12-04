@@ -5,6 +5,7 @@ const { Schema } = require('mongoose')
 const cateSchema = mongoose.Schema(
   {
     name: { type: String, require: true, unique: true, index: true },
+    slug: { type: String, required: true, lowercase: true },
     user: {
       type: Schema.Types.ObjectId,
       ref: 'User',

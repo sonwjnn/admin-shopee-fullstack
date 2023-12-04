@@ -5,6 +5,7 @@ const { Schema } = require('mongoose')
 const typeSchema = mongoose.Schema(
   {
     name: { type: String, require: true },
+    slug: { type: String, required: true, lowercase: true },
     cateId: { type: Schema.Types.ObjectId, ref: 'Category', require: true },
     shopId: {
       type: Schema.Types.ObjectId,
