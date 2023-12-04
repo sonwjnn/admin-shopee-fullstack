@@ -236,7 +236,7 @@ const update = async (req, res) => {
     // delete old image
     const oldImages = product.images.map(image => image.public_id)
 
-    await cloudinaryDeleteImg(oldImages, 'product-images')
+    await cloudinaryDeleteImg(oldImages, { folder: 'product-images' })
 
     // update product
     if (req.body.name) {
@@ -272,7 +272,7 @@ const removeProduct = async (req, res) => {
 
     // delete old image
     const oldImages = product.images.map(image => image.public_id)
-    await cloudinaryDeleteImg(oldImages, 'product-images')
+    await cloudinaryDeleteImg(oldImages, { folder: 'product-images' })
 
     await product.deleteOne()
 
@@ -302,7 +302,7 @@ const removeProducts = async function (req, res) {
     // delete old image
     for (const product of products) {
       const oldImages = product.images.map(image => image.public_id)
-      await cloudinaryDeleteImg(oldImages, 'product-images')
+      await cloudinaryDeleteImg(oldImages, { folder: 'product-images' })
     }
 
     await productModel.deleteMany({ _id: { $in: productIds } })
