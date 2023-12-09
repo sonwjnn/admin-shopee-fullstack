@@ -221,6 +221,23 @@ const removeShops = async (req, res) => {
   }
 }
 
+const getDetail = async (req, res) => {
+  try {
+    const { shopId } = req.params
+    console.log(shopId)
+
+    const shop = await shopModel.findOne({ _id: shopId })
+
+    if (!shop) {
+      return responseHandler.notfound(res)
+    }
+
+    return responseHandler.ok(res, shop)
+  } catch (error) {
+    responseHandler.error(res)
+  }
+}
+
 const update = async (req, res) => {
   try {
     const shop = await shopModel.findOne({ user: req.user.id })
@@ -241,6 +258,7 @@ const update = async (req, res) => {
 module.exports = {
   getInfoByUserId,
   getList,
+  getDetail,
   renderIndexPage,
   renderAddPage,
   add,

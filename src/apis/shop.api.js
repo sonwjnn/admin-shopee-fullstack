@@ -9,6 +9,7 @@ router.post('/', tokenMiddleware.auth, shopController.add)
 
 router.get('/', shopController.getList)
 router.get('/info', tokenMiddleware.auth, shopController.getInfoByUserId)
+router.get('/detail/:shopId', shopController.getDetail)
 
 router.put('/', tokenMiddleware.auth, shopController.update)
 

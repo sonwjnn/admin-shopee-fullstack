@@ -6,9 +6,9 @@ cloudinary.config({
   api_secret: process.env.CLOUD_API_SECRET
 })
 
-const cloudinaryUploadImg = async fileToUploads => {
+const cloudinaryUploadImage = async file => {
   return new Promise(resolve => {
-    cloudinary.uploader.upload(fileToUploads, result => {
+    cloudinary.uploader.upload(file, { folder: 'product-images' }, result => {
       resolve(
         {
           url: result.secure_url,
@@ -22,7 +22,7 @@ const cloudinaryUploadImg = async fileToUploads => {
     })
   })
 }
-const cloudinaryDeleteImg = async fileToDelete => {
+const cloudinaryDeleteImage = async fileToDelete => {
   return new Promise(resolve => {
     cloudinary.uploader.destroy(fileToDelete, result => {
       resolve(
@@ -39,4 +39,4 @@ const cloudinaryDeleteImg = async fileToDelete => {
   })
 }
 
-module.exports = { cloudinaryUploadImg, cloudinaryDeleteImg }
+module.exports = { cloudinaryUploadImage, cloudinaryDeleteImage }

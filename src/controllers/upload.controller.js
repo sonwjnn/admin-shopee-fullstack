@@ -1,14 +1,13 @@
 const fs = require('fs')
 const responseHandler = require('../handlers/response.handler')
 const {
-  cloudinaryUploadImg,
-  cloudinaryDeleteImg
+  cloudinaryUploadImage,
+  cloudinaryDeleteImage
 } = require('../utilities/cloudinary')
 
 const uploadImages = async (req, res) => {
   try {
-    const uploader = path =>
-      cloudinaryUploadImg(path, { folder: 'product-images' })
+    const uploader = path => cloudinaryUploadImage(path)
     const urls = []
     const files = req.files
     for (const file of files) {
@@ -28,7 +27,7 @@ const uploadImages = async (req, res) => {
 const deleteImages = async (req, res) => {
   const { id } = req.params
   try {
-    const deleted = cloudinaryDeleteImg(id, 'images')
+    const deleted = cloudinaryDeleteImage(id, 'images')
     return responseHandler.ok(res, 'Images successfully deleted')
   } catch (error) {
     responseHandler.error(res)

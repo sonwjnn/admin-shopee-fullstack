@@ -31,7 +31,7 @@ router.post(
   body('username')
     .exists()
     .withMessage('username is required')
-    .isLength({ min: 9 })
+    .isLength({ min: 8 })
     .withMessage('username minium 8 characters')
     .custom(async value => {
       const user = await userModel.findOne({ username: value })
@@ -40,12 +40,12 @@ router.post(
   body('password')
     .exists()
     .withMessage('password is required')
-    .isLength({ min: 9 })
+    .isLength({ min: 8 })
     .withMessage('password minium 8 characters'),
   body('confirmPassword')
     .exists()
     .withMessage('confirm password is required')
-    .isLength({ min: 9 })
+    .isLength({ min: 8 })
     .withMessage('confirm password minium 8 characters')
     .custom((value, { req }) => {
       if (value !== req.body.password)
@@ -55,7 +55,7 @@ router.post(
   body('displayName')
     .exists()
     .withMessage('display name is required')
-    .isLength({ min: 9 })
+    .isLength({ min: 8 })
     .withMessage('displayName minium 8 characters'),
   requestHandler.validate,
   userController.signup
@@ -69,12 +69,12 @@ router.post(
   body('username')
     .exists()
     .withMessage('username is required')
-    .isLength({ min: 9 })
+    .isLength({ min: 8 })
     .withMessage('username minium 8 characters'),
   body('password')
     .exists()
     .withMessage('password is required')
-    .isLength({ min: 9 })
+    .isLength({ min: 8 })
     .withMessage('password minium 8 characters'),
   requestHandler.validate,
   userController.signin

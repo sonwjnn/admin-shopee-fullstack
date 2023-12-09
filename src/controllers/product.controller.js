@@ -236,7 +236,7 @@ const update = async (req, res) => {
     // delete old image
     const oldImages = product.images.map(image => image.public_id)
 
-    await cloudinaryDeleteImg(oldImages, { folder: 'product-images' })
+    await cloudinaryDeleteImg(oldImages)
 
     // update product
     if (req.body.name) {
