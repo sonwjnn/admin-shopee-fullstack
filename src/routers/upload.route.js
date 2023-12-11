@@ -7,7 +7,7 @@ const { isAdmin } = require('../middlewares/role.middleware')
 const { authServer } = require('../middlewares/token.middleware')
 const {
   uploadPhoto,
-  productImgResize
+  productImageResize
 } = require('../middlewares/upload.middleware')
 
 const router = express.Router()
@@ -16,7 +16,7 @@ router.post(
   '/',
   authServer,
   uploadPhoto.array('product-images', 10),
-  productImgResize,
+  productImageResize,
   uploadImages
 )
 

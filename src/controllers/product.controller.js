@@ -15,7 +15,7 @@ const { toStringDate } = require('../utilities/toStringDate')
 const calculateData = require('../utilities/calculateData')
 const shopModel = require('../models/shop.model')
 const { formatPriceToVND } = require('../utilities/formatter')
-const { cloudinaryDeleteImg } = require('../utilities/cloudinary')
+const { cloudinaryDeleteImage } = require('../utilities/cloudinary')
 
 const renderIndexPage = async (req, res) => {
   try {
@@ -236,7 +236,7 @@ const update = async (req, res) => {
     // delete old image
     const oldImages = product.images.map(image => image.public_id)
 
-    await cloudinaryDeleteImg(oldImages)
+    await cloudinaryDeleteImage(oldImages, 'product-images')
 
     // update product
     if (req.body.name) {
@@ -272,7 +272,7 @@ const removeProduct = async (req, res) => {
 
     // delete old image
     const oldImages = product.images.map(image => image.public_id)
-    await cloudinaryDeleteImg(oldImages, { folder: 'product-images' })
+    await cloudinaryDeleteImage(oldImages, 'product-images')
 
     await product.deleteOne()
 

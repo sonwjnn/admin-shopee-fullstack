@@ -1,4 +1,4 @@
-const cloudinary = require('cloudinary')
+const cloudinary = require('cloudinary').v2
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -6,35 +6,44 @@ cloudinary.config({
   api_secret: process.env.CLOUD_API_SECRET
 })
 
-const cloudinaryUploadImage = async file => {
-  return new Promise(resolve => {
-    cloudinary.uploader.upload(file, { folder: 'product-images' }, result => {
-      resolve(
-        {
-          url: result.secure_url,
-          asset_id: result.asset_id,
-          public_id: result.public_id
-        },
-        {
-          resource_type: 'auto'
-        }
-      )
+const cloudinaryUploadImage = async (file, folder = '') => {
+  return new Promise((resolve, reject) => {
+    cloudinary.uploader.upload(file, { folder }, (error, result) => {
+      if (error || !result || !result.secure_url) {
+        reject(error || new Error('Upload failed'))
+      } else {
+        resolve(
+          {
+            url: result.secure_url,
+            asset_id: result.asset_id,
+            public_id: result.public_id
+          },
+          {
+            resource_type: 'auto'
+          }
+        )
+      }
     })
   })
 }
-const cloudinaryDeleteImage = async fileToDelete => {
-  return new Promise(resolve => {
-    cloudinary.uploader.destroy(fileToDelete, result => {
-      resolve(
-        {
-          url: result.secure_url,
-          asset_id: result.asset_id,
-          public_id: result.public_id
-        },
-        {
-          resource_type: 'auto'
-        }
-      )
+
+const cloudinaryDeleteImage = async (file, folder = '') => {
+  return new Promise((resolve, reject) => {
+    cloudinary.uploader.destroy(file, { folder }, (error, result) => {
+      if (error || !result || !result.secure_url) {
+        reject(error || new Error('Upload failed'))
+      } else {
+        resolve(
+          {
+            url: result.secure_url,
+            asset_id: result.asset_id,
+            public_id: result.public_id
+          },
+          {
+            resource_type: 'auto'
+          }
+        )
+      }
     })
   })
 }

@@ -32,29 +32,18 @@ const uploadPhoto = multer({
   limits: { fileSize: 1000000 }
 })
 
-const productImgResize = async (req, res, next) => {
-  if (!req.files) return next()
+const productImageResize = async (req, res, next) => {
+  if (!req.files) {
+    return next()
+  }
   await Promise.all(
     req.files.map(async file => {
-      const outputPath = `src/assets/img/products/${file.filename}`
-      const outputDir = path.dirname(outputPath)
-
-      // Ensure the directory exists
-      if (!fs.existsSync(outputDir)) {
-        fs.mkdirSync(outputDir, { recursive: true })
-      }
-      try {
-        await sharp(file.path)
-          .resize(300, 300)
-          .toFormat('jpeg')
-          .jpeg({ quality: 90 })
-          .toFile(outputPath)
-
-        fs.unlinkSync(outputPath)
-      } catch (err) {
-        console.error(err)
-        next(err)
-      }
+      await sharp(file.path)
+        .resize(300, 300)
+        .toFormat('jpeg')
+        .jpeg({ quality: 90 })
+        .toFile(`src/assets/img/products/${file.filename}`)
+      fs.unlinkSync(`src/assets/img/products/${file.filename}`)
     })
   )
   next()
@@ -74,4 +63,4 @@ const blogImgResize = async (req, res, next) => {
   )
   next()
 }
-module.exports = { uploadPhoto, productImgResize, blogImgResize }
+module.exports = { uploadPhoto, productImageResize, blogImgResize }
