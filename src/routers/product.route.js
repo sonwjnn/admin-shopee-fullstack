@@ -23,8 +23,8 @@ router.post(
   body('name')
     .exists()
     .withMessage('Name is required')
-    .isLength({ min: 8, max: 50 })
-    .withMessage('Name must have a maximum of 50 characters'),
+    .isLength({ min: 8, max: 100 })
+    .withMessage('Name must have a maximum of 100 characters'),
   body('origin')
     .exists()
     .withMessage('Origin is required')
@@ -59,8 +59,8 @@ router.put(
   body('name')
     .exists()
     .withMessage('Name is required')
-    .isLength({ min: 8, max: 50 })
-    .withMessage('Name must have a maximum of 50 characters'),
+    .isLength({ min: 8, max: 100 })
+    .withMessage('Name must have a maximum of 100 characters'),
   body('origin')
     .exists()
     .withMessage('Origin is required')
