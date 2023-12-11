@@ -27,23 +27,19 @@ const cloudinaryUploadImage = async (file, folder = '') => {
   })
 }
 
-const cloudinaryDeleteImage = async (file, folder = '') => {
-  return new Promise((resolve, reject) => {
-    cloudinary.uploader.destroy(file, { folder }, (error, result) => {
-      if (error || !result || !result.secure_url) {
-        reject(error || new Error('Upload failed'))
-      } else {
-        resolve(
-          {
-            url: result.secure_url,
-            asset_id: result.asset_id,
-            public_id: result.public_id
-          },
-          {
-            resource_type: 'auto'
-          }
-        )
-      }
+const cloudinaryDeleteImage = async file => {
+  return new Promise(resolve => {
+    cloudinary.uploader.destroy(file, result => {
+      resolve(
+        {
+          url: result.secure_url,
+          asset_id: result.asset_id,
+          public_id: result.public_id
+        },
+        {
+          resource_type: 'auto'
+        }
+      )
     })
   })
 }

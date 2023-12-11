@@ -38,12 +38,23 @@ const productImageResize = async (req, res, next) => {
   }
   await Promise.all(
     req.files.map(async file => {
+      const outputPath = path.join(
+        'src',
+        'assets',
+        'img',
+        'products',
+        file.filename
+      )
+      const outputDir = path.dirname(outputPath)
+      if (!fs.existsSync(outputDir)) {
+        fs.mkdirSync(outputDir, { recursive: true })
+      }
       await sharp(file.path)
         .resize(300, 300)
         .toFormat('jpeg')
         .jpeg({ quality: 90 })
-        .toFile(`src/assets/img/products/${file.filename}`)
-      fs.unlinkSync(`src/assets/img/products/${file.filename}`)
+        .toFile(outputPath)
+      fs.unlinkSync(outputPath)
     })
   )
   next()
