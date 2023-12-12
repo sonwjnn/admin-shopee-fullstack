@@ -9,14 +9,15 @@ const slugify = require('slugify')
 
 const renderIndexPage = async (req, res) => {
   try {
+    const isAdmin = req.user.role === 'admin'
     const pageNumber = parseInt(req.params.pageNumber, 10) || 1
 
     const limit = 10
 
-    // if (user && user.role !== 'admin') obj_find.user = user.id
-
     const shop = await shopModel.findOne({ user: req.user.id })
-    const count = await typeModel.countDocuments({ shopId: shop._id })
+    const count = isAdmin
+      ? await typeModel.countDocuments()
+      : await typeModel.countDocuments({ shopId: shop._id })
     const sumPage = Math.ceil(count / limit)
 
     if (!pageNumber || pageNumber < 1) {
@@ -29,12 +30,20 @@ const renderIndexPage = async (req, res) => {
 
     const skip = (pageNumber - 1) * limit
 
-    const types = await typeModel
-      .find({ shopId: shop._id })
-      .populate('cateId', 'name')
-      .limit(limit)
-      .skip(skip)
-      .sort({ _id: 1 })
+    const types = isAdmin
+      ? await typeModel
+          .find()
+          .populate('cateId', 'name')
+          .limit(limit)
+          .skip(skip)
+          .sort({ _id: 1 })
+      : await typeModel
+          .find({ shopId: shop._id })
+          .populate('cateId', 'name')
+          .limit(limit)
+          .skip(skip)
+          .sort({ _id: 1 })
+
     const dateOfC = types.map(type => toStringDate.dmy(type.createdAt))
 
     const name = ''
@@ -220,16 +229,19 @@ const removeTypes = async (req, res) => {
       return responseHandler.notfound(res)
     }
 
-    const product = await productModel.findOne({
-      typeId: typeId
-    })
+    for (let typeId of typeIds) {
+      const product = await productModel.findOne({
+        typeId: typeId
+      })
 
-    if (product) {
-      return responseHandler.error(
-        res,
-        'Cannot delete this type, have product used this type'
-      )
+      if (product) {
+        return responseHandler.error(
+          res,
+          'Cannot delete this type, have product used this type'
+        )
+      }
     }
+
     await typeModel.deleteMany({
       _id: { $in: typeIds }
     })

@@ -19,12 +19,15 @@ const { cloudinaryDeleteImage } = require('../utilities/cloudinary')
 
 const renderIndexPage = async (req, res) => {
   try {
+    const isAdmin = req.user.role === 'admin'
     const pageNumber = parseInt(req.params.pageNumber, 10) || 1
 
     const limit = 10
 
     const shop = await shopModel.findOne({ user: req.user.id })
-    const count = await productModel.countDocuments({ shopId: shop._id })
+    const count = isAdmin
+      ? await productModel.countDocuments()
+      : await productModel.countDocuments({ shopId: shop._id })
     const sumPage = Math.ceil(count / limit)
 
     if (!pageNumber || pageNumber < 1) {
@@ -37,13 +40,21 @@ const renderIndexPage = async (req, res) => {
 
     const skip = (pageNumber - 1) * limit
 
-    const products = await productModel
-      .find({ shopId: shop._id })
-      .populate('cateId', 'name')
-      .populate('typeId', 'name')
-      .limit(limit)
-      .skip(skip)
-      .sort({ _id: 1 })
+    const products = isAdmin
+      ? await productModel
+          .find()
+          .populate('cateId', 'name')
+          .populate('typeId', 'name')
+          .limit(limit)
+          .skip(skip)
+          .sort({ _id: 1 })
+      : await productModel
+          .find({ shopId: shop._id })
+          .populate('cateId', 'name')
+          .populate('typeId', 'name')
+          .limit(limit)
+          .skip(skip)
+          .sort({ _id: 1 })
 
     if (!products) return responseHandler.notfound(res)
 
