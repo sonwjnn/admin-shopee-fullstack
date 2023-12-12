@@ -88,83 +88,31 @@
 <!--edit product form-->
 <script>
   $(document).ready(function() {
-    $('#formProductsEdit').on('submit', function(e) {
+    $('#formOrdersEdit').on('submit', function(e) {
       e.preventDefault();
-      const name = $('#name').val()
-      const origin = $('#origin').val()
-      const price = $('#price').val()
-      const productType = $('#productType').val()
-      const cateType = $('#cateType').val()
-      const producedAt = $('#producedAt').val()
-      const discountPrice = $('#discountPrice').val()
-      const discount = $('#discount').val()
-      const status = $('#status').val()
-      const info = CKEDITOR.instances['productInfo'].getData()
       const id = $('#id').val()
-      const originalImageName = $('#image').prop('files')[0] ? $('#image').prop('files')[0].name : ''
+      const quantity = $('#quantity').val()
+      const price = $('#price').val()
+      const status = $('#status').val()
 
       const data = {
         id,
-        name,
-        origin,
-        price,
-        productType,
-        cateType,
-        status,
-        info,
-        producedAt,
-        discountPrice,
-        ...(discount ? {
-          discount
-        } : {
-          discount: 0
-        }),
-        ...(originalImageName && {
-          originalImageName
-        }),
+        status
       }
 
-      // image name get value from res of add product action and use to upload image after
-      let imageName
-
-      const imagePromise = new Promise((rs, rj) => {
-        $.ajax({
-          url: '/admin/products/update',
-          type: 'PUT',
-          data,
-          success: function(res) {
-            $('#msg').text(res.message)
-            $('#popupInfo').click()
-            if (res.product.imageName !== $('#imageShow').val())
-              imageName = res.product.imageName
-            rs()
-          },
-          error: function(xhr, status, error) {
-            if (xhr.responseJSON && xhr.responseJSON.message) {
-              $("#msg").html(xhr.responseJSON.message)
-              $("#popupInfo").click()
-            }
-            rj()
+      $.ajax({
+        url: '/admin/orders/' + id,
+        type: 'PUT',
+        data,
+        success: function(res) {
+          $('#msg').text(res.message)
+          $('#popupInfo').click()
+        },
+        error: function(xhr, status, error) {
+          if (xhr.responseJSON && xhr.responseJSON.message) {
+            $("#msg").html(xhr.responseJSON.message)
+            $("#popupInfo").click()
           }
-        })
-      })
-
-      imagePromise.then(() => {
-        if (imageName) {
-          const formData = new FormData(this)
-          $.ajax({
-            url: '/admin/products/upload-image',
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            headers: {
-              'X-Image-Name': imageName
-            },
-            success: function(res) {
-
-            }
-          });
         }
       })
     })
@@ -239,12 +187,15 @@
       url: `/admin/orders/detail/${id}`,
       type: 'GET',
       success: function(data) {
+        console.log(data)
         const mapping = {
+          username: 'username',
           name: 'name',
           price: 'price',
           totalPrice: 'totalPrice',
           quantity: 'quantity',
-          address: 'address'
+          address: 'address',
+          status: 'status'
         };
 
         for (const key in mapping) {
@@ -260,8 +211,22 @@
         $('#producedAt').val(formattedProducedAt);
 
 
-        const imageNameShow = `background-image: url('/img/products/${data.imageName}');`;
-        $("#imageName").attr('style', `${imageNameShow} background-size: cover;  background-position:no-repeat;`);
+        const imageNameShow = `background-image: url('${data.images[0]?.url}'); aspect-ratio: 1/1;padding-top: 100% ;background-size: contain; background-position: center; background-repeat: no-repeat`;
+
+        $("#imageName").attr('style', imageNameShow);
+
+        var imagePreview = document.getElementById('image-preview-main');
+        imagePreview.innerHTML = '';
+        for (var i = 1; i < data.images.length; i++) {
+          var img = document.createElement('div');
+          img.style.backgroundImage = 'url(' + data.images[i].url + ')';
+          img.style.height = '100px';
+          img.style.width = '100px';
+          img.style.backgroundSize = 'contain';
+          img.style.backgroundPosition = 'center';
+          img.style.backgroundRepeat = 'no-repeat';
+          imagePreview.appendChild(img);
+        }
 
         $('#exampleModalCenter2').attr('style', 'overflow: auto !important;')
         $('#popupDetail').click();
@@ -350,7 +315,7 @@
 <script>
   $('#edit').click(function() {
     var id = $('#idProduct').val();
-    var link = '/admin/products/edit/' + id;
+    var link = '/admin/orders/edit/' + id;
     window.location.href = link;
   })
 </script>
@@ -367,79 +332,6 @@
       }
       $('#imageShow').val(name);
     });
-  });
-</script>
-
-
-<script>
-  /*
-    The logic is that when selecting or changing a product type,
-    a new category is suggested when adding products
-  */
-  $(document).ready(async function() {
-    const cates = [];
-    const types = [];
-    const currentSelectedType = $("#productType").val()
-    const cateType = document.getElementById('cateType');
-
-    $.ajax({
-      url: '/admin/categories/list',
-      type: 'GET',
-      success: function(res) {
-        cates.push(...res);
-      },
-      error: function(xhr, status, error) {
-        console.log('Error' + error)
-      }
-    })
-    $.ajax({
-      url: '/admin/product-types/by-name/' + currentSelectedType,
-      type: 'GET',
-      success: function(res) {
-        types.push(...res);
-        displayMatchingCategories(currentSelectedType);
-      },
-      error: function(xhr, status, error) {
-        console.log('Error' + error)
-      }
-    })
-
-    $("#productType").change(function(e) {
-      const selectedType = e.target.value;
-      cateType.innerHTML = '';
-
-      $.ajax({
-        url: '/admin/product-types/by-name/' + selectedType,
-        type: 'GET',
-        success: function(res) {
-
-          types.length = 0; // Xóa các phần tử trong mảng types
-          types.push(...res);
-          displayMatchingCategories(selectedType);
-          cateType.disabled = false;
-        },
-        error: function(xhr, status, error) {
-          console.log('Error' + error)
-        }
-      });
-    });
-
-    // Hiển thị danh sách các danh mục phù hợp với loại sản phẩm đã chọn
-    const displayMatchingCategories = (selectedType) => {
-
-      const matchingCategories = cates.filter(cate => {
-        return types.some(type => type.name === selectedType && type.cateId === cate._id);
-      });
-
-      matchingCategories.forEach(cate => {
-        const option = document.createElement('option');
-        option.value = cate.name;
-        option.textContent = cate.name;
-        cateType.appendChild(option);
-      });
-
-
-    }
   });
 </script>
 

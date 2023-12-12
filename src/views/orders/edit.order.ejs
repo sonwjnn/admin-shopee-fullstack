@@ -4,84 +4,41 @@
     <div class="col-md-12">
       <div class="card">
         <div class="card-body">
-          <form id="formProductsEdit">
+          <form id="formOrdersEdit">
             <div class="alert-warning text-white text-min text-space-xl hiden" id="noteProducts"></div>
             <div class="row">
-              <input type="text" class="form-control form-control-new hiden" id="id" value="<%=data._id%>">
+              <input type="text" class="form-control form-control-new hiden" id="id" value="<%=data.id%>">
 
               <div class="form-group col-md-6">
                 <label class="form-label display-inline" for="name">Product Name <span id="nameError" class="spanError"></span></label>
-                <input type="text" class="form-control form-control-new" id="name" placeholder="Ex: Iphone 14" value="<%=data.name%>">
+                <input type="text" class="form-control form-control-new" id="name" placeholder="Ex: Iphone 14" value="<%=data.name%>" disabled>
                 <span id="nameErrorText" class="spanError"></span>
-              </div>
-
-              <div class="form-group col-md-6">
-                <label class="form-label display-inline" for="origin">Origin <span id="originError" class="spanError"></span></label>
-                <input type="text" class="form-control form-control-new" id="origin" placeholder="Ex: Made in China" value="<%=data.origin%>">
-                <span id="originErrorText" class="spanError"></span>
               </div>
 
               <div class="form-group col-md-6">
                 <div class="row">
                   <div class="col-md-4">
                     <label class="form-label display-inline" for="price">Price <span id="priceError" class="spanError"></span></label>
-                    <input type="text" class="form-control form-control-new" id="price" placeholder="Ex: 2000" value="<%=data.price%>">
+                    <input type="text" class="form-control form-control-new" id="price" placeholder="Ex: 2000" value="<%=data.price%>" disabled>
                     <span id="priceErrorText" class="spanError"></span>
                   </div>
                   <div class="col-md-4">
-                    <label class="form-label display-inline" for="discount">Discount (%)<span id="discountError" class="spanError"></span></label>
-                    <input type="text" class="form-control form-control-new" id="discount" placeholder="Ex: 50" value="<%=data.discount%>">
+                    <label class="form-label display-inline" for="quantity">Quantity<span id="discountError" class="spanError"></span></label>
+                    <input type="text" class="form-control form-control-new" id="quantity" placeholder="Ex: 50" value="<%=data.quantity%>" disabled>
                     <span id="discountErrorText" class="spanError"></span>
                   </div>
                   <div class="col-md-4">
-                    <label class="form-label display-inline" for="discountPrice">Discount Price<span id="discountPriceError" class="spanError"></span></label>
-                    <input type="text" class="form-control form-control-none" id="discountPrice" readonly value="<%=data.discountPrice%>">
+                    <label class="form-label display-inline" for="totalPrice">Total Price<span id="totalPriceError" class="spanError"></span></label>
+                    <input type="text" class="form-control form-control-none" id="totalPrice" readonly value="<%=data.totalPrice%>" disabled>
                     <span id="discountPriceErrorText" class="spanError"></span>
                   </div>
                 </div>
               </div>
 
-              <div class="form-group col-md-6">
-
-                <label class="form-label display-inline" id="labelNewFile" for="image">Image <span id="imageError" class="spanError"></span></label>
-                <div class="row">
-                  <div class="col-md-9 paddingRightNone">
-                    <input type="file" class="form-control form-control-new hiden" id="image" name="productsImage">
-                    <input type="text" class="form-control form-control-new" id="imageShow" value="<%=data.imageName%>" disabled>
-
-                  </div>
-                  <div class="col-md-3 paddingLeftNone display-inline">
-
-                    <button id="newFile" type="button" class="btn btn-outline-info btn-products-new display-inline">New file</button>
-                    <button type="button" class="btn btn-outline-info btn-products-new display-inline" data-toggle="modal" data-target="#exampleModalCenter">
-                      <i class="fa fa-database" aria-hidden="true"></i></button>
-                  </div>
-
-                </div>
-
-                <span id="imageErrorText" class="spanError"></span>
-              </div>
 
               <div class="form-group col-md-6">
-                <label class="form-label display-inline" for="productType">Product Type</label>
-                <select id="productType" class="form-select">
-                  <option value="<%=data.typeId.name%>" hidden><%=data.typeId.name%></option>
-                  <% for(var i=0; i < types.length; i++) { %>
-                  <option value="<%=types[i]%>"><%=types[i]%></option>
-                  <% } %>
-                </select>
-              </div>
-
-              <div class="form-group col-md-6">
-                <label class="form-label display-inline" for="cateType">Cate Type</label>
-                <select id="cateType" class="form-select">
-                  <option value="<%=data.cateId.name%>" hidden><%=data.cateId.name%></option>
-                </select>
-              </div>
-
-              <div class="form-group col-md-6">
-                <label class="form-label" for="producedAt">Date of manufacture</label>
-                <input type="date" class="form-control form-control-new" id="producedAt" value="<%=producedAt%>">
+                <label class="form-label" for="address">Address</label>
+                <input type="text" class="form-control form-control-new" id="address" value="<%=data.address%>" disabled>
               </div>
 
               <div class="form-group col-md-6">
@@ -94,16 +51,14 @@
                 </select>
               </div>
 
-              <div class="form-group col-md-12">
-                <label class="form-label" for="productInfo">Product Description</label>
-                <textarea class="form-control" id="productInfo" cols="30" rows="10" name="contentStory"></textarea>
+              <div class="form-group col-md-6">
+                <label class="form-label" for="username">Customer name</label>
+                <input type="text" class="form-control form-control-none" id="username" value="<%=data.username%>" disabled>
               </div>
 
-
-
-              <div id="storyid" class="hiden">
-                <%=data.info%>
+              <div class="form-group col-md-6">
               </div>
+
             </div>
             <!--  <div class="form-group">
                             <div class="form-check">

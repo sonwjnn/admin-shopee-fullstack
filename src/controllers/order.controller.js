@@ -42,11 +42,11 @@ const renderIndexPage = async (req, res) => {
       id: item._id,
       // phone: item.phone,
       // address: item.address,
-      name: item.productId.name,
-      price: formatPriceToVND(Number(item.productId.discountPrice)),
+      name: item.productId?.name || '',
+      price: formatPriceToVND(Number(item.productId?.discountPrice)),
       quantity: item.quantity,
       totalPrice: formatPriceToVND(
-        Number(item.productId.discountPrice) * +item.quantity
+        Number(item.productId?.discountPrice) * +item.quantity
       )
       // isPaid: item.isPaid
     }))
@@ -108,6 +108,58 @@ const renderSearchPage = async (req, res) => {
   }
 }
 
+const renderEditPage = async (req, res) => {
+  try {
+    const { orderId } = req.params
+    const order = await OrderItem.findOne({ _id: orderId })
+      .populate('productId')
+      .populate('shopId')
+      .lean()
+
+    const orderBill = await Order.findOne({ _id: order.orderId }).populate(
+      'user'
+    )
+
+    const formattedOrders = {
+      id: order._id,
+      // phone: item.phone,
+      images: order.productId.images,
+      username: orderBill.user.name,
+      address:
+        orderBill.address ||
+        `${orderBill.user.address}, ${orderBill.user.district}, ${orderBill.user.city}`,
+      name: order.productId.name,
+      imageName: order.productId.imageName,
+      price: formatPriceToVND(Number(order.productId.discountPrice)),
+      quantity: order.quantity,
+      totalPrice: formatPriceToVND(
+        Number(order.productId.discountPrice) * +order.quantity
+      ),
+      status: order.status
+      // isPaid: item.isPaid
+    }
+
+    const status = [
+      'Not Processed',
+      'Cash on Delivery',
+      'Processing',
+      'Dispatched',
+      'Cancelled',
+      'Delivered'
+    ]
+    const index = 'orders'
+    const main = 'orders/edit.order.ejs'
+    res.render('index', {
+      main,
+      index,
+      data: formattedOrders,
+      status,
+      role: req.user.role
+    })
+  } catch (error) {
+    responseHandler.error(res)
+  }
+}
 //CREATE
 
 const createOrder = async (req, res) => {
@@ -145,7 +197,8 @@ const createOrder = async (req, res) => {
       orderId: order._id,
       shopId: product.shopId,
       productId: product.productId,
-      quantity: product.quantity
+      quantity: product.quantity,
+      status: 'Not Processed'
     }))
     await OrderItem.create(orderItems)
 
@@ -173,16 +226,21 @@ const createOrder = async (req, res) => {
 //UPDATE
 const updateOrder = async (req, res) => {
   try {
-    const updatedOrder = await Order.findByIdAndUpdate(
-      req.params.id,
-      {
-        $set: req.body
-      },
+    const updatedOrder = await OrderItem.findByIdAndUpdate(
+      { _id: req.params.orderId },
+      req.body,
       { new: true }
     )
-    responseHandler.ok(res, updatedOrder)
+
+    if (!updatedOrder) {
+      return responseHandler.notfound(res)
+    }
+
+    responseHandler.ok(res, updatedOrder, {
+      message: 'Update order successfully!'
+    })
   } catch (error) {
-    responseHandler.error(res)
+    responseHandler.error(res, error.message)
   }
 }
 
@@ -263,6 +321,8 @@ const getDetail = async (req, res) => {
     const formattedOrders = {
       id: order._id,
       // phone: item.phone,
+      images: order.productId.images,
+      username: orderBill.user.name,
       address:
         orderBill.address ||
         `${orderBill.user.address}, ${orderBill.user.district}, ${orderBill.user.city}`,
@@ -272,7 +332,8 @@ const getDetail = async (req, res) => {
       quantity: order.quantity,
       totalPrice: formatPriceToVND(
         Number(order.productId.discountPrice) * +order.quantity
-      )
+      ),
+      status: order.status
       // isPaid: item.isPaid
     }
 
@@ -315,6 +376,7 @@ const getMonthlyIncomeOrder = async (req, res) => {
 module.exports = {
   renderIndexPage,
   renderSearchPage,
+  renderEditPage,
   createOrder,
   updateOrder,
   removeOrder,

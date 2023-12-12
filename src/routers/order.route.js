@@ -12,6 +12,8 @@ router.get('/index(/:pageNumber?)', orderController.renderIndexPage)
 
 router.get('/search/(:name?)(/:pageNumber?)', orderController.renderSearchPage)
 
+router.get('/edit/:orderId', orderController.renderEditPage)
+
 router.get('/', tokenMiddleware.auth, orderController.getList)
 
 router.get(
@@ -28,7 +30,7 @@ router.get(
 
 router.post('/', tokenMiddleware.auth, orderController.createOrder)
 
-router.put('/:id', tokenMiddleware.authServer, orderController.updateOrder)
+router.put('/:orderId', tokenMiddleware.authServer, orderController.updateOrder)
 
 router.delete('/:id', tokenMiddleware.authServer, orderController.removeOrder)
 // router.delete('/', tokenMiddleware.authServer, orderController.removeOrders)

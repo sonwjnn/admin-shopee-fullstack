@@ -10,6 +10,18 @@ const orderItemSchema = new Schema(
     quantity: {
       type: Number,
       default: 1
+    },
+    status: {
+      type: String,
+      default: 'Not Processed',
+      enum: [
+        'Not Processed',
+        'Cash on Delivery',
+        'Processing',
+        'Dispatched',
+        'Cancelled',
+        'Delivered'
+      ]
     }
   },
   modelOptions
