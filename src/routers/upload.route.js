@@ -20,6 +20,6 @@ router.post(
   uploadImages
 )
 
-router.delete('/:id', authServer, isAdmin, deleteImages)
+router.post('/deleteImages', authServer, deleteImages)
 
 module.exports = router

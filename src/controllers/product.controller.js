@@ -228,7 +228,6 @@ const addProduct = async (req, res) => {
       message: 'Add product successfully!'
     })
   } catch (error) {
-    console.log(error)
     responseHandler.error(res)
   }
 }
@@ -247,7 +246,9 @@ const update = async (req, res) => {
     // delete old image
     const oldImages = product.images.map(image => image.public_id)
 
-    await cloudinaryDeleteImage(oldImages)
+    for (const id of oldImages) {
+      await cloudinaryDeleteImage(id)
+    }
 
     // update product
     if (req.body.name) {
@@ -283,7 +284,10 @@ const removeProduct = async (req, res) => {
 
     // delete old image
     const oldImages = product.images.map(image => image.public_id)
-    await cloudinaryDeleteImage(oldImages, 'product-images')
+
+    for (const id of oldImages) {
+      await cloudinaryDeleteImage(id)
+    }
 
     await product.deleteOne()
 
@@ -313,7 +317,9 @@ const removeProducts = async function (req, res) {
     // delete old image
     for (const product of products) {
       const oldImages = product.images.map(image => image.public_id)
-      await cloudinaryDeleteImg(oldImages, { folder: 'product-images' })
+      for (const id of oldImages) {
+        await cloudinaryDeleteImage(id)
+      }
     }
 
     await productModel.deleteMany({ _id: { $in: productIds } })
@@ -340,6 +346,7 @@ const getList = async (req, res) => {
       .find()
       .populate('cateId', 'name')
       .populate('typeId', 'name')
+      .populate('shopId')
 
     if (!products) return responseHandler.notfound(res)
 

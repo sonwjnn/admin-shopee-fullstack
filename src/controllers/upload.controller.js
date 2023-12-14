@@ -25,11 +25,14 @@ const uploadImages = async (req, res) => {
     responseHandler.error(res)
   }
 }
+
 const deleteImages = async (req, res) => {
-  const { id } = req.params
   try {
-    const deleted = cloudinaryDeleteImage(id, 'product-images')
-    return responseHandler.ok(res, 'Images successfully deleted')
+    const { publicIds } = req.body
+    for (const id of publicIds) {
+      await cloudinaryDeleteImage(id)
+    }
+    responseHandler.ok(res)
   } catch (error) {
     responseHandler.error(res)
   }

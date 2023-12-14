@@ -83,6 +83,21 @@
               $("#msg").html(xhr.responseJSON.message)
               $("#popupInfo").click()
             }
+
+            // Delete uploaded images
+            $.ajax({
+              url: '/admin/upload/deleteImages',
+              type: 'POST',
+              data: {
+                publicIds: images.map(image => image.public_id)
+              },
+              success: function(res) {
+                console.log('Images deleted successfully');
+              },
+              error: function(xhr, status, error) {
+                console.log('Failed to delete images');
+              }
+            });
             rj()
           }
         })
@@ -178,6 +193,21 @@
               $("#msg").html(xhr.responseJSON.message)
               $("#popupInfo").click()
             }
+
+            // Delete uploaded images
+            $.ajax({
+              url: '/admin/upload/deleteImages',
+              type: 'POST',
+              data: {
+                publicIds: images.map(image => image.public_id)
+              },
+              success: function(res) {
+                console.log('Images deleted successfully');
+              },
+              error: function(xhr, status, error) {
+                console.log('Failed to delete images');
+              }
+            });
             rj()
           }
         })
