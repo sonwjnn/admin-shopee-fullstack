@@ -224,7 +224,6 @@ const removeShops = async (req, res) => {
 const getDetail = async (req, res) => {
   try {
     const { shopId } = req.params
-    console.log(shopId)
 
     const shop = await shopModel.findOne({ _id: shopId })
 

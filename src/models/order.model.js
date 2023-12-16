@@ -30,8 +30,15 @@ const orderItemSchema = new Schema(
 const orderSchema = new Schema(
   {
     user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-    orderItems: [orderItemSchema],
     isPaid: { type: Boolean, default: false },
+    total: {
+      type: Number,
+      default: 0
+    },
+    thumbnail: {
+      type: String,
+      default: ''
+    },
     address: { type: String, default: '' },
     phone: { type: String, default: '' }
   },

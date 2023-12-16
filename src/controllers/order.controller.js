@@ -181,15 +181,17 @@ const createOrder = async (req, res) => {
       }
     }))
 
+    // Calculate total
+    const total = products.reduce(
+      (acc, product) => acc + product.price * product.quantity,
+      0
+    )
+
     const order = await Order.create({
-      // shopId: mongoose.Types.ObjectId(params.storeId)
       user: req.user.id,
       isPaid: false,
-      orderItems: products.map(product => ({
-        shopId: product.shopId,
-        productId: product.productId,
-        quantity: product.quantity
-      }))
+      total: total,
+      thumbnail: products[0]?.images[0]?.url || ''
     })
 
     // Create orderItems in OrderItemModel
@@ -200,6 +202,7 @@ const createOrder = async (req, res) => {
       quantity: product.quantity,
       status: 'Not Processed'
     }))
+
     await OrderItem.create(orderItems)
 
     const session = await stripe.checkout.sessions.create({
@@ -245,7 +248,6 @@ const updateOrder = async (req, res) => {
 }
 
 //DELETE
-//DELETE
 const removeOrder = async (req, res) => {
   try {
     const order = await Order.findById(req.params.orderId)
@@ -272,8 +274,7 @@ const removeOrder = async (req, res) => {
 const getOrdersByUserId = async (req, res) => {
   try {
     const orders = await Order.find({ user: req.user.id })
-      .populate('orderItems.productId')
-      .exec()
+
     responseHandler.ok(res, orders)
   } catch (error) {
     responseHandler.error(res)
