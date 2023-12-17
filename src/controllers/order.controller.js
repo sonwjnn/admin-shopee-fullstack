@@ -212,8 +212,8 @@ const createOrder = async (req, res) => {
       phone_number_collection: {
         enabled: true
       },
-      success_url: `${process.env.FRONTEND_STORE_URL}/checkout?success=1`,
-      cancel_url: `${process.env.FRONTEND_STORE_URL}/checkout?canceled=1`,
+      success_url: `${process.env.FRONTEND_STORE_URL}/checkout?success=1&orderId=${order._id}`,
+      cancel_url: `${process.env.FRONTEND_STORE_URL}/checkout?canceled=1&orderId=${order._id}`,
       metadata: {
         orderId: order._id.toString()
       }
@@ -296,6 +296,45 @@ const getOrdersItemByShopId = async (req, res) => {
   }
 }
 
+const getDetailByOrderId = async (req, res) => {
+  try {
+    const { orderId } = req.params
+
+    const order = await Order.findOne({ _id: orderId })
+    const orderItems = await OrderItem.find({ orderId })
+      .populate('productId')
+      .populate('shopId')
+      .lean()
+
+    const products = orderItems.map(item => {
+      return {
+        id: item._id,
+        imageUrl: item.productId.images[0].url,
+        name: item.productId.name,
+        price: formatPriceToVND(Number(item.productId.discountPrice)),
+        quantity: item.quantity,
+        totalPrice: formatPriceToVND(
+          Number(item.productId.discountPrice) * +item.quantity
+        ),
+        status: item.status
+      }
+    })
+
+    const formatedOrder = {
+      id: order._id,
+      createdAt: order.createdAt,
+      total: order.total,
+      isPaid: order.isPaid,
+      products
+    }
+
+    responseHandler.ok(res, formatedOrder)
+  } catch (error) {
+    console.log(error)
+    responseHandler.error(res)
+  }
+}
+
 // //GET ALL
 
 const getList = async (req, res) => {
@@ -307,10 +346,10 @@ const getList = async (req, res) => {
   }
 }
 
-const getDetail = async (req, res) => {
+const getDetailOrderItem = async (req, res) => {
   try {
-    const { orderId } = req.params
-    const order = await OrderItem.findOne({ _id: orderId })
+    const { orderId: orderItemId } = req.params
+    const order = await OrderItem.findOne({ _id: orderItemId })
       .populate('productId')
       .populate('shopId')
       .lean()
@@ -383,7 +422,8 @@ module.exports = {
   removeOrder,
   getOrdersByUserId,
   getList,
-  getDetail,
+  getDetailOrderItem,
   getOrdersItemByShopId,
-  getMonthlyIncomeOrder
+  getMonthlyIncomeOrder,
+  getDetailByOrderId
 }

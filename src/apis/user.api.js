@@ -252,6 +252,11 @@ router.delete(
 )
 
 router.get('/orders', tokenMiddleware.auth, orderController.getOrdersByUserId)
+router.get(
+  '/order/:orderId',
+  tokenMiddleware.auth,
+  orderController.getDetailByOrderId
+)
 // router.post('/orders', tokenMiddleware.auth, orderController.addCart)
 router.delete(
   '/orders/:orderId',

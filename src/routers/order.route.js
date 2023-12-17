@@ -35,6 +35,6 @@ router.put('/:orderId', tokenMiddleware.authServer, orderController.updateOrder)
 router.delete('/:id', tokenMiddleware.authServer, orderController.removeOrder)
 // router.delete('/', tokenMiddleware.authServer, orderController.removeOrders)
 
-router.get('/detail/:orderId', orderController.getDetail)
+router.get('/detail/:orderId', orderController.getDetailOrderItem)
 
 module.exports = router
