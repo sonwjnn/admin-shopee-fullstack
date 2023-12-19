@@ -5,8 +5,8 @@ const router = express.Router({ mergeParams: true })
 
 router.get('/list', productController.getList)
 router.get('/detail/:productId', productController.getDetail)
-router.get('/list/:cateName', productController.getProductOfCate)
-router.get('/list/shop/:shopId', productController.getProductByShopId)
+router.get('/list/slug/:cateSlug', productController.getProductsOfCateBySlug)
+router.get('/list/shop/:shopId', productController.getProductsByShopId)
 router.get('/image/:imageName', productController.getImage)
 
 module.exports = router

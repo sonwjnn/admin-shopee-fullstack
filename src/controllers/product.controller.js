@@ -400,18 +400,19 @@ const getDetail = async (req, res) => {
   }
 }
 
-const getProductOfCate = async (req, res) => {
+const getProductsOfCateBySlug = async (req, res) => {
   try {
-    const { cateName } = req.params
+    const { cateSlug } = req.params
 
-    const cate = await categoryModel.findOne({ name: cateName })
+    const cate = await categoryModel.findOne({ slug: cateSlug })
 
     if (!cate) responseHandler.notfound(res)
 
     const products = await productModel
       .find({ cateId: cate._id })
-      .populate('cateId', 'name')
-      .populate('typeId', 'name')
+      .populate('cateId')
+      .populate('typeId')
+      .populate('shopId')
 
     responseHandler.ok(res, products)
   } catch (error) {
@@ -419,15 +420,15 @@ const getProductOfCate = async (req, res) => {
   }
 }
 
-const getProductByShopId = async (req, res) => {
+const getProductsByShopId = async (req, res) => {
   try {
     const { shopId } = req.params
 
     const products = await productModel
       .find({ shopId })
       .populate('shopId')
-      .populate('cateId', 'name')
-      .populate('typeId', 'name')
+      .populate('cateId')
+      .populate('typeId')
 
     responseHandler.ok(res, products)
   } catch (error) {
@@ -513,7 +514,7 @@ module.exports = {
   removeProduct,
   removeProducts,
   uploadImage,
-  getProductOfCate,
-  getProductByShopId,
+  getProductsOfCateBySlug,
+  getProductsByShopId,
   getImage
 }
