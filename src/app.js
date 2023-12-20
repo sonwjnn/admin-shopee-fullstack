@@ -5,6 +5,7 @@ const { connectDb } = require('./configs/mongodb.js')
 const { corsOptions } = require('./configs/cors')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
+const productModel = require('./models/product.model')
 
 connectDb()
   .then(() => boostServer())

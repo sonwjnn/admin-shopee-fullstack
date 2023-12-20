@@ -546,10 +546,12 @@
       const discountValue = parseFloat($('#discount').val());
 
       if (priceValue && discountValue) {
-        const discountPriceValue = priceValue - (priceValue * discountValue) / 100;
+        let discountPriceValue = priceValue - (priceValue * discountValue) / 100;
+        discountPriceValue = Math.round(discountPriceValue / 1000) * 1000;
         $('#discountPrice').val(discountPriceValue.toFixed(0));
       } else if (!discountValue && priceValue) {
-        $('#discountPrice').val(priceValue.toFixed(0));
+        let priceValueRounded = Math.round(priceValue / 1000) * 1000;
+        $('#discountPrice').val(priceValueRounded.toFixed(0));
       } else if (!priceValue) {
         $('#discountPrice').val('');
       }
