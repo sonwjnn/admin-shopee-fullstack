@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const modelOptions = require('./model.option')
+const { ORDER_ITEM_STATUS } = require('../utilities/constants')
 const { Schema } = mongoose
 
 const orderItemSchema = new Schema(
@@ -13,15 +14,8 @@ const orderItemSchema = new Schema(
     },
     status: {
       type: String,
-      default: 'Not Processed',
-      enum: [
-        'Not Processed',
-        'Cash on Delivery',
-        'Processing',
-        'Dispatched',
-        'Cancelled',
-        'Delivered'
-      ]
+      default: ORDER_ITEM_STATUS.NOT_PROCESSED,
+      enum: Object.values(ORDER_ITEM_STATUS)
     }
   },
   modelOptions

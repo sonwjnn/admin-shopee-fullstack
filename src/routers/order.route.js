@@ -30,7 +30,11 @@ router.get(
 
 router.post('/', tokenMiddleware.auth, orderController.createOrder)
 
-router.put('/:orderId', tokenMiddleware.authServer, orderController.updateOrder)
+router.put(
+  '/:itemId',
+  tokenMiddleware.authServer,
+  orderController.updateOrderItem
+)
 
 router.delete('/:id', tokenMiddleware.authServer, orderController.removeOrder)
 // router.delete('/', tokenMiddleware.authServer, orderController.removeOrders)

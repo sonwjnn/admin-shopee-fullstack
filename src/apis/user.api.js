@@ -257,6 +257,12 @@ router.get(
   tokenMiddleware.auth,
   orderController.getDetailByOrderId
 )
+
+router.put(
+  '/orders/item/:itemId',
+  tokenMiddleware.auth,
+  orderController.updateOrderItem
+)
 // router.post('/orders', tokenMiddleware.auth, orderController.addCart)
 router.delete(
   '/orders/:orderId',

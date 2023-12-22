@@ -5,6 +5,8 @@ const calculateData = require('../utilities/calculateData')
 const { toStringDate } = require('../utilities/toStringDate')
 const shopModel = require('../models/shop.model')
 const { formatPriceToVND } = require('../utilities/formatter')
+const productModel = require('../models/product.model')
+const { ORDER_ITEM_STATUS } = require('../utilities/constants')
 
 const renderIndexPage = async (req, res) => {
   try {
@@ -139,14 +141,7 @@ const renderEditPage = async (req, res) => {
       // isPaid: item.isPaid
     }
 
-    const status = [
-      'Not Processed',
-      'Cash on Delivery',
-      'Processing',
-      'Dispatched',
-      'Cancelled',
-      'Delivered'
-    ]
+    const status = Object.values(ORDER_ITEM_STATUS)
     const index = 'orders'
     const main = 'orders/edit.order.ejs'
     res.render('index', {
@@ -200,7 +195,7 @@ const createOrder = async (req, res) => {
       shopId: product.shopId,
       productId: product.productId,
       quantity: product.quantity,
-      status: 'Not Processed'
+      status: ORDER_ITEM_STATUS.NOT_PROCESSED
     }))
 
     await OrderItem.create(orderItems)
@@ -227,25 +222,25 @@ const createOrder = async (req, res) => {
 }
 
 //UPDATE
-const updateOrder = async (req, res) => {
-  try {
-    const updatedOrder = await OrderItem.findByIdAndUpdate(
-      { _id: req.params.orderId },
-      req.body,
-      { new: true }
-    )
+// const updateOrder = async (req, res) => {
+//   try {
+//     const updatedOrder = await OrderItem.findByIdAndUpdate(
+//       { _id: req.params.orderId },
+//       req.body,
+//       { new: true }
+//     )
 
-    if (!updatedOrder) {
-      return responseHandler.notfound(res)
-    }
+//     if (!updatedOrder) {
+//       return responseHandler.notfound(res)
+//     }
 
-    responseHandler.ok(res, updatedOrder, {
-      message: 'Update order successfully!'
-    })
-  } catch (error) {
-    responseHandler.error(res, error.message)
-  }
-}
+//     responseHandler.ok(res, updatedOrder, {
+//       message: 'Update order successfully!'
+//     })
+//   } catch (error) {
+//     responseHandler.error(res, error.message)
+//   }
+// }
 
 //DELETE
 const removeOrder = async (req, res) => {
@@ -266,6 +261,63 @@ const removeOrder = async (req, res) => {
       'Order and related order items deleted successfully'
     )
   } catch (error) {
+    responseHandler.error(res)
+  }
+}
+
+const updateOrderItem = async (req, res) => {
+  try {
+    const itemId = req.params.itemId
+    const status = req.body.status || ORDER_ITEM_STATUS.CANCELLED
+
+    const orderItem = await OrderItem.findOne({ _id: itemId }).populate(
+      'productId'
+    )
+    const orderId = orderItem.orderId
+
+    const updatedOrderItem = await OrderItem.updateOne(
+      { _id: itemId },
+      { status: req.body.status }
+    )
+
+    if (!updatedOrderItem) {
+      return responseHandler.notfound(res)
+    }
+
+    if (status === ORDER_ITEM_STATUS.CANCELLED) {
+      await productModel.updateOne(
+        { _id: orderItem?.productId?._id },
+        { $inc: { quantity: orderItem?.productId?.quantity } }
+      )
+
+      const items = await OrderItem.find({ orderId })
+      const itemStatuses = items.filter(
+        item => item.status === ORDER_ITEM_STATUS.CANCELLED
+      )
+
+      // All items are cancelled => Cancel order
+      if (items.length === itemStatuses.length) {
+        await Order.deleteOne({ _id: orderId })
+        await OrderItem.deleteMany({ orderId: orderId })
+
+        return responseHandler.ok(res, {
+          orderCancelled: true,
+          message: `${
+            req.user.role === 'sale' || 'admin' ? 'Order' : 'Your order'
+          } has been cancelled successfully`
+        })
+      }
+
+      return responseHandler.ok(res, {
+        message: 'Item has been cancelled successfully!'
+      })
+    }
+
+    responseHandler.ok(res, {
+      message: 'Item status has been updated successfully!'
+    })
+  } catch (error) {
+    console.log(error)
     responseHandler.error(res)
   }
 }
@@ -413,12 +465,25 @@ const getMonthlyIncomeOrder = async (req, res) => {
   }
 }
 
+const increaseQuantity = products => {
+  let bulkOptions = products.map(item => {
+    return {
+      updateOne: {
+        filter: { _id: item.product },
+        update: { $inc: { quantity: item.quantity } }
+      }
+    }
+  })
+
+  productModel.bulkWrite(bulkOptions)
+}
+
 module.exports = {
   renderIndexPage,
   renderSearchPage,
   renderEditPage,
   createOrder,
-  updateOrder,
+  updateOrderItem,
   removeOrder,
   getOrdersByUserId,
   getList,
