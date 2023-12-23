@@ -43,7 +43,7 @@
 
               <div class="form-group col-md-6">
                 <label class="form-label display-inline" for="status">Status</label>
-                <select id="status" class="form-select">
+                <select id="status" class="form-select" <%= data.isDisabledStatus ? 'disabled' : '' %>>
                   <option value="<%=data.status%>" hidden><%=data.status%></option>
                   <% for(var i=0; i < status.length; i++) { %>
                   <option value="<%=status[i]%>"><%=status[i]%></option>

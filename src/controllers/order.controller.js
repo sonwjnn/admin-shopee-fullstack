@@ -49,7 +49,8 @@ const renderIndexPage = async (req, res) => {
       quantity: item.quantity,
       totalPrice: formatPriceToVND(
         Number(item.productId?.discountPrice) * +item.quantity
-      )
+      ),
+      status: item.status
       // isPaid: item.isPaid
     }))
 
@@ -137,7 +138,8 @@ const renderEditPage = async (req, res) => {
       totalPrice: formatPriceToVND(
         Number(order.productId.discountPrice) * +order.quantity
       ),
-      status: order.status
+      status: order.status,
+      isDisabledStatus: order.status === ORDER_ITEM_STATUS.CANCELLED
       // isPaid: item.isPaid
     }
 
@@ -220,27 +222,6 @@ const createOrder = async (req, res) => {
     responseHandler.error(res)
   }
 }
-
-//UPDATE
-// const updateOrder = async (req, res) => {
-//   try {
-//     const updatedOrder = await OrderItem.findByIdAndUpdate(
-//       { _id: req.params.orderId },
-//       req.body,
-//       { new: true }
-//     )
-
-//     if (!updatedOrder) {
-//       return responseHandler.notfound(res)
-//     }
-
-//     responseHandler.ok(res, updatedOrder, {
-//       message: 'Update order successfully!'
-//     })
-//   } catch (error) {
-//     responseHandler.error(res, error.message)
-//   }
-// }
 
 //DELETE
 const removeOrder = async (req, res) => {
