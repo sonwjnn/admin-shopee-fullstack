@@ -43,7 +43,7 @@ userSchema.methods.validPassword = function (password) {
 
 userSchema.methods.setProfile = function (props) {
   const {
-    displayName,
+    name,
     email,
     phone,
     address,
@@ -55,7 +55,7 @@ userSchema.methods.setProfile = function (props) {
     story
   } = props
 
-  this.name = displayName
+  this.name = name
   this.email = email
   this.phone = phone
   this.address = address

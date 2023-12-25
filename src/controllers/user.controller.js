@@ -124,7 +124,7 @@ const updateProfile = async (req, res) => {
     //save to database
     await user.save()
 
-    responseHandler.ok(res, { message: 'Update user successfully!' })
+    responseHandler.ok(res, { user, message: 'Update user successfully!' })
   } catch (error) {
     console.log(error)
     responseHandler.error(res)
