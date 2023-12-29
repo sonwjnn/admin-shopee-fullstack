@@ -17,11 +17,22 @@ const WHITELIST_DOMAINS = [
 
 const ORDER_ITEM_STATUS = {
   NOT_PROCESSED: 'Not processed',
-  CASH_ON_DELIVERY: 'Cash on Delivery',
+  // CASH_ON_DELIVERY: 'Cash on Delivery',
   PROCESSING: 'Processing',
   DISPATCHED: 'Dispatched',
   CANCELLED: 'Cancelled',
   DELIVERED: 'Delivered'
 }
 
-module.exports = { HttpStatusCode, WHITELIST_DOMAINS, ORDER_ITEM_STATUS }
+const USER_ROLE = {
+  ADMIN: 'admin',
+  USER: 'user',
+  SHOP: 'shop'
+}
+
+module.exports = {
+  HttpStatusCode,
+  WHITELIST_DOMAINS,
+  ORDER_ITEM_STATUS,
+  USER_ROLE
+}

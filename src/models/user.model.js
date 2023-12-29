@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const crypto = require('crypto')
 const modelOptions = require('./model.option')
+const { USER_ROLE } = require('../utilities/constants')
 
 const userSchema = mongoose.Schema(
   {
@@ -9,13 +10,18 @@ const userSchema = mongoose.Schema(
     password: { type: String, require: true },
     email: { type: String, default: '', sparse: true },
     phone: { type: String, default: '' },
+    imageUrl: { type: String, default: '' },
     address: { type: String, default: '' },
     city: { type: String, default: '' },
     district: { type: String, default: '' },
     sex: { type: String, default: '' },
     birthday: { type: String, default: '' },
     story: { type: String, default: '' },
-    role: { type: String, default: '' },
+    role: {
+      type: String,
+      default: USER_ROLE.USER,
+      enum: Object.values(USER_ROLE)
+    },
     salt: {
       type: String,
       require: true,

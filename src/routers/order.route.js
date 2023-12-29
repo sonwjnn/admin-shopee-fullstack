@@ -29,6 +29,11 @@ router.get(
 )
 
 router.post('/', tokenMiddleware.auth, orderController.createOrder)
+router.post(
+  '/cod',
+  tokenMiddleware.auth,
+  orderController.createOrderWithoutPayment
+)
 
 router.put(
   '/:itemId',

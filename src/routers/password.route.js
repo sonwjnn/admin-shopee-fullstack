@@ -4,11 +4,12 @@ const userController = require('../controllers/user.controller')
 const tokenMiddleware = require('../middlewares/token.middleware')
 const requestHandler = require('../handlers/request.handler')
 const { body } = require('express-validator')
+const { USER_ROLE } = require('../utilities/constants')
 
 router.get('/index', (req, res) => {
   const index = 'password'
   const main = 'password/main'
-  res.render('index', { main, index, role: req.user.role })
+  res.render('index', { main, index, role: req.user.role, USER_ROLE })
 })
 
 router.put(

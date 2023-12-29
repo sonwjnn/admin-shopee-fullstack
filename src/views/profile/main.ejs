@@ -85,9 +85,9 @@
                 <label class="form-label display-inline" for="role">Role</label>
                 <select id="role" class="form-select" <% if (data.role !== 'admin') { %> disabled <% } %>>
                   <option value=<%=data.role%> hidden> <%=data.role%></option>
-                  <option value="user">user</option>
-                  <option value="admin">admin</option>
-                  <option value="admin">sale</option>
+                  <option value=<%=USER_ROLE.USER%>><%=USER_ROLE.USER%></option>
+                  <option value=<%=USER_ROLE.ADMIN%>><%=USER_ROLE.ADMIN%></option>
+                  <option value=<%=USER_ROLE.SHOP%>><%=USER_ROLE.SHOP%></option>
                 </select>
               </div>
 
@@ -97,7 +97,8 @@
               </div>
             </div>
 
-            <div id="storyid" class="hiden"><%=data.story%> </div>
+            <div id="storyid" class="hiden"><%=data.story%>
+            </div>
             <span class="d-flex justify-content-between">
               <button type="submit" class="btn bg-gradient-info"> Save </button>
               <button type="button" class="btn btn-outline-info btn-refresh " onclick="window.location.reload()">

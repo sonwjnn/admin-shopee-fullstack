@@ -5,6 +5,7 @@ const calculateData = require('../utilities/calculateData')
 const productModel = require('../models/product.model')
 const typeModel = require('../models/type.model')
 const slugify = require('slugify')
+const { USER_ROLE } = require('../utilities/constants')
 
 const renderIndexPage = async (req, res) => {
   try {
@@ -39,7 +40,8 @@ const renderIndexPage = async (req, res) => {
       name,
       isIndexPage,
       dateOfC,
-      role: req.user.role
+      role: req.user.role,
+      USER_ROLE
     })
   } catch (error) {
     responseHandler.error(res)
@@ -98,7 +100,13 @@ const renderEditPage = async (req, res) => {
     }
     const index = 'categories'
     const main = 'categories/edit.category.ejs'
-    res.render('index', { main, index, data: cate, role: req.user.role })
+    res.render('index', {
+      main,
+      index,
+      data: cate,
+      role: req.user.role,
+      USER_ROLE
+    })
   } catch (error) {
     responseHandler.notfoundpage(res)
   }

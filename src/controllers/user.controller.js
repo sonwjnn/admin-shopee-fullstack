@@ -7,6 +7,7 @@ const jsonwebtoken = require('jsonwebtoken')
 const { readJsonFile } = require('../utilities/readJsonFile')
 const filePath = 'src/assets/json/archiveToken.json'
 const calculateData = require('../utilities/calculateData')
+const { USER_ROLE } = require('../utilities/constants')
 
 const signin = async (req, res) => {
   try {
@@ -226,7 +227,8 @@ const renderIndexPage = async (req, res) => {
       pageNumber,
       name,
       isIndexPage,
-      role: req.user.role
+      role: req.user.role,
+      USER_ROLE
     })
   } catch (error) {
     responseHandler.error(res)
@@ -244,7 +246,13 @@ const renderEditPage = async (req, res) => {
 
     const index = 'users'
     const main = 'users/edit.user.ejs'
-    res.render('index', { main, index, data: user, role: req.user.role })
+    res.render('index', {
+      main,
+      index,
+      data: user,
+      role: req.user.role,
+      USER_ROLE
+    })
   } catch (error) {
     responseHandler.error(res)
   }

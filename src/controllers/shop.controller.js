@@ -3,6 +3,7 @@ const shopModel = require('../models/shop.model')
 const { toStringDate } = require('../utilities/toStringDate')
 const calculateData = require('../utilities/calculateData')
 const userModel = require('../models/user.model')
+const { USER_ROLE } = require('../utilities/constants')
 
 const renderIndexPage = async (req, res) => {
   try {
@@ -37,7 +38,8 @@ const renderIndexPage = async (req, res) => {
       name,
       isIndexPage,
       dateOfC,
-      role: req.user.role
+      role: req.user.role,
+      USER_ROLE
     })
   } catch (error) {
     responseHandler.error(res)
@@ -96,7 +98,13 @@ const renderEditPage = async (req, res) => {
     }
     const index = 'shops'
     const main = 'shops/edit.shop.ejs'
-    res.render('index', { main, index, data: shop, role: req.user.role })
+    res.render('index', {
+      main,
+      index,
+      data: shop,
+      role: req.user.role,
+      USER_ROLE
+    })
   } catch (error) {
     responseHandler.notfoundpage(res)
   }
@@ -127,7 +135,7 @@ const add = async (req, res) => {
 
     await newShop.save()
 
-    await userModel.updateOne({ _id: req.user.id }, { role: 'sale' })
+    await userModel.updateOne({ _id: req.user.id }, { role: USER_ROLE.SHOP })
 
     responseHandler.created(res, {
       ...newShop._doc,
@@ -206,8 +214,8 @@ const removeShops = async (req, res) => {
 
     // Cập nhật vai trò của người dùng từ 'sale' thành 'user'
     await userModel.updateMany(
-      { _id: { $in: userIds }, role: 'sale' },
-      { $set: { role: 'user' } }
+      { _id: { $in: userIds }, role: USER_ROLE.SHOP },
+      { $set: { role: USER_ROLE.USER } }
     )
 
     // Xóa các cửa hàng

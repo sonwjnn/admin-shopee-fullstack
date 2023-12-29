@@ -7,6 +7,7 @@ const requestHandler = require('../handlers/request.handler')
 const { body } = require('express-validator')
 const jwt = require('jsonwebtoken')
 const phoneRegex = /^(0\d{9})$/
+const { USER_ROLE } = require('../utilities/constants')
 
 router.get('/index', async (req, res) => {
   try {
@@ -21,7 +22,13 @@ router.get('/index', async (req, res) => {
 
     const index = 'profile'
     const main = 'profile/main'
-    res.render('index', { main, index, data: user, role: req.user.role })
+    res.render('index', {
+      main,
+      index,
+      data: user,
+      role: req.user.role,
+      USER_ROLE
+    })
   } catch (error) {
     responseHandler.error(res)
   }

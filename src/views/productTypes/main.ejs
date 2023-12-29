@@ -3,7 +3,7 @@
     <div class="col-12">
       <div class="card mb-4">
         <div class="card-body pt-5 pb-0">
-          <button <% if (role !== 'sale') { %> disabled <% } %> type="button" class="btn btn-outline-info pt-2 pb-2 me-2" onclick="location.href='/admin/product-types/add'">
+          <button <% if (role !== USER_ROLE.SHOP) { %> disabled <% } %> type="button" class="btn btn-outline-info pt-2 pb-2 me-2" onclick="location.href='/admin/product-types/add'">
             <i class="fa fa-plus-square-o me-1" aria-hidden="true"></i> Add New
           </button>
           <button type="button" class="btn btn-outline-danger pt-2 pb-2 deleteGr">

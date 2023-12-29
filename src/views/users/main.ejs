@@ -85,7 +85,7 @@
                     </span>
                   </td>
 
-                  <% if(data[i].role == 'user' || data[i].role == 'sale') { %>
+                  <% if(data[i].role == USER_ROLE.USER || data[i].role == USER_ROLE.SHOP) { %>
                   <td class="align-middle text-center text-sm">
                     <span class="badge badge-sm bg-grey-pastel">
                       <%=data[i].role%>

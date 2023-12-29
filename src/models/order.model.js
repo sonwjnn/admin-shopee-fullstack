@@ -34,7 +34,8 @@ const orderSchema = new Schema(
       default: ''
     },
     address: { type: String, default: '' },
-    phone: { type: String, default: '' }
+    phone: { type: String, default: '' },
+    shippingPrice: { type: Number, default: 0 }
   },
   modelOptions
 )

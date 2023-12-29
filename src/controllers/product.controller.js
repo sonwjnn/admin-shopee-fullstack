@@ -16,6 +16,7 @@ const calculateData = require('../utilities/calculateData')
 const shopModel = require('../models/shop.model')
 const { formatPriceToVND } = require('../utilities/formatter')
 const { cloudinaryDeleteImage } = require('../utilities/cloudinary')
+const { USER_ROLE } = require('../utilities/constants')
 
 const renderIndexPage = async (req, res) => {
   try {
@@ -80,7 +81,8 @@ const renderIndexPage = async (req, res) => {
       pageNumber,
       name: '',
       isIndexPage,
-      role: req.user.role
+      role: req.user.role,
+      USER_ROLE
     })
   } catch (error) {
     console.log(error)
@@ -147,7 +149,8 @@ const renderEditPage = async (req, res) => {
       types: uniqueTypeNames,
       producedAt,
       status,
-      role: req.user.role
+      role: req.user.role,
+      USER_ROLE
     })
   } catch (error) {
     responseHandler.error(res)
