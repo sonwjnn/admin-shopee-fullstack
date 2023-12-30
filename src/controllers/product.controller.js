@@ -435,11 +435,6 @@ const getListByCategory = async (req, res) => {
       limit = 10,
       city
     } = req.body
-
-    if (typeof sortOrder === 'string') {
-      sortOrder = JSON.parse(sortOrder)
-    }
-
     const categoryFilter = category ? { category } : {}
     const basicQuery = getProductsQuery(price, rating, city)
 
