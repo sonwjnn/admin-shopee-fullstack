@@ -427,7 +427,7 @@ const getProductsOfCateBySlug = async (req, res) => {
 const getListByCategory = async (req, res) => {
   try {
     let {
-      sortOrder,
+      sortOrder = { _id: -1 },
       rating,
       price,
       category,
