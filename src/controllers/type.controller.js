@@ -1,12 +1,12 @@
 const responseHandler = require('../handlers/response.handler')
 const typeModel = require('../models/type.model')
 const cateModel = require('../models/category.model')
-const { toStringDate } = require('../utilities/toStringDate')
-const calculateData = require('../utilities/calculateData')
+const { toStringDate } = require('../utils/formatter')
+const calculateData = require('../utils/calculateData')
 const productModel = require('../models/product.model')
 const shopModel = require('../models/shop.model')
 const slugify = require('slugify')
-const { USER_ROLE } = require('../utilities/constants')
+const { USER_ROLE } = require('../utils/constants')
 
 const renderIndexPage = async (req, res) => {
   try {

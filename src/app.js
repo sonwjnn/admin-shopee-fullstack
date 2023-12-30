@@ -27,7 +27,7 @@ const boostServer = () => {
   })
 
   app.use(express.static(path.join(__dirname, './assets')))
-  app.use(express.static(path.join(__dirname, './utilities')))
+  app.use(express.static(path.join(__dirname, './utils')))
   app.set('views', path.join(__dirname, './views'))
   app.set('view engine', 'ejs')
 

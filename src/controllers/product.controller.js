@@ -11,12 +11,13 @@ const reviewModel = require('../models/review.model')
 const userModel = require('../models/user.model')
 const favoriteModel = require('../models/favorite.model')
 const typeModel = require('../models/type.model')
-const { toStringDate } = require('../utilities/toStringDate')
-const calculateData = require('../utilities/calculateData')
+const { toStringDate } = require('../utils/formatter')
+const calculateData = require('../utils/calculateData')
 const shopModel = require('../models/shop.model')
-const { formatPriceToVND } = require('../utilities/formatter')
-const { cloudinaryDeleteImage } = require('../utilities/cloudinary')
-const { USER_ROLE } = require('../utilities/constants')
+const { formatPriceToVND } = require('../utils/formatter')
+const { cloudinaryDeleteImage } = require('../utils/helpers')
+const { USER_ROLE } = require('../utils/constants')
+const { getProductsQuery } = require('../utils/queries')
 
 const renderIndexPage = async (req, res) => {
   try {
@@ -423,6 +424,65 @@ const getProductsOfCateBySlug = async (req, res) => {
   }
 }
 
+const getListByCategory = async (req, res) => {
+  try {
+    let {
+      sortOrder,
+      rating,
+      price,
+      category,
+      page = 1,
+      limit = 10,
+      city
+    } = req.body
+
+    if (typeof sortOrder === 'string') {
+      sortOrder = JSON.parse(sortOrder)
+    }
+
+    const categoryFilter = category ? { category } : {}
+    const basicQuery = getProductsQuery(price, rating, city)
+
+    const categoryDoc = await categoryModel.findOne({
+      slug: categoryFilter.category
+    })
+
+    if (categoryDoc) {
+      basicQuery.push({
+        $match: {
+          cateId: categoryDoc._id
+        }
+      })
+    }
+
+    const productsCount = await productModel.aggregate(basicQuery)
+    const count = productsCount.length
+    const size = count > limit ? page - 1 : 0
+    const currentPage = count > limit ? Number(page) : 1
+
+    // paginate query
+    const paginateQuery = [
+      { $sort: sortOrder },
+      { $skip: size * limit },
+      { $limit: limit * 1 }
+    ]
+
+    const products = await productModel.aggregate(
+      basicQuery.concat(paginateQuery)
+    )
+
+    responseHandler.ok(res, {
+      products,
+      totalPages: Math.ceil(count / limit),
+      currentPage,
+      count
+    })
+  } catch (error) {
+    console.log('error', error)
+    responseHandler.error(res)
+  }
+}
+
 const getProductsByShopId = async (req, res) => {
   try {
     const { shopId } = req.params
@@ -519,5 +579,6 @@ module.exports = {
   uploadImage,
   getProductsOfCateBySlug,
   getProductsByShopId,
-  getImage
+  getImage,
+  getListByCategory
 }

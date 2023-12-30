@@ -4,10 +4,9 @@ const favoriteModel = require('../models/favorite.model')
 const reviewModel = require('../models/review.model')
 const responseHandler = require('../handlers/response.handler')
 const jsonwebtoken = require('jsonwebtoken')
-const { readJsonFile } = require('../utilities/readJsonFile')
 const filePath = 'src/assets/json/archiveToken.json'
-const calculateData = require('../utilities/calculateData')
-const { USER_ROLE } = require('../utilities/constants')
+const calculateData = require('../utils/calculateData')
+const { USER_ROLE } = require('../utils/constants')
 
 const signin = async (req, res) => {
   try {
@@ -37,9 +36,6 @@ const signin = async (req, res) => {
     )
     user.password = undefined
     user.salt = undefined
-
-    // add token and id to file with link file is filePath
-    readJsonFile(filePath, user.id, token)
 
     // add token to cookie
     res.cookie('token', token, { maxAge: 24 * 60 * 60 * 1000 })

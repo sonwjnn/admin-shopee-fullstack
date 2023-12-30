@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const crypto = require('crypto')
 const modelOptions = require('./model.option')
-const { USER_ROLE } = require('../utilities/constants')
+const { USER_ROLE } = require('../utils/constants')
 
 const userSchema = mongoose.Schema(
   {

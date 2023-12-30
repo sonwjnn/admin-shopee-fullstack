@@ -1,9 +1,9 @@
 const responseHandler = require('../handlers/response.handler')
 const shopModel = require('../models/shop.model')
-const { toStringDate } = require('../utilities/toStringDate')
-const calculateData = require('../utilities/calculateData')
+const { toStringDate } = require('../utils/formatter')
+const calculateData = require('../utils/calculateData')
 const userModel = require('../models/user.model')
-const { USER_ROLE } = require('../utilities/constants')
+const { USER_ROLE } = require('../utils/constants')
 
 const renderIndexPage = async (req, res) => {
   try {

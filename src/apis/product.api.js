@@ -8,5 +8,6 @@ router.get('/detail/:productId', productController.getDetail)
 router.get('/list/slug/:cateSlug', productController.getProductsOfCateBySlug)
 router.get('/list/shop/:shopId', productController.getProductsByShopId)
 router.get('/image/:imageName', productController.getImage)
+router.post('/list/category', productController.getListByCategory)
 
 module.exports = router

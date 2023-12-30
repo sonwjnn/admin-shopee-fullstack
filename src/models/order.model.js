@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const modelOptions = require('./model.option')
-const { ORDER_ITEM_STATUS } = require('../utilities/constants')
+const { ORDER_ITEM_STATUS } = require('../utils/constants')
 const { Schema } = mongoose
 
 const orderItemSchema = new Schema(

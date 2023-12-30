@@ -7,7 +7,7 @@ const requestHandler = require('../handlers/request.handler')
 const { body } = require('express-validator')
 const jwt = require('jsonwebtoken')
 const phoneRegex = /^(0\d{9})$/
-const { USER_ROLE } = require('../utilities/constants')
+const { USER_ROLE } = require('../utils/constants')
 
 router.get('/index', async (req, res) => {
   try {

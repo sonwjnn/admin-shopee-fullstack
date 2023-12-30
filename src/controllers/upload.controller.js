@@ -3,7 +3,7 @@ const responseHandler = require('../handlers/response.handler')
 const {
   cloudinaryUploadImage,
   cloudinaryDeleteImage
-} = require('../utilities/cloudinary')
+} = require('../utils/helpers')
 
 const uploadImages = async (req, res) => {
   try {

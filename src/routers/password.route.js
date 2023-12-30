@@ -4,7 +4,7 @@ const userController = require('../controllers/user.controller')
 const tokenMiddleware = require('../middlewares/token.middleware')
 const requestHandler = require('../handlers/request.handler')
 const { body } = require('express-validator')
-const { USER_ROLE } = require('../utilities/constants')
+const { USER_ROLE } = require('../utils/constants')
 
 router.get('/index', (req, res) => {
   const index = 'password'

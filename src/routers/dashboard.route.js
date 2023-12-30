@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const { USER_ROLE } = require('../utilities/constants')
+const { USER_ROLE } = require('../utils/constants')
 
 router.get('/index', (req, res) => {
   var index = 'dashboard'

@@ -1,4 +1,4 @@
-const { WHITELIST_DOMAINS } = require('../utilities/constants.js')
+const { WHITELIST_DOMAINS } = require('../utils/constants.js')
 
 const corsOptions = {
   origin: function (origin, callback) {

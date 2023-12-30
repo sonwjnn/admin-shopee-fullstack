@@ -1,12 +1,12 @@
 const { Order, OrderItem } = require('../models/order.model')
 const responseHandler = require('../handlers/response.handler')
 const { stripe } = require('../lib/stripe')
-const calculateData = require('../utilities/calculateData')
-const { toStringDate } = require('../utilities/toStringDate')
+const calculateData = require('../utils/calculateData')
+const { toStringDate } = require('../utils/formatter')
 const shopModel = require('../models/shop.model')
-const { formatPriceToVND } = require('../utilities/formatter')
+const { formatPriceToVND } = require('../utils/formatter')
 const productModel = require('../models/product.model')
-const { ORDER_ITEM_STATUS, USER_ROLE } = require('../utilities/constants')
+const { ORDER_ITEM_STATUS, USER_ROLE } = require('../utils/constants')
 
 const renderIndexPage = async (req, res) => {
   try {
