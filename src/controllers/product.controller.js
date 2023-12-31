@@ -397,6 +397,7 @@ const getDetail = async (req, res) => {
       .find({ productId })
       .populate('user')
       .sort('-createdAt')
+
     return responseHandler.ok(res, product)
   } catch (error) {
     console.log(error)

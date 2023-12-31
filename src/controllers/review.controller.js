@@ -64,17 +64,21 @@ const remove = async (req, res) => {
 
     const product = await productModel.findOne({ _id: productId })
 
-    const shop = await shopModel.findOne({ _id: product.shopId })
+    if (ratings.length === 0) {
+      product.rating = 0
+    } else {
+      const productRating = (
+        ratings.reduce((acc, rating) => acc + +rating.rating, 0) /
+        ratings.length
+      ).toFixed(1)
 
-    const productRating = (
-      ratings.reduce((acc, rating) => acc + +rating.rating, 0) / ratings.length
-    ).toFixed(1)
-
-    product.rating = productRating
+      product.rating = productRating
+    }
 
     await product.save()
 
-    // update review count for shop
+    // Cập nhật lại số lượng đánh giá cho cửa hàng
+    const shop = await shopModel.findOne({ _id: product.shopId })
     const updateReviewCount =
       shop.reviewCount - 1 < 0 ? 0 : shop.reviewCount - 1
     shop.reviewCount = updateReviewCount
