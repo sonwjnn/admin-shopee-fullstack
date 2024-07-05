@@ -11,7 +11,8 @@ const WHITELIST_DOMAINS = [
   'http://localhost:8017',
   'http://localhost:3000',
   'https://client-shopee-clone-7cde5.web.app',
-  'https://client-shopee-clone.web.app',
+  // 'https://client-shopee-clone.web.app',
+  'https://client-shopee-fullstack.vercel.app',
   'https://admin-shopee-clone.onrender.com'
 ]
 
